@@ -1,6 +1,6 @@
 # Presentational Blocks
 
-A **block** is a copy-pasteable composition that ships a complete UI section — a dashboard, a sign-in flow, a feed, a settings panel — packaged as a folder of presentational components plus one wiring page. This follows the [shadcn/ui blocks](https://ui.shadcn.com/blocks) convention, where blocks are how you ship working layouts that another app can drop in and adapt.
+A **block** is a copy-pasteable composition that ships a complete UI section — a dashboard, a sign-in flow, a feed, a settings panel — packaged as a folder of presentational components plus one wiring page that another app can drop in and adapt.
 
 The presentational rules at the top of `SKILL.md` apply at the block level too: every component inside a block stays presentational, and only the block's `page.tsx` is allowed to call hooks or read data.
 
