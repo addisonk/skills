@@ -40,7 +40,7 @@ Open-source skills for [Claude Code](https://claude.ai/code).
 | [file-suggestion](dev-tools/file-suggestion) | File search using rg + fzf |
 | [userflow-capture](dev-tools/userflow-capture) | Document an app's architecture and main flows as `docs/userflows.html` (interactive swimlane diagram for humans) + `docs/userflows.js` (the same data as a JS file future LLM agents load before touching feature/bugfix work). Two siblings, no server, opens via double-click |
 | [v0-spec-pack-extractor](dev-tools/v0-spec-pack-extractor) | Extract spec packs from any codebase (routes, components, data models) |
-| [presentational-components](dev-tools/presentational-components) | Enforce presentational UI component patterns with domain-focused hooks |
+| [presentational-components](dev-tools/presentational-components) | Build props-only React components and polished primitives with domain-focused hooks |
 
 ### Services
 

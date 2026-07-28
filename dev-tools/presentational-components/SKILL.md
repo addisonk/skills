@@ -17,6 +17,20 @@ Components must NOT contain:
 
 Local UI state via `useState` (form input, dropdown open/closed, hover) is fine — that's presentation, not data.
 
+## Reusable Primitive Conventions
+
+Build polished primitives around the DOM they render:
+
+- Type the root with its corresponding native React prop type, such as `ComponentPropsWithoutRef<"article">`, and merge the caller's root `className` with the component defaults.
+- Give the root and each meaningful internal DOM part a stable `data-slot` name. Use those slots for composition, CSS targeting, and focused tests.
+- Put visual state such as `size`, `tone`, or `orientation` on the root as `data-*` attributes. Treat the root as a styling group and let descendants respond through selectors such as `[data-slot="card"][data-size="compact"] [data-slot="card-title"]`; do not add variants named after a business composition.
+- Forward ordinary native root props. Spread them before component-owned `data-slot`, identity, state, and merged `className` attributes so callers cannot accidentally replace the component contract.
+- When callers may customize a nested element, accept a dedicated `className` prop for it and merge that value with the element's defaults.
+- Name props after rendered UI concepts (`size`, `title`, `actionLabel`), not an upstream data source or placement (`queryResult`, `dashboardSidebarMode`). Keep composition-specific decisions in the parent.
+- Query stable `data-slot` selectors in focused tests instead of embedding private test IDs. Add provider-free stories that pass plain props and callbacks so each visual state can be inspected in isolation.
+
+Prefer selectors derived from root state and slots over conditionally changing every descendant class in JSX. This keeps the public API small while preserving independent styling and test hooks for internal parts.
+
 ## Naming
 
 Presentational components use simple names without suffixes:
@@ -123,7 +137,7 @@ The component receives flags (`canDelete`, `isLiked`) and callbacks (`onDelete`,
 
 ## Presentational Blocks
 
-A **block** is a copy-pasteable composition that ships a complete UI section (dashboard, sign-in, feed) — a folder of presentational components plus one wiring page. Follows the [shadcn/ui blocks](https://ui.shadcn.com/blocks) convention.
+A **block** is a copy-pasteable composition that ships a complete UI section (dashboard, sign-in, feed) — a folder of presentational components plus one wiring page.
 
 The same rules apply at the block level: components stay presentational, the block's `page.tsx` is the only file that calls hooks, and mock data lives alongside so the block previews without providers.
 
@@ -135,7 +149,7 @@ Starter scaffolds in `templates/`:
 
 - [`templates/component.tsx`](templates/component.tsx) — presentational component
 - [`templates/domain-hook.ts`](templates/domain-hook.ts) — domain-focused hook
-- [`templates/block/`](templates/block) — full shadcn-style block scaffold (page + components + mock data)
+- [`templates/block/`](templates/block) — full block scaffold (page + components + mock data)
 
 ## Benefits
 
@@ -154,3 +168,10 @@ When reviewing or creating components, verify:
 - [ ] Hook is named after the domain, not the component
 - [ ] Hook lives in `hooks/use-{domain}.ts`
 - [ ] Page/parent component wires hook to presentational component
+- [ ] Root uses its native React prop type, forwards native props, and merges `className`
+- [ ] Meaningful DOM parts have stable `data-slot` names
+- [ ] Root `data-*` attributes express visual state for descendant selectors
+- [ ] Component-owned slot, identity, and state attributes cannot be overwritten
+- [ ] Nested customization classes merge with defaults
+- [ ] Props describe rendered UI rather than data sources or business placement
+- [ ] Tests use slot selectors and stories render without providers
