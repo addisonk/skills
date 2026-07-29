@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "document": {
+    "title": "Structured export specification",
+    "summary": "A buildable plan for adding durable, inspectable exports without coupling product state to a presentation format.",
+    "type": "spec",
+    "date": "2026-07-29",
+    "status": "Approved for implementation",
+    "tags": ["architecture", "exports"]
+  },
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "problem",
+      "title": "Problem and outcome",
+      "html": "<p>Users need a portable record of a completed analysis. The current screen can be printed, but its transient UI state is not a durable document contract.</p><p>The export should derive from the same normalized result data, remain readable without the application, and expose its provenance.</p>"
+    },
+    {
+      "type": "comparison",
+      "id": "approach",
+      "title": "Approach selection",
+      "items": [
+        { "label": "Selected", "title": "Structured document model", "detail": "Render normalized blocks into a portable shell. Consistent, testable, and format-independent." },
+        { "label": "Rejected", "title": "DOM snapshot", "detail": "Fast initially, but couples the export to transient UI state and application CSS." },
+        { "label": "Deferred", "title": "Server PDF service", "detail": "Useful later, but introduces infrastructure before the document contract is proven." }
+      ]
+    },
+    {
+      "type": "diagram",
+      "id": "data-flow",
+      "title": "Data flow",
+      "svg": "<svg viewBox=\"0 0 760 220\" role=\"img\" aria-label=\"Application data flows through normalization and rendering to a portable export\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><rect x=\"20\" y=\"70\" width=\"170\" height=\"80\" rx=\"12\"/><rect x=\"295\" y=\"70\" width=\"170\" height=\"80\" rx=\"12\"/><rect x=\"570\" y=\"70\" width=\"170\" height=\"80\" rx=\"12\"/><path d=\"M190 110h105m170 0h105\"/></g><g fill=\"currentColor\" text-anchor=\"middle\" font-family=\"system-ui\"><text x=\"105\" y=\"106\">Analysis result</text><text x=\"380\" y=\"106\">Document model</text><text x=\"655\" y=\"106\">Portable export</text><text x=\"105\" y=\"128\" font-size=\"13\" opacity=\".65\">application state</text><text x=\"380\" y=\"128\" font-size=\"13\" opacity=\".65\">normalized blocks</text><text x=\"655\" y=\"128\" font-size=\"13\" opacity=\".65\">single HTML file</text></g></svg>"
+    },
+    {
+      "type": "code",
+      "id": "document-contract",
+      "title": "Document contract",
+      "language": "json",
+      "code": "{\n  \"version\": 1,\n  \"document\": {\n    \"title\": \"Quarterly analysis\",\n    \"type\": \"report\"\n  },\n  \"blocks\": [\n    { \"type\": \"prose\", \"id\": \"summary\", \"title\": \"Summary\" }\n  ]\n}"
+    },
+    {
+      "type": "checklist",
+      "id": "acceptance-criteria",
+      "title": "Acceptance criteria",
+      "items": [
+        { "label": "A saved export opens without the application", "detail": "No external scripts, stylesheets, or fonts are required.", "done": true },
+        { "label": "Every section has a stable anchor", "detail": "The contents navigation deep-links to each block.", "done": true },
+        { "label": "Invalid source fails before writing output", "detail": "Errors identify the field and violated rule.", "done": false }
+      ]
+    },
+    {
+      "type": "table",
+      "id": "implementation-slices",
+      "title": "Implementation slices",
+      "columns": ["Slice", "Responsibility", "Verification"],
+      "rows": [
+        ["Schema", "Normalize document metadata and blocks", "Contract tests"],
+        ["Renderer", "Embed data and produce the standalone shell", "HTML validation and snapshots"],
+        ["Delivery", "Save locally and optionally publish", "Disposable object-store fixture"]
+      ]
+    },
+    {
+      "type": "sources",
+      "id": "references",
+      "title": "References",
+      "items": [
+        { "label": "HTML Living Standard", "url": "https://html.spec.whatwg.org/", "note": "Document semantics and parsing behavior" },
+        { "label": "Web Content Accessibility Guidelines", "url": "https://www.w3.org/WAI/standards-guidelines/wcag/", "note": "Accessibility requirements" }
+      ]
+    }
+  ]
+}
