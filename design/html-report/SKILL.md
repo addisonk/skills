@@ -1,85 +1,106 @@
 ---
 name: html-report
-description: [TODO: Complete and informative explanation of what the skill does and when to use it. Include WHEN to use this skill - specific scenarios, file types, or tasks that trigger it.]
+description: Create a polished, shareable single-file HTML report from structured content. Use only when the user explicitly asks for an HTML report, shareable report, interactive report, or a report they can upload and send as a link. Supports reports, specs, plans, explainers, audits, research summaries, and QA evidence. Do not use for ordinary Markdown responses, production web pages, or UI prototypes.
 ---
 
-# Html Report
+# HTML Report
 
-## Overview
+Build a quick, disposable document that is easy to read and share. The report is throwaway; the bundled shell, blocks, and uploader are the reusable parts.
 
-[TODO: 1-2 sentences explaining what this skill enables]
+## Workflow
 
-## Structuring This Skill
+### 1. Choose the closest preset
 
-[TODO: Choose the structure that best fits this skill's purpose. Common patterns:
+Copy one JSON file from `templates/` into the working folder:
 
-**1. Workflow-Based** (best for sequential processes)
-- Works well when there are clear step-by-step procedures
-- Example: DOCX skill with "Workflow Decision Tree" -> "Reading" -> "Creating" -> "Editing"
-- Structure: ## Overview -> ## Workflow Decision Tree -> ## Step 1 -> ## Step 2...
+- `report.json` — decisions, findings, status, risks, and recommendations
+- `spec-or-plan.json` — requirements, architecture, comparisons, and implementation steps
+- `explainer.json` — concepts, mental models, diagrams, and examples
+- `evidence-report.json` — verdicts, tested flows, screenshots, recordings, and gaps
 
-**2. Task-Based** (best for tool collections)
-- Works well when the skill offers different operations/capabilities
-- Example: PDF skill with "Quick Start" -> "Merge PDFs" -> "Split PDFs" -> "Extract Text"
-- Structure: ## Overview -> ## Quick Start -> ## Task Category 1 -> ## Task Category 2...
+Read [document-types.md](references/document-types.md) only when the right preset is unclear.
 
-**3. Reference/Guidelines** (best for standards or specifications)
-- Works well for brand guidelines, coding standards, or requirements
-- Example: Brand styling with "Brand Guidelines" -> "Colors" -> "Typography" -> "Features"
-- Structure: ## Overview -> ## Guidelines -> ## Specifications -> ## Usage...
+Treat the copied JSON and rendered HTML as disposable output. Do not commit them unless the user asks.
 
-**4. Capabilities-Based** (best for integrated systems)
-- Works well when the skill provides multiple interrelated features
-- Example: Product Management with "Core Capabilities" -> numbered capability list
-- Structure: ## Overview -> ## Core Capabilities -> ### 1. Feature -> ### 2. Feature...
+### 2. Replace the example content
 
-Patterns can be mixed and matched as needed. Most skills combine patterns (e.g., start with task-based, add workflow for complex operations).
+Keep this top-level shape:
 
-Delete this entire "Structuring This Skill" section when done - it's just guidance.]
+```json
+{
+  "version": 1,
+  "document": {
+    "title": "Decision-ready title",
+    "summary": "What this document establishes and why it matters.",
+    "type": "report",
+    "date": "2026-07-29"
+  },
+  "blocks": []
+}
+```
 
-## [TODO: Replace with the first main section based on chosen structure]
+Use standard blocks before reaching for `custom-html`. Give every block a unique lowercase `id` and a clear `title`. Keep only blocks that help the reader understand or decide something; do not turn the report into a work log.
 
-[TODO: Add content here. See examples in existing skills:
-- Code samples for technical skills
-- Decision trees for complex workflows
-- Concrete examples with realistic user requests
-- References to scripts/templates/references as needed]
+Read [block-catalog.md](references/block-catalog.md) for block shapes.
 
-## Resources (optional)
+For a visual reference, open `templates/report-blocks.html`. Its embedded data comes from `templates/report-blocks.json`, which shows every supported block in one reusable kitchen-sink document. This is the generic counterpart to the E2E skill's block library.
 
-Create only the resource directories this skill actually needs. Delete this section if no resources are required.
+### 3. Render
 
-### scripts/
-Executable code (Python/Bash/etc.) that can be run directly to perform specific operations.
+From this skill folder, run:
 
-**Examples from other skills:**
-- PDF skill: `fill_fillable_fields.py`, `extract_form_field_info.py` - utilities for PDF manipulation
-- DOCX skill: `document.py`, `utilities.py` - Python modules for document processing
+```bash
+node scripts/render.mjs /path/to/report.json /path/to/report.html
+```
 
-**Appropriate for:** Python scripts, shell scripts, or any executable code that performs automation, data processing, or specific operations.
+The renderer checks the source, writes one self-contained HTML file, and checks the output. The file has inline CSS and JavaScript, system fonts, light/dark mode, mobile layout, print styles, anchored navigation, and no remote runtime dependencies.
 
-**Note:** Scripts may be executed without loading into context, but can still be read by Codex for patching or environment adjustments.
+If rendering fails, fix the named field. Do not bypass validation by editing the generated HTML.
 
-### references/
-Documentation and reference material intended to be loaded into context to inform Codex's process and thinking.
+### 4. Look once, then hand it over
 
-**Examples from other skills:**
-- Product management: `communication.md`, `context_building.md` - detailed workflow guides
-- BigQuery: API reference documentation and query examples
-- Finance: Schema documentation, company policies
+Open the HTML in a browser. Check the opening view and one narrow mobile width. Fix obvious overflow, broken media, missing sections, or content that is hard to scan.
 
-**Appropriate for:** In-depth documentation, API references, database schemas, comprehensive guides, or any detailed information that Codex should reference while working.
+Do not add a test suite, application scaffolding, package dependencies, or reusable abstractions to the generated report. This is a shareable document, not product code.
 
-### assets/
-Files not intended to be loaded into context, but rather used within the output Codex produces.
+Return the absolute path to the HTML file.
 
-**Examples from other skills:**
-- Brand styling: PowerPoint template files (.pptx), logo files
-- Frontend builder: HTML/React boilerplate project directories
-- Typography: Font files (.ttf, .woff2)
+### 5. Publish only when requested
 
-**Appropriate for:** Templates, boilerplate code, document templates, images, icons, fonts, or any files meant to be copied or used in the final output.
+Local rendering never requires credentials. If the user asks for a public link, read [publishing.md](references/publishing.md), then run:
 
----
+```bash
+node scripts/publish.mjs /path/to/report.json /path/to/report.html --key short-report-name
+```
 
-**Not every skill requires all three types of resources.**
+Publishing uploads relative images and recordings first, rewrites a cloned source to their public URLs, uploads the HTML last, verifies every uploaded URL, and prints the report URL.
+
+Never put credentials in report JSON. Never publish without an explicit request to upload or share publicly.
+
+## Authoring rules
+
+- Lead with the conclusion. Use the title and summary to orient the reader immediately.
+- Prefer a few strong sections over a kitchen-sink report.
+- Use monochrome presentation; reserve color for pass, warning, and failure status.
+- Use real evidence. If evidence is unavailable, name the gap instead of inventing it.
+- Keep tables compact. Move long explanation into prose or callouts.
+- Add alt text to every gallery image.
+- Keep links and published media absolute HTTPS URLs. Relative media is allowed before `publish.mjs` rewrites it.
+- Use inline SVG for diagrams. Do not add remote scripts, stylesheets, fonts, iframes, event handlers, or `javascript:` URLs.
+- Use `custom-html` for an unusual layout, not to rebuild standard blocks.
+
+## Included commands
+
+```bash
+# Validate source JSON without rendering
+node scripts/validate.mjs /path/to/report.json
+
+# Validate an already rendered file
+node scripts/validate.mjs --html /path/to/report.html
+
+# Upload one standalone artifact when automatic media rewriting is unnecessary
+node scripts/upload-artifact.mjs /path/to/file --key reports/name/file
+
+# Check public URLs
+node scripts/upload-artifact.mjs --verify https://cdn.example.com/reports/name/report.html
+```
