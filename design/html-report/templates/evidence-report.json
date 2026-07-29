@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "document": {
+    "title": "Checkout regression evidence",
+    "summary": "A compact record of tested customer flows, captured evidence, observed gaps, and the resulting release verdict.",
+    "type": "evidence",
+    "date": "2026-07-29",
+    "status": "Pass",
+    "tags": ["checkout", "QA"]
+  },
+  "blocks": [
+    {
+      "type": "verdict",
+      "id": "verdict",
+      "title": "Verdict",
+      "status": "pass",
+      "lead": "The critical checkout path is ready to release.",
+      "detail": "All required flows passed at desktop and mobile widths. One copy inconsistency is documented as non-blocking."
+    },
+    {
+      "type": "flow-results",
+      "id": "flow-results",
+      "title": "Flow results",
+      "flows": [
+        { "name": "Guest checkout", "status": "pass", "detail": "Card payment, confirmation, and receipt verified." },
+        { "name": "Returning customer", "status": "pass", "detail": "Saved address and payment selection verified." },
+        { "name": "Declined payment recovery", "status": "pass", "detail": "Inline error, retry, and successful completion verified." }
+      ]
+    },
+    {
+      "type": "gallery",
+      "id": "screenshots",
+      "title": "Screenshots",
+      "items": [
+        { "image": "media/checkout-desktop.png", "alt": "Completed checkout on desktop", "caption": "Desktop · order confirmation" },
+        { "image": "media/checkout-mobile.png", "alt": "Completed checkout on mobile", "caption": "Mobile · order confirmation" }
+      ]
+    },
+    {
+      "type": "recording",
+      "id": "recording",
+      "title": "Run recording",
+      "video": "media/checkout-run.mp4",
+      "label": "Critical path · 01:42",
+      "poster": "media/checkout-poster.png",
+      "links": [
+        { "label": "Trace", "url": "https://example.com/trace/checkout" },
+        { "label": "Test run", "url": "https://example.com/run/checkout" }
+      ]
+    },
+    {
+      "type": "gaps",
+      "id": "observed-gaps",
+      "title": "Observed gaps",
+      "items": [
+        { "title": "Receipt label differs", "severity": "low", "detail": "Confirmation uses “Receipt” while account history uses “Invoice.” Copy-only and non-blocking." },
+        { "title": "Slow sandbox response", "severity": "medium", "detail": "Payment sandbox added six seconds to one run; production telemetry does not show the same pattern." }
+      ]
+    },
+    {
+      "type": "sources",
+      "id": "evidence-links",
+      "title": "Evidence links",
+      "items": [
+        { "label": "Test plan", "url": "https://example.com/checkout-test-plan", "note": "Required stories and acceptance criteria" },
+        { "label": "CI run", "url": "https://example.com/checkout-ci", "note": "Automated regression suite" }
+      ]
+    }
+  ],
+  "publish": {
+    "keyPrefix": "reports"
+  }
+}

@@ -1,0 +1,159 @@
+{
+  "version": 1,
+  "document": {
+    "title": "HTML report block library",
+    "summary": "A visual catalog of every reusable report block. Open this file to judge the layout; copy the matching JSON block into a report source.",
+    "type": "explainer",
+    "date": "2026-07-29",
+    "status": "Authoring reference",
+    "provenance": "Generic block vocabulary adapted from the E2E evidence report system",
+    "tags": ["template", "block catalog"]
+  },
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "prose",
+      "title": "Prose",
+      "html": "<p>Use prose for the connective tissue of the report: the conclusion, context a reader needs, or an explanation that does not benefit from a more structured block.</p><p><strong>Keep it editorial.</strong> A report should explain what matters, not narrate every step used to create it.</p>"
+    },
+    {
+      "type": "callout",
+      "id": "callout",
+      "title": "Callout",
+      "tone": "warning",
+      "html": "<p><strong>Put the consequential caveat here.</strong> Callouts work for decisions, warnings, constraints, and the one detail a scanning reader must not miss.</p>"
+    },
+    {
+      "type": "quote",
+      "id": "quote",
+      "title": "Quote",
+      "text": "A strong report compresses the work without hiding the uncertainty.",
+      "attribution": "Editorial principle"
+    },
+    {
+      "type": "stats",
+      "id": "stats",
+      "title": "Stats",
+      "items": [
+        { "label": "Required checks", "value": "18/18", "detail": "Passing" },
+        { "label": "Open blockers", "value": "0", "detail": "At review time" },
+        { "label": "Follow-ups", "value": "2", "detail": "Named owners" }
+      ]
+    },
+    {
+      "type": "table",
+      "id": "table",
+      "title": "Table",
+      "columns": ["Risk", "Impact", "Mitigation", "Owner"],
+      "rows": [
+        ["Ambiguous rollback signal", "High", "Set three concrete thresholds", "On-call"],
+        ["Change note misses launch", "Low", "Approve draft before deploy", "Product"]
+      ]
+    },
+    {
+      "type": "comparison",
+      "id": "comparison",
+      "title": "Comparison",
+      "items": [
+        { "label": "Selected", "title": "Structured blocks", "detail": "Consistent, quick to author, and easy to scan." },
+        { "label": "Escape hatch", "title": "Custom HTML", "detail": "Available for the unusual layout that standard blocks cannot express." }
+      ]
+    },
+    {
+      "type": "checklist",
+      "id": "checklist",
+      "title": "Checklist",
+      "items": [
+        { "label": "Lead with the conclusion", "detail": "The title and summary orient the reader.", "done": true },
+        { "label": "Name missing evidence", "detail": "Uncertainty is visible instead of implied away.", "done": true },
+        { "label": "Publish when requested", "detail": "A local report can remain local.", "done": false }
+      ]
+    },
+    {
+      "type": "timeline",
+      "id": "timeline",
+      "title": "Timeline",
+      "items": [
+        { "time": "09:00", "title": "Confirm the decision", "detail": "Resolve the one question the report exists to answer." },
+        { "time": "10:00", "title": "Assemble evidence", "detail": "Choose the smallest set of blocks that supports the conclusion." },
+        { "time": "11:00", "title": "Render and share", "detail": "Look once, then hand over the file or link." }
+      ]
+    },
+    {
+      "type": "code",
+      "id": "code",
+      "title": "Code",
+      "language": "javascript",
+      "code": "const report = {\n  version: 1,\n  document: { title: \"Launch review\", type: \"report\" },\n  blocks: [{ type: \"prose\", id: \"summary\", title: \"Summary\" }]\n};"
+    },
+    {
+      "type": "diagram",
+      "id": "diagram",
+      "title": "Diagram",
+      "svg": "<svg viewBox=\"0 0 760 220\" role=\"img\" aria-label=\"Source data flows through the report template to a shareable document\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><rect x=\"20\" y=\"70\" width=\"170\" height=\"80\" rx=\"12\"/><rect x=\"295\" y=\"70\" width=\"170\" height=\"80\" rx=\"12\"/><rect x=\"570\" y=\"70\" width=\"170\" height=\"80\" rx=\"12\"/><path d=\"M190 110h105m170 0h105\"/></g><g fill=\"currentColor\" text-anchor=\"middle\" font-family=\"system-ui\"><text x=\"105\" y=\"106\">Report JSON</text><text x=\"380\" y=\"106\">HTML shell</text><text x=\"655\" y=\"106\">Shareable file</text><text x=\"105\" y=\"128\" font-size=\"13\" opacity=\".65\">content + blocks</text><text x=\"380\" y=\"128\" font-size=\"13\" opacity=\".65\">layout + behavior</text><text x=\"655\" y=\"128\" font-size=\"13\" opacity=\".65\">local or CDN</text></g></svg>"
+    },
+    {
+      "type": "verdict",
+      "id": "verdict",
+      "title": "Verdict",
+      "status": "pass",
+      "lead": "The critical path is ready to share.",
+      "detail": "The conclusion is explicit, the supporting flows passed, and the remaining gap is non-blocking."
+    },
+    {
+      "type": "flow-results",
+      "id": "flow-results",
+      "title": "Flow results",
+      "flows": [
+        { "name": "Guest checkout", "status": "pass", "detail": "Payment, confirmation, and receipt verified." },
+        { "name": "Declined payment recovery", "status": "partial", "detail": "Recovery passed; tablet layout was not observed." },
+        { "name": "Expired session", "status": "fail", "detail": "Return path loses the pending cart." }
+      ]
+    },
+    {
+      "type": "gallery",
+      "id": "gallery",
+      "title": "Gallery",
+      "items": [
+        { "image": "https://cdn.podist.ai/qa-artifacts/img/desktop-1.png", "alt": "Desktop report example", "caption": "Desktop · opening state" },
+        { "image": "https://cdn.podist.ai/qa-artifacts/img/desktop-2.png", "alt": "Desktop report detail example", "caption": "Desktop · detail state" }
+      ]
+    },
+    {
+      "type": "recording",
+      "id": "recording",
+      "title": "Recording",
+      "video": "https://cdn.podist.ai/qa-artifacts/html/videos/onboarding-cover-upload-postfix-20260602-193905.mp4?v=20260603-v3",
+      "poster": "https://cdn.podist.ai/qa-artifacts/html/screenshots-postfix/05-home-after-postfix-upload.png?v=20260603-v3",
+      "label": "Example interaction · 00:24",
+      "links": [
+        { "label": "Open video", "url": "https://cdn.podist.ai/qa-artifacts/html/videos/onboarding-cover-upload-postfix-20260602-193905.mp4?v=20260603-v3" }
+      ]
+    },
+    {
+      "type": "gaps",
+      "id": "gaps",
+      "title": "Gaps",
+      "items": [
+        { "title": "Tablet not covered", "severity": "medium", "detail": "The report includes desktop and phone evidence only." },
+        { "title": "Copy differs", "severity": "low", "detail": "Two surfaces use different labels for the same receipt." },
+        { "title": "Recovery is blocked", "severity": "high", "detail": "The expired-session flow loses the pending cart." }
+      ]
+    },
+    {
+      "type": "sources",
+      "id": "sources",
+      "title": "Sources",
+      "items": [
+        { "label": "Report block reference", "url": "https://example.com/report-blocks", "note": "Block shapes and authoring rules" },
+        { "label": "Decision source", "url": "https://example.com/decision", "note": "The evidence behind the report" }
+      ]
+    },
+    {
+      "type": "custom-html",
+      "id": "custom-html",
+      "title": "Custom HTML",
+      "html": "<div class=\"custom-grid\"><article><strong>Standard first</strong><p>Use the existing block vocabulary for most report content.</p></article><article><strong>Custom when necessary</strong><p>Compose one unusual layout with semantic HTML and existing shell classes.</p></article><article><strong>Still disposable</strong><p>Do not turn a quick report into a frontend project.</p></article></div>"
+    }
+  ]
+}

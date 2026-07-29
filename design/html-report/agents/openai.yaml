@@ -1,0 +1,4 @@
+interface:
+  display_name: "HTML Report"
+  short_description: "Create quick, shareable HTML reports"
+  default_prompt: "Turn this material into a quick, polished, shareable HTML report using the closest preset."

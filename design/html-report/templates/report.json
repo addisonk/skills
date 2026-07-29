@@ -1,0 +1,67 @@
+{
+  "version": 1,
+  "document": {
+    "title": "Launch readiness review",
+    "summary": "A decision-focused account of release health, remaining risk, and the sequence that gets the team safely to launch.",
+    "type": "report",
+    "date": "2026-07-29",
+    "status": "Ready with conditions",
+    "provenance": "Prepared from the release checklist, CI results, and owner interviews",
+    "tags": ["release", "readiness"]
+  },
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "executive-summary",
+      "title": "Executive summary",
+      "html": "<p>The release has cleared its required technical gates and has no open launch blocker. Two operational follow-ups remain: confirm the on-call handoff and publish the customer-facing change note.</p><p>The recommended decision is to proceed on the planned date, with both follow-ups assigned before the deployment window opens.</p>"
+    },
+    {
+      "type": "stats",
+      "id": "readiness-signals",
+      "title": "Readiness signals",
+      "items": [
+        { "label": "Required checks", "value": "18/18", "detail": "Passing on the release commit" },
+        { "label": "Open blockers", "value": "0", "detail": "At review time" },
+        { "label": "Follow-ups", "value": "2", "detail": "Named owners, due before deploy" }
+      ]
+    },
+    {
+      "type": "callout",
+      "id": "decision",
+      "title": "Decision",
+      "tone": "success",
+      "html": "<p><strong>Proceed with the planned launch.</strong> Treat the on-call handoff and change note as pre-deploy conditions, not post-launch cleanup.</p>"
+    },
+    {
+      "type": "timeline",
+      "id": "launch-sequence",
+      "title": "Launch sequence",
+      "items": [
+        { "time": "09:00", "title": "Confirm owners", "detail": "Release lead records the deployer, observer, and rollback owner." },
+        { "time": "10:00", "title": "Freeze release commit", "detail": "CI reruns against the exact commit intended for production." },
+        { "time": "13:00", "title": "Deploy and observe", "detail": "Deploy, run the critical smoke flow, and hold the observation window." }
+      ]
+    },
+    {
+      "type": "table",
+      "id": "risk-register",
+      "title": "Risk register",
+      "columns": ["Risk", "Likelihood", "Impact", "Mitigation", "Owner"],
+      "rows": [
+        ["Support volume exceeds forecast", "Low", "Medium", "Prepared macros and named escalation path", "Support lead"],
+        ["Rollback signal is ambiguous", "Low", "High", "Three concrete thresholds in the runbook", "On-call"],
+        ["Change note misses deploy", "Medium", "Low", "Draft approved before window opens", "Product lead"]
+      ]
+    },
+    {
+      "type": "sources",
+      "id": "source-material",
+      "title": "Source material",
+      "items": [
+        { "label": "Release checklist", "url": "https://example.com/release-checklist", "note": "Required gates and ownership" },
+        { "label": "Production runbook", "url": "https://example.com/runbook", "note": "Deploy, monitor, and rollback steps" }
+      ]
+    }
+  ]
+}
