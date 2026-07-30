@@ -5,7 +5,7 @@ description: Use when writing copy from a brief or editing, rewriting, or review
 
 # Simple Copy
 
-Fast understanding; one job each.
+Fast understanding; one job each. Prefer simplicity to mere shortness. Add context only when it prevents uncertainty.
 
 For paragraphs or grammar questions, read [references/elements-of-style.md](references/elements-of-style.md) and apply relevant rules.
 
@@ -24,7 +24,9 @@ Identify reader, channel, and result: `[Reader] should understand/do [X].` Read 
 
 - Main point first, then essential context.
 - Use active voice, concrete nouns, direct verbs, positive phrasing.
+- Use one term per concept. Make labels and actions name what happens next.
 - Treat a brief as closed: every factual, causal, comparative, illustrative, or benefit claim is explicit. Preserve certainty, emphasis, and tradeoff sides; surface assumptions.
+- Protect agency: make choices, consequences, cancellation, and reversibility clear. Never manufacture urgency or confidence.
 - Broad Edit requests preserve header titles exactly. Change title wording or form only when asked.
 - Compare short, clear, natural drafts internally. Choose the shortest that keeps meaning and sounds human.
 
@@ -39,11 +41,12 @@ Identify reader, channel, and result: `[Reader] should understand/do [X].` Read 
 | Post | One supplied idea; strongest point early; uncertainty visible. |
 | Article or report | Conclusion early; one topic per paragraph; informative headings; summary keeps evidence and next step. |
 | Label or action | Familiar noun or result; usually one to four words. |
-| Helper, error, empty state | Constraint; event and next step; or state and useful action. |
+| Helper or empty state | Constraint, or state and useful action. |
+| Feedback | Status: current state. Completion: result. Warning: risk before action. Error: event and next step. |
 
 ## 4. Tighten
 
-Cut repeated ideas, title echo, throat-clearing, process narration, filler, stacked synonyms, corporate verbs, and empty adjectives. Each level adds information.
+Cut repeated ideas, title echo, throat-clearing, process narration, filler, stacked synonyms, corporate verbs, empty adjectives, hype, and decorative jokes. Each level adds information.
 
 ## 5. Deliver
 
@@ -61,8 +64,8 @@ Lead with one recommendation. Add at most two alternatives for a real meaning or
 
 Before finishing, verify:
 
-- The point is clear on the first pass.
+- The reader can answer: Where am I? What matters? What can I do? What happens next?
 - Every field meets its shape target.
 - Every word protects meaning, tone, or rhythm.
 - Facts, distinctions, evidence, and uncertainty remain accurate.
-- What matters or happens next is apparent.
+- Choices and consequences are clear; the copy acts in the reader's interest.
