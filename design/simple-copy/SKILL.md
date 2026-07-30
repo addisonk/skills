@@ -1,27 +1,27 @@
 ---
 name: simple-copy
-description: Write or tighten product copy so people understand it quickly. Use for UI text, titles, headings, labels, descriptions, helper text, buttons, empty states, errors, settings, reports, and internal product language that feels long, vague, repetitive, or hard to scan. Preserve the product's meaning, domain nouns, hierarchy, and voice. Do not use for sales, advertising, or conversion copy.
+description: Write or tighten copy so people understand it quickly. Use for reports, emails, posts, messages, articles, documents, product and UI text, titles, headings, labels, descriptions, summaries, buttons, and other reader-facing writing that feels long, vague, repetitive, overwritten, or hard to scan. Preserve the intended meaning, precise nouns, hierarchy, context, and voice while removing bloat.
 ---
 
 # Simple Copy
 
-Write product copy as part of the interface. Help the reader recognize what something is, understand why it matters, or know what to do next—with no extra language.
+Treat copy as part of the reader's experience. Help them recognize the subject, understand the point, or know what to do next—with no extra language.
 
 Short is not the goal. Fast understanding is.
 
 ## Principles
 
-1. **Give each string one job.** A title identifies. A description clarifies. A button acts. Do not make one field carry all three.
+1. **Give each part one job.** A title identifies. An opening leads. A paragraph explains. An action asks. Do not make one part carry all four.
 2. **Use less, but keep the meaning.** Remove words before adding them. Keep necessary distinctions, constraints, and domain nouns.
-3. **Make it self-explanatory.** Use active voice, positive phrasing, concrete nouns, and direct verbs. Keep related words together. Copy should reduce the need for instructions.
+3. **Make it self-explanatory.** Use active voice, positive phrasing, concrete nouns, and direct verbs. Keep related words together. Writing should reduce the need for more writing.
 4. **Stay unobtrusive and honest.** Do not add hype, personality, urgency, benefits, or certainty the source does not support.
-5. **Protect the hierarchy.** Do not repeat the title in the description or turn an eyebrow into a second headline.
+5. **Protect the hierarchy.** Do not repeat the title in the description, the opening in the conclusion, or the same point in every section.
 
 ## Workflow
 
 ### 1. Find the job
 
-Identify the reader, their current moment, and the one thing this copy must help them understand or do. Read adjacent interface or document copy when available.
+Identify the reader, the channel, their current moment, and the one thing this copy must help them understand or do. Read the surrounding thread, document, or interface when available.
 
 If the intended meaning or action is genuinely unknowable, ask one short question. Otherwise infer it from context and proceed.
 
@@ -29,9 +29,9 @@ If the intended meaning or action is genuinely unknowable, ask one short questio
 
 Before rewriting, ask:
 
-- Does this string need to exist?
-- Is another nearby string already saying it?
-- Is it explaining the product, or exposing the team's internal thinking?
+- Does this part need to exist?
+- Is another nearby part already saying it?
+- Is it helping the reader, or exposing the writer's internal process?
 - What would the reader misunderstand if it were removed?
 
 Delete redundant copy. Do not solve every copy problem by writing more.
@@ -40,14 +40,14 @@ Delete redundant copy. Do not solve every copy problem by writing more.
 
 Draft a shortest version, a clearest version, and a most natural version. Choose the shortest one that preserves the full meaning and sounds human.
 
-Return one recommendation. Show up to two alternatives only when they express a real product or tone tradeoff, or when the user asks.
+Return one recommendation. Show up to two alternatives only when they express a real meaning or tone tradeoff, or when the user asks.
 
 ### 4. Check the result
 
 - **Scan:** Can a new reader grasp it on the first pass?
 - **Deletion:** Can any word disappear without changing meaning?
-- **Overlap:** Do the title, description, and action each add something new?
-- **Expectation:** Does the copy accurately predict what the product will do?
+- **Overlap:** Does each title, sentence, paragraph, and action add something new?
+- **Expectation:** Does the copy accurately represent what will happen next?
 - **Force:** Is the sentence active, positive, specific, and direct?
 
 ## Copy shapes
@@ -65,7 +65,7 @@ Bad:  Target operating model · Alignment artifact
 Good: Architecture
 ```
 
-### Title
+### Title, headline, or subject
 
 Name the thing, state, or outcome.
 
@@ -78,7 +78,7 @@ Bad:  Manage notification preferences for your account
 Good: Notifications
 ```
 
-### Description
+### Description or deck
 
 Answer the most important question the title leaves open.
 
@@ -122,18 +122,30 @@ No reports yet.
 Create your first report.
 ```
 
+### Email or message
+
+Lead with the purpose. Put the request, owner, and timing where the reader can find them. Include only the context needed to understand or act. Keep greetings and sign-offs natural, not ceremonial.
+
+### Post
+
+Make one clear point. Put the strongest concrete idea early. Do not manufacture a hook, thread, call to action, emoji, or hashtags unless the user or channel calls for them.
+
+### Article or report
+
+Lead with the main point or useful question. Give each paragraph one topic and use headings that tell the reader what follows. Make summaries proportional to the source: retain the main conclusion, necessary evidence, and next step. Cut throat-clearing, process narration, and repeated conclusions.
+
 ## What to cut
 
 - Preambles such as “This section allows you to” or “Here you can.”
 - Repeated nouns, synonyms, and title-description echo.
 - Weak qualifiers and filler: `very`, `really`, `just`, `actually`, `in order to`.
 - Corporate verbs when plain ones work: `utilize`, `leverage`, `facilitate`, `enable`.
-- Empty product adjectives: `powerful`, `seamless`, `robust`, `innovative`, `intuitive`.
-- Internal framing: `target operating model`, `alignment artifact`, `strategic initiative`, unless those are established product terms the reader needs.
+- Empty adjectives: `powerful`, `seamless`, `robust`, `innovative`, `intuitive`.
+- Internal framing: `target operating model`, `alignment artifact`, `strategic initiative`, unless those are established terms the reader needs.
 
 ## What to preserve
 
-- Precise product and domain nouns.
+- Precise names and domain nouns.
 - Differences between similar concepts.
 - Safety, legal, accessibility, and technical constraints.
 - Specific evidence and honest uncertainty.
@@ -143,32 +155,32 @@ Do not invent claims, benefits, proof, urgency, or emotional stakes. Do not repl
 
 ## Scope
 
-Edit only the requested copy. Preserve the existing field count and hierarchy unless the hierarchy itself causes the confusion. Do not turn a title request into a page rewrite or silently rewrite adjacent product decisions.
+Edit only the requested copy. Preserve the format, hierarchy, facts, intent, and level of formality unless one causes the confusion. Do not turn a title request into a page rewrite or silently change the author's position.
 
-This skill is for product understanding. Use a marketing copy skill when the goal is persuasion, conversion, campaign messaging, or sales.
+For persuasion, conversion, campaign strategy, or brand positioning, pair this skill with an appropriate marketing or brand skill. Use this skill to keep the resulting copy clear and restrained.
 
 ## Output
 
 Lead with the recommended copy exactly as it should appear. Skip preamble and long rationale.
 
-For one string:
+For one item:
 
 ```text
 Recommended
-Notifications
+Q3 hiring update
 ```
 
-For several strings, preserve their labels:
+For structured copy, preserve its labels:
 
 ```text
 Eyebrow
-Architecture
+Decision
 
 Title
-Full Trigger-native Newsroom
+AI draft review
 
 Description
-One Newsroom owns the path from source posts to publication. Specialists keep Digg's domain nouns and output contracts precise.
+Editors review AI-generated drafts before publication while preserving approval history for compliance.
 ```
 
 Add one short `Why` note only when the edit changes meaning, removes a meaningful claim, or depends on an assumption the user should review.

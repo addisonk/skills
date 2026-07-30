@@ -1,4 +1,4 @@
 interface:
   display_name: "Simple Copy"
-  short_description: "Write clear product copy without bloat"
-  default_prompt: "Use $simple-copy to make this product copy clear, concise, and easy to understand."
+  short_description: "Write clear copy without bloat"
+  default_prompt: "Use $simple-copy to make this writing clear, concise, and easy to understand."
