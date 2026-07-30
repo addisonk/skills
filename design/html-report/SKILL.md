@@ -88,6 +88,8 @@ Never put credentials in report JSON. Never publish without an explicit request 
 ## Authoring rules
 
 - Lead with the conclusion. Use the title and summary to orient the reader immediately.
+- Shape before rendering. Keep `context.body` paragraphs to one or two sentences. When a section contains three or more parallel facts, rules, options, or steps, use `context.items`, `properties`, `specs`, `ledger`, `flowchart`, or another fitting block instead of stacking prose.
+- Make the argument apparent from section titles and item titles alone; use descriptions for evidence, qualifications, and exceptions.
 - Prefer a few strong sections over a kitchen-sink report.
 - Preserve the canonical engine's monochrome presentation; reserve color for status.
 - Use real evidence. If evidence is unavailable, name the gap instead of inventing it.

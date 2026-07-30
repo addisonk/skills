@@ -30,7 +30,15 @@ Identify reader, channel, and result: `[Reader] should understand/do [X].` Read 
 - Broad Edit requests preserve header titles exactly. Change title wording or form only when asked.
 - Compare short, clear, natural drafts internally. Choose the shortest that keeps meaning and sounds human.
 
-## 3. Fit the shape
+## 3. Shape for scanning
+
+Reshape before polishing. Do not preserve a paragraph just because the source uses one.
+
+- Give each visual unit one claim, action, or comparison.
+- In reports, emails, messages, and interface descriptions, keep paragraphs to one or two sentences. Split before a third unless continuous prose is the requested form.
+- Turn three or more parallel facts, rules, options, or steps into a list, labeled items, or a table. Cap a flat list at five; group longer sets.
+- Use prose for a claim and its support, bullets for peers, numbers for sequence, and rows for repeated fields or comparisons.
+- Start each section with its takeaway. Put evidence, qualifications, and exceptions after it.
 
 | Shape | Target |
 |---|---|
@@ -39,7 +47,8 @@ Identify reader, channel, and result: `[Reader] should understand/do [X].` Read 
 | Description or deck | Missing context; one sentence, or two to prevent misreading. |
 | Email or message | Purpose first; then request, owner, timing, and essential context. |
 | Post | One supplied idea; strongest point early; uncertainty visible. |
-| Article or report | Conclusion early; one topic per paragraph; informative headings; summary keeps evidence and next step. |
+| Article | Conclusion early; one idea per paragraph; informative headings; sustained prose only when the form needs it. |
+| Report | One claim per visual unit; headings and opening lines reveal the argument; summary keeps evidence and next step. |
 | Label or action | Familiar noun or result; usually one to four words. |
 | Helper or empty state | Constraint, or state and useful action. |
 | Feedback | Status: current state. Completion: result. Warning: risk before action. Error: event and next step. |
@@ -69,3 +78,4 @@ Before finishing, verify:
 - Every word protects meaning, tone, or rhythm.
 - Facts, distinctions, evidence, and uncertainty remain accurate.
 - Choices and consequences are clear; the copy acts in the reader's interest.
+- No dense paragraph hides a list, sequence, comparison, or boundary.
