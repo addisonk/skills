@@ -5,45 +5,49 @@ description: Create a polished, shareable single-file HTML report from structure
 
 # HTML Report
 
-Build a quick, disposable document that is easy to read and share. The report is throwaway; the bundled shell, blocks, and uploader are the reusable parts.
+Build a quick, disposable document that is easy to read and share. The report is throwaway; this skill's report engine, block catalog, presets, and uploader are the reusable parts.
 
 ## Workflow
 
-### 1. Choose the closest preset
+### 1. Choose a preset
 
-Copy one JSON file from `templates/` into the working folder:
+Copy the closest JSON file from `templates/` into the working folder:
 
 - `report.json` — decisions, findings, status, risks, and recommendations
-- `spec-or-plan.json` — requirements, architecture, comparisons, and implementation steps
-- `explainer.json` — concepts, mental models, diagrams, and examples
+- `spec-or-plan.json` — requirements, architecture, implementation steps, and acceptance criteria
+- `explainer.json` — concepts, mental models, flows, and examples
 - `evidence-report.json` — verdicts, tested flows, screenshots, recordings, and gaps
 
 Read [document-types.md](references/document-types.md) only when the right preset is unclear.
 
 Treat the copied JSON and rendered HTML as disposable output. Do not commit them unless the user asks.
 
-### 2. Replace the example content
+### 2. Use the canonical blocks
+
+Open `templates/qa-report-blocks.html` in a browser before authoring. It is the exact visual block library shared with the E2E skill: the current styling, schemas, renderers, and **Show JSON** examples live there.
+
+Do not invent block types or use the retired generic blocks from earlier versions of this skill. Use only:
+
+`properties`, `context`, `verdict`, `metrics`, `charts`, `flow-results`, `assertions`, `collapsible`, `flowchart`, `userflows`, `before-after`, `recording`, `specs`, `ledger`, `unit-tests`, `playwright`, `maestro`, `backend`, `gaps`.
 
 Keep this top-level shape:
 
 ```json
 {
-  "version": 1,
-  "document": {
+  "report": {
+    "eyebrow": "HTML report",
     "title": "Decision-ready title",
-    "summary": "What this document establishes and why it matters.",
-    "type": "report",
-    "date": "2026-07-29"
+    "summary": "What this report establishes and why it matters.",
+    "verdict": "pass",
+    "footer": ["Shareable HTML report"]
   },
   "blocks": []
 }
 ```
 
-Use standard blocks before reaching for `custom-html`. Give every block a unique lowercase `id` and a clear `title`. Keep only blocks that help the reader understand or decide something; do not turn the report into a work log.
+Copy exact block shapes from the visual catalog or [block-catalog.md](references/block-catalog.md). `_name`, `_note`, `_eyebrow`, and `_group` control report section framing and are omitted from each block's **Show JSON** view. Blocks render in the engine's fixed canonical order, so choose blocks for meaning rather than arranging the JSON as a custom layout.
 
-Read [block-catalog.md](references/block-catalog.md) for block shapes.
-
-For a visual reference, open `templates/report-blocks.html`. Its embedded data comes from `templates/report-blocks.json`, which shows every supported block in one reusable kitchen-sink document. This is the generic counterpart to the E2E skill's block library.
+Keep only sections that help the reader understand or decide something. Do not turn the report into a work log.
 
 ### 3. Render
 
@@ -53,9 +57,7 @@ From this skill folder, run:
 node scripts/render.mjs /path/to/report.json /path/to/report.html
 ```
 
-The renderer checks the source, writes one self-contained HTML file, and checks the output. The file has inline CSS and JavaScript, system fonts, light/dark mode, mobile layout, print styles, anchored navigation, and no remote runtime dependencies.
-
-If rendering fails, fix the named field. Do not bypass validation by editing the generated HTML.
+The renderer validates the JSON and injects it into `templates/qa-report.html`, the matching E2E report engine with generic report framing. The output is one responsive HTML file with inline layout and behavior. Do not edit the generated HTML or fork the engine for a one-off report; fix the source JSON instead.
 
 ### 4. Look once, then hand it over
 
@@ -67,13 +69,13 @@ Return the absolute path to the HTML file.
 
 ### 5. Publish only when requested
 
-Local rendering never requires credentials. If the user asks for a public link, read [publishing.md](references/publishing.md), then run:
+Local rendering never requires credentials. If the user explicitly asks for a public link, read [publishing.md](references/publishing.md), then run:
 
 ```bash
 node scripts/publish.mjs /path/to/report.json /path/to/report.html --key short-report-name
 ```
 
-Publishing uploads relative images and recordings first, rewrites a cloned source to their public URLs, uploads the HTML last, verifies every uploaded URL, and prints the report URL.
+Publishing uploads relative screenshots and recordings first, rewrites a cloned source to their public URLs, uploads the HTML last, verifies every uploaded URL, and prints the report URL.
 
 Never put credentials in report JSON. Never publish without an explicit request to upload or share publicly.
 
@@ -81,13 +83,12 @@ Never put credentials in report JSON. Never publish without an explicit request 
 
 - Lead with the conclusion. Use the title and summary to orient the reader immediately.
 - Prefer a few strong sections over a kitchen-sink report.
-- Use monochrome presentation; reserve color for pass, warning, and failure status.
+- Preserve the canonical engine's monochrome presentation; reserve color for status.
 - Use real evidence. If evidence is unavailable, name the gap instead of inventing it.
-- Keep tables compact. Move long explanation into prose or callouts.
-- Add alt text to every gallery image.
-- Keep links and published media absolute HTTPS URLs. Relative media is allowed before `publish.mjs` rewrites it.
-- Use inline SVG for diagrams. Do not add remote scripts, stylesheets, fonts, iframes, event handlers, or `javascript:` URLs.
-- Use `custom-html` for an unusual layout, not to rebuild standard blocks.
+- Prefer `specs` for long descriptions and `ledger` for compact key/value rows.
+- Use `userflows`, `before-after`, and `recording` only when their media exists.
+- Keep published links and media as absolute HTTPS URLs. Relative media is allowed before `publish.mjs` rewrites it.
+- Do not add a `custom-html` block or modify the engine to create a one-off layout.
 
 ## Included commands
 
@@ -98,7 +99,7 @@ node scripts/validate.mjs /path/to/report.json
 # Validate an already rendered file
 node scripts/validate.mjs --html /path/to/report.html
 
-# Upload one standalone artifact when automatic media rewriting is unnecessary
+# Upload one standalone artifact
 node scripts/upload-artifact.mjs /path/to/file --key reports/name/file
 
 # Check public URLs

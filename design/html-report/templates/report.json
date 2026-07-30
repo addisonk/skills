@@ -1,67 +1,64 @@
 {
-  "version": 1,
-  "document": {
-    "title": "Launch readiness review",
-    "summary": "A decision-focused account of release health, remaining risk, and the sequence that gets the team safely to launch.",
-    "type": "report",
-    "date": "2026-07-29",
-    "status": "Ready with conditions",
-    "provenance": "Prepared from the release checklist, CI results, and owner interviews",
-    "tags": ["release", "readiness"]
+  "report": {
+    "eyebrow": "HTML report",
+    "title": "Project review",
+    "summary": "A concise, shareable record of the current state, key findings, and next decisions.",
+    "verdict": "pass",
+    "pills": ["Updated Jul 30, 2026", { "label": "Owner", "code": "Team" }],
+    "footer": ["Shareable HTML report", "Generated with the html-report skill"]
   },
   "blocks": [
     {
-      "type": "prose",
-      "id": "executive-summary",
-      "title": "Executive summary",
-      "html": "<p>The release has cleared its required technical gates and has no open launch blocker. Two operational follow-ups remain: confirm the on-call handoff and publish the customer-facing change note.</p><p>The recommended decision is to proceed on the planned date, with both follow-ups assigned before the deployment window opens.</p>"
-    },
-    {
-      "type": "stats",
-      "id": "readiness-signals",
-      "title": "Readiness signals",
+      "type": "properties",
+      "_name": "At a glance",
       "items": [
-        { "label": "Required checks", "value": "18/18", "detail": "Passing on the release commit" },
-        { "label": "Open blockers", "value": "0", "detail": "At review time" },
-        { "label": "Follow-ups", "value": "2", "detail": "Named owners, due before deploy" }
+        { "label": "Status", "value": "On track", "icon": "sdot", "tone": "pass" },
+        { "label": "Owner", "value": "Product team", "icon": "check" },
+        { "label": "Updated", "value": "Jul 30, 2026", "icon": "clock" }
       ]
     },
     {
-      "type": "callout",
-      "id": "decision",
-      "title": "Decision",
-      "tone": "success",
-      "html": "<p><strong>Proceed with the planned launch.</strong> Treat the on-call handoff and change note as pre-deploy conditions, not post-launch cleanup.</p>"
+      "type": "context",
+      "_name": "Background",
+      "body": [
+        "This report captures the decision-ready version of the work: what changed, what matters, and what remains open.",
+        "Replace this sample content with the facts a reader needs. Remove blocks that do not help the story."
+      ]
     },
     {
-      "type": "timeline",
-      "id": "launch-sequence",
-      "title": "Launch sequence",
+      "type": "verdict",
+      "_name": "Key findings",
       "items": [
-        { "time": "09:00", "title": "Confirm owners", "detail": "Release lead records the deployer, observer, and rollback owner." },
-        { "time": "10:00", "title": "Freeze release commit", "detail": "CI reruns against the exact commit intended for production." },
-        { "time": "13:00", "title": "Deploy and observe", "detail": "Deploy, run the critical smoke flow, and hold the observation window." }
+        { "title": "Direction is sound", "desc": "The proposed approach meets the primary goal without adding unnecessary machinery." },
+        { "title": "One decision remains", "desc": "The rollout owner and timing still need to be confirmed." }
       ]
     },
     {
-      "type": "table",
-      "id": "risk-register",
-      "title": "Risk register",
-      "columns": ["Risk", "Likelihood", "Impact", "Mitigation", "Owner"],
-      "rows": [
-        ["Support volume exceeds forecast", "Low", "Medium", "Prepared macros and named escalation path", "Support lead"],
-        ["Rollback signal is ambiguous", "Low", "High", "Three concrete thresholds in the runbook", "On-call"],
-        ["Change note misses deploy", "Medium", "Low", "Draft approved before window opens", "Product lead"]
-      ]
-    },
-    {
-      "type": "sources",
-      "id": "source-material",
-      "title": "Source material",
+      "type": "metrics",
+      "_name": "Headline numbers",
       "items": [
-        { "label": "Release checklist", "url": "https://example.com/release-checklist", "note": "Required gates and ownership" },
-        { "label": "Production runbook", "url": "https://example.com/runbook", "note": "Deploy, monitor, and rollback steps" }
+        { "value": "3", "label": "Workstreams", "note": "All represented in this report.", "ok": true },
+        { "value": "1", "label": "Open decision", "note": "Owner and timing." }
       ]
+    },
+    {
+      "type": "specs",
+      "_name": "Breakdown",
+      "groups": [
+        {
+          "title": "Current state",
+          "rows": [
+            { "label": "What changed", "desc": "Summarize the material change in one or two sentences." },
+            { "label": "Why it matters", "desc": "Connect the change to the reader's goal or decision." },
+            { "label": "Next step", "desc": "Name the smallest concrete follow-up." }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "gaps",
+      "_name": "Known gaps",
+      "items": ["Confirm the final owner and delivery date before rollout."]
     }
   ]
 }

@@ -1,73 +1,75 @@
 {
-  "version": 1,
-  "document": {
-    "title": "Checkout regression evidence",
-    "summary": "A compact record of tested customer flows, captured evidence, observed gaps, and the resulting release verdict.",
-    "type": "evidence",
-    "date": "2026-07-29",
-    "status": "Pass",
-    "tags": ["checkout", "QA"]
+  "report": {
+    "eyebrow": "Evidence report",
+    "title": "Release verification",
+    "summary": "A compact record of what was checked, what passed, and where the supporting evidence lives.",
+    "verdict": "partial",
+    "device": "Chrome · macOS",
+    "timestamp": "Jul 30, 2026",
+    "testTypes": [
+      { "name": "Browser flows", "status": "pass" },
+      { "name": "Automated checks", "status": "pass" }
+    ],
+    "footer": ["Evidence report", "Generated with the html-report skill"]
   },
   "blocks": [
     {
+      "type": "properties",
+      "_name": "Details",
+      "items": [
+        { "label": "Status", "value": "Partial", "icon": "sdot", "tone": "warn" },
+        { "label": "Environment", "value": "Preview", "icon": "device" },
+        { "label": "Checked", "value": "Jul 30, 2026", "icon": "clock" }
+      ]
+    },
+    {
       "type": "verdict",
-      "id": "verdict",
-      "title": "Verdict",
-      "status": "pass",
-      "lead": "The critical checkout path is ready to release.",
-      "detail": "All required flows passed at desktop and mobile widths. One copy inconsistency is documented as non-blocking."
+      "_name": "Verdict",
+      "items": [
+        { "title": "Core flow works", "desc": "The primary path completes at both target widths." },
+        { "title": "Copy needs follow-up", "desc": "One non-blocking inconsistency remains documented below." }
+      ]
     },
     {
       "type": "flow-results",
-      "id": "flow-results",
-      "title": "Flow results",
+      "_name": "Flow results",
+      "stats": { "passed": 2, "failed": 0, "flaky": 0, "skipped": 0, "duration": "48s" },
       "flows": [
-        { "name": "Guest checkout", "status": "pass", "detail": "Card payment, confirmation, and receipt verified." },
-        { "name": "Returning customer", "status": "pass", "detail": "Saved address and payment selection verified." },
-        { "name": "Declined payment recovery", "status": "pass", "detail": "Inline error, retry, and successful completion verified." }
+        { "name": "Primary path", "device": "Desktop 1440×900", "duration": "22s", "status": "pass" },
+        { "name": "Primary path", "device": "Mobile 393×852", "duration": "26s", "status": "pass" }
       ]
     },
     {
-      "type": "gallery",
-      "id": "screenshots",
-      "title": "Screenshots",
+      "type": "assertions",
+      "_name": "Assertions",
       "items": [
-        { "image": "media/checkout-desktop.png", "alt": "Completed checkout on desktop", "caption": "Desktop · order confirmation" },
-        { "image": "media/checkout-mobile.png", "alt": "Completed checkout on mobile", "caption": "Mobile · order confirmation" }
+        "The primary call to action remains visible.",
+        "The completed state persists after reload.",
+        { "text": "The mobile and desktop copy is identical.", "status": "fail" }
       ]
     },
     {
-      "type": "recording",
-      "id": "recording",
-      "title": "Run recording",
-      "video": "media/checkout-run.mp4",
-      "label": "Critical path · 01:42",
-      "poster": "media/checkout-poster.png",
-      "links": [
-        { "label": "Trace", "url": "https://example.com/trace/checkout" },
-        { "label": "Test run", "url": "https://example.com/run/checkout" }
+      "_group": "Desktop",
+      "_name": "Userflow",
+      "type": "userflows",
+      "variant": "desktop",
+      "steps": [
+        { "name": "Start", "note": "Initial state.", "image": "screenshots/desktop-01.png" },
+        { "name": "Action", "note": "Primary action selected.", "image": "screenshots/desktop-02.png" },
+        { "name": "Complete", "note": "Success state.", "image": "screenshots/desktop-03.png" }
       ]
+    },
+    {
+      "_group": "Desktop",
+      "_name": "Recording",
+      "type": "recording",
+      "video": "recordings/desktop-flow.mp4",
+      "poster": "screenshots/desktop-03.png"
     },
     {
       "type": "gaps",
-      "id": "observed-gaps",
-      "title": "Observed gaps",
-      "items": [
-        { "title": "Receipt label differs", "severity": "low", "detail": "Confirmation uses “Receipt” while account history uses “Invoice.” Copy-only and non-blocking." },
-        { "title": "Slow sandbox response", "severity": "medium", "detail": "Payment sandbox added six seconds to one run; production telemetry does not show the same pattern." }
-      ]
-    },
-    {
-      "type": "sources",
-      "id": "evidence-links",
-      "title": "Evidence links",
-      "items": [
-        { "label": "Test plan", "url": "https://example.com/checkout-test-plan", "note": "Required stories and acceptance criteria" },
-        { "label": "CI run", "url": "https://example.com/checkout-ci", "note": "Automated regression suite" }
-      ]
+      "_name": "Known gaps",
+      "items": ["Mobile uses older helper copy. The behavior is unaffected, but the wording should be aligned."]
     }
-  ],
-  "publish": {
-    "keyPrefix": "reports"
-  }
+  ]
 }

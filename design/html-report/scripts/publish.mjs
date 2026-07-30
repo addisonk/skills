@@ -25,7 +25,7 @@ try {
   const result = await publishReport({
     sourcePath,
     outputPath,
-    templatePath: join(here, "..", "templates", "document.html"),
+    templatePath: join(here, "..", "templates", "qa-report.html"),
     key,
   });
   for (const verification of result.verification) {
