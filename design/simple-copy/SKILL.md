@@ -7,6 +7,8 @@ description: Use when writing copy from a brief or editing or rewriting reports,
 
 Fast understanding: one job per part.
 
+For paragraph-level prose or grammar questions, read [references/elements-of-style.md](references/elements-of-style.md) and apply its relevant rules.
+
 ## 1. Set the contract
 
 | Request words | Degree of change |
@@ -55,7 +57,3 @@ Before finishing, verify:
 - Every word protects meaning, tone, or rhythm.
 - Facts, distinctions, evidence, and uncertainty remain accurate.
 - What matters or happens next is apparent.
-
-## Common failures
-
-Imprecise: restore exact terms. Promotional: restore supported claims. Generic: restore concrete terms.
