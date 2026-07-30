@@ -1,6 +1,6 @@
 # Canonical block catalog
 
-`../templates/report-blocks.html` is the source of truth. Open it in a browser to see the exact report styling and its rendered examples. Expand **Show JSON** under a displayed block to copy its authoring shape; the schema comment and renderer map in the same file define the complete current set.
+`../templates/report-blocks.html` is the source of truth. Open it in a browser to see the exact report styling and its rendered examples. Expand **Show JSON** under a displayed block to copy its authoring shape; the schema comment and renderer map in the same file define the complete current set. These disclosures are catalog-only and never appear in generated reports.
 
 The catalog and `../templates/report-template.html` use the same renderers. Do not recreate a block from prose in this reference when the live catalog is available.
 
