@@ -1,11 +1,11 @@
 ---
 name: simple-copy
-description: Write or tighten copy so people understand it quickly. Use for reports, emails, posts, messages, articles, documents, product and UI text, titles, headings, labels, descriptions, summaries, buttons, and other reader-facing writing that feels long, vague, repetitive, overwritten, or hard to scan. Preserve the intended meaning, precise nouns, hierarchy, context, and voice while removing bloat.
+description: Write, edit, or rewrite copy so people understand it quickly. Use when creating new copy from a brief or improving existing reports, emails, posts, messages, articles, documents, product and UI text, titles, headings, labels, descriptions, summaries, buttons, and other reader-facing writing. Preserve the intended meaning, precise nouns, hierarchy, context, and voice while removing bloat, repetition, and vague language.
 ---
 
 # Simple Copy
 
-Treat copy as part of the reader's experience. Help them recognize the subject, understand the point, or know what to do next—with no extra language.
+Create copy from a brief or improve an existing draft. Treat every word as part of the reader's experience. Help them recognize the subject, understand the point, or know what to do next—with no extra language.
 
 Short is not the goal. Fast understanding is.
 
@@ -19,15 +19,23 @@ Short is not the goal. Fast understanding is.
 
 ## Workflow
 
-### 1. Find the job
+### 1. Choose the level of change
+
+- **Write:** Create new copy from the user's goal, facts, audience, and constraints. Do not invent missing claims or context.
+- **Edit:** Make the smallest changes needed for clarity, flow, and brevity. Keep the original structure and voice.
+- **Rewrite:** Rebuild sentences or structure when the draft's shape causes the problem. Preserve its facts, intent, and necessary nuance.
+
+Follow the user's requested level. If they do not specify one, infer it from the draft and ask only when the difference would materially change the result.
+
+### 2. Find the job
 
 Identify the reader, the channel, their current moment, and the one thing this copy must help them understand or do. Read the surrounding thread, document, or interface when available.
 
 If the intended meaning or action is genuinely unknowable, ask one short question. Otherwise infer it from context and proceed.
 
-### 2. Question the text
+### 3. Question the text
 
-Before rewriting, ask:
+When a draft exists, ask:
 
 - Does this part need to exist?
 - Is another nearby part already saying it?
@@ -36,13 +44,13 @@ Before rewriting, ask:
 
 Delete redundant copy. Do not solve every copy problem by writing more.
 
-### 3. Draft three ways internally
+### 4. Draft three ways internally
 
 Draft a shortest version, a clearest version, and a most natural version. Choose the shortest one that preserves the full meaning and sounds human.
 
 Return one recommendation. Show up to two alternatives only when they express a real meaning or tone tradeoff, or when the user asks.
 
-### 4. Check the result
+### 5. Check the result
 
 - **Scan:** Can a new reader grasp it on the first pass?
 - **Deletion:** Can any word disappear without changing meaning?
