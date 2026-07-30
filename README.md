@@ -14,6 +14,7 @@ Open-source skills for [Claude Code](https://claude.ai/code).
 | [react-bits-components](design/react-bits-components) | Author animated React components in the React Bits style — Motion / GSAP / OGL shaders / R3F / matter-js across the four-variant registry |
 | [html-artifact](design/html-artifact) | Produce single-file, self-contained HTML artifacts (specs, plans, reports, code-review explainers, design explorations, interactive playgrounds) instead of markdown |
 | [html-report](design/html-report) | Create quick, polished, shareable HTML reports with the canonical E2E block library and optional CDN publishing |
+| [simple-copy](design/simple-copy) | Write, edit, or rewrite clear reports, emails, posts, messages, articles, and interface copy without losing meaning or voice |
 | [design-md](design/design-md) | Generate or re-sync a project's DESIGN.md following the Google Labs design.md spec, with a symmetric oklch ↔ hex color converter so both color forms live in the doc |
 
 ### Mobile

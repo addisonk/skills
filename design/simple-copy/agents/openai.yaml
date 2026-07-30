@@ -1,0 +1,4 @@
+interface:
+  display_name: "Simple Copy"
+  short_description: "Write, edit, or rewrite clear copy"
+  default_prompt: "Use $simple-copy to write or revise this for fast understanding without losing meaning."
