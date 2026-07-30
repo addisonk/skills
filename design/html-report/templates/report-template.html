@@ -479,12 +479,6 @@ details.group-section[open] > summary.group-head .grp-chev { transform: rotate(9
 .docs-nav a.nav-sub { padding-left: 28px; }
 /* the catalog label names each block; hide the demo's own section heading */
 .gi-demo .stack-head, .gi-demo .flow-head { display: none; }
-.gi-json { margin-top: var(--space-4); }
-.gi-json summary { cursor: pointer; color: var(--text-muted); font-size: var(--fs-small); font-weight: 600; padding: 8px 0; user-select: none; }
-.gi-json summary:hover { color: var(--text); }
-.gi-json pre { margin: var(--space-1) 0 0; padding: var(--space-3); background: var(--surface-soft); border: 1px solid var(--hairline); border-radius: var(--r-2); overflow-x: auto; font-family: var(--font-mono); font-size: 0.78rem; line-height: 1.55; color: var(--text); }
-.gi-json pre code { background: none; border: 0; padding: 0; font-size: inherit; }
-
 /* ---- Charts: deliberately small — a few values, not a dashboard ---- */
 .charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-2); }
 .chart { margin: 0; padding: var(--space-3); border: 1px solid var(--hairline); border-radius: var(--r-3); }
@@ -1047,8 +1041,6 @@ details.group-section[open] > summary.group-head .grp-chev { transform: rotate(9
       (r.pills || []).map(p => typeof p === "string" ? `<span>${p}</span>` : `<span>${p.label} <span class="mono">${p.code}</span></span>`));
     const meta = `<div class="meta">${metaItems.join('<span class="sep">·</span>')}</div>`;
 
-    const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    const clean = b => { const o = {}; for (const k in b) if (k[0] !== "_") o[k] = b[k]; return o; };
     const idOf = (b, i) => `blk-${i}-${b.type}`;
     const galleryBlocks = (DATA.blocks || []).filter(b => R[b.type]);
     const coverEyebrow = r.eyebrow || "HTML report";
@@ -1067,7 +1059,7 @@ details.group-section[open] > summary.group-head .grp-chev { transform: rotate(9
           groupOpen = true;
         }
       }
-      html += `<section class="gallery-item" id="${idOf(b, i)}"><div class="gi-head">${b._eyebrow ? `<p class="eyebrow">${b._eyebrow}</p>` : ""}<h2 class="gi-name">${b._name || b.type}</h2>${b._note ? `<p class="gi-note">${b._note}</p>` : ""}</div><div class="gi-demo">${R[b.type](b)}</div><details class="gi-json"><summary>Show JSON</summary><pre><code>${esc(JSON.stringify(clean(b), null, 2))}</code></pre></details></section>`;
+      html += `<section class="gallery-item" id="${idOf(b, i)}"><div class="gi-head">${b._eyebrow ? `<p class="eyebrow">${b._eyebrow}</p>` : ""}<h2 class="gi-name">${b._name || b.type}</h2>${b._note ? `<p class="gi-note">${b._note}</p>` : ""}</div><div class="gi-demo">${R[b.type](b)}</div></section>`;
     });
     if (groupOpen) html += `</div></details>`;
     const footerItems = (r.footer && r.footer.length) ? r.footer : ["Shareable HTML report"];

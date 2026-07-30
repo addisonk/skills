@@ -30,7 +30,7 @@ Treat the copied JSON and rendered HTML as disposable output. Name them so a cas
 
 ### 3. Use the canonical blocks
 
-Open `templates/report-blocks.html` in a browser before authoring. It is the exact visual block library shared with the E2E skill: the current styling, schemas, renderers, and **Show JSON** examples live there.
+Open `templates/report-blocks.html` in a browser before authoring. It is the exact visual block library shared with the E2E skill: the current styling, schemas, renderers, and catalog-only **Show JSON** examples live there. Generated reports do not include those authoring disclosures; use `collapsible` when reader-facing expandable content is intentional.
 
 Do not invent block types or use the retired generic blocks from earlier versions of this skill. Use only:
 
@@ -51,7 +51,7 @@ Keep this top-level shape:
 }
 ```
 
-Copy exact block shapes from the visual catalog or [block-catalog.md](references/block-catalog.md). `_name`, `_note`, `_eyebrow`, and `_group` control report section framing and are omitted from each block's **Show JSON** view. Keep flat reports in canonical block order. For reports with multiple scopes, keep each scope's blocks adjacent under the same `_group`.
+Copy exact block shapes from the visual catalog or [block-catalog.md](references/block-catalog.md). `_name`, `_note`, `_eyebrow`, and `_group` control report section framing and are omitted from the catalog's **Show JSON** examples. Keep flat reports in canonical block order. For reports with multiple scopes, keep each scope's blocks adjacent under the same `_group`.
 
 Keep only sections that help the reader understand or decide something. Do not turn the report into a work log.
 
