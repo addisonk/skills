@@ -191,7 +191,7 @@ export async function publishReport({
   const config = upload ? null : resolveUploadConfig(source.publish || {}, env);
   const uploader = upload || ((file, objectKey) => uploadFile(file, objectKey, config));
   const prefix = (config?.keyPrefix ?? source.publish?.keyPrefix ?? "reports").replace(/^\/+|\/+$/g, "");
-  const reportKey = slugify(key || source.document.title);
+  const reportKey = slugify(key || source.report.title.replace(/<[^>]+>/g, ""));
   const root = [prefix, reportKey].filter(Boolean).join("/");
   const sourceDir = dirname(resolve(sourcePath));
   const replacements = new Map();

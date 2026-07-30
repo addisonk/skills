@@ -1,59 +1,59 @@
 {
-  "version": 1,
-  "document": {
-    "title": "Why durable queues matter",
-    "summary": "A visual explanation of how durable execution turns fragile multi-step work into an observable, resumable process.",
-    "type": "explainer",
-    "date": "2026-07-29",
-    "tags": ["systems", "reliability"]
+  "report": {
+    "eyebrow": "Explainer",
+    "title": "How the report workflow works",
+    "summary": "The reusable pieces behind a quick, polished HTML report—from structured content to an optional public URL.",
+    "verdict": "pass",
+    "pills": ["JSON-driven", "Single-file output"],
+    "footer": ["Technical explainer", "Generated with the html-report skill"]
   },
   "blocks": [
     {
-      "type": "prose",
-      "id": "mental-model",
-      "title": "The mental model",
-      "html": "<p>A request that spans several services is not one action. It is a sequence of commitments, each with its own failure boundary. A durable queue records those commitments so the system can continue after a worker exits, a network call times out, or a deploy interrupts execution.</p><p>The queue does not remove failure. It makes failure visible and recoverable.</p>"
+      "type": "context",
+      "_name": "The idea",
+      "body": [
+        "Authors choose a small set of proven visual blocks and describe the report as JSON. The renderer places that data inside the canonical HTML engine.",
+        "This keeps one-off reports fast to make while preserving the same typography, layout, responsive behavior, and block vocabulary."
+      ]
     },
     {
-      "type": "quote",
-      "id": "core-principle",
-      "title": "Core principle",
-      "text": "If work matters after the current process disappears, its state must live somewhere more durable than memory.",
-      "attribution": "Operational design principle"
-    },
-    {
-      "type": "diagram",
-      "id": "execution-loop",
-      "title": "The execution loop",
-      "svg": "<svg viewBox=\"0 0 760 300\" role=\"img\" aria-label=\"A queue dispatches work to a worker, which records results and retries\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><rect x=\"45\" y=\"95\" width=\"170\" height=\"90\" rx=\"14\"/><rect x=\"295\" y=\"95\" width=\"170\" height=\"90\" rx=\"14\"/><rect x=\"545\" y=\"95\" width=\"170\" height=\"90\" rx=\"14\"/><path d=\"M215 140h80m170 0h80M630 185c0 65-500 65-500 0\"/></g><g fill=\"currentColor\" font-family=\"system-ui\" text-anchor=\"middle\"><text x=\"130\" y=\"136\">Durable queue</text><text x=\"380\" y=\"136\">Worker</text><text x=\"630\" y=\"136\">Result store</text><text x=\"380\" y=\"158\" font-size=\"13\" opacity=\".65\">attempt + heartbeat</text><text x=\"380\" y=\"266\" font-size=\"13\" opacity=\".65\">retry from recorded state</text></g></svg>"
-    },
-    {
-      "type": "code",
-      "id": "idempotent-handler",
-      "title": "An idempotent handler",
-      "language": "javascript",
-      "code": "export async function handle(job) {\n  const existing = await results.find(job.id);\n  if (existing) return existing;\n\n  const value = await performStep(job.payload);\n  return results.recordOnce(job.id, value);\n}"
-    },
-    {
-      "type": "callout",
-      "id": "common-mistake",
-      "title": "A common mistake",
-      "tone": "warning",
-      "html": "<p><strong>Retries are not automatically safe.</strong> A retried handler can charge a card, send a message, or create a record twice unless the side effect has an idempotency boundary.</p>"
-    },
-    {
-      "type": "custom-html",
-      "id": "recovery-layers",
-      "title": "Recovery layers",
-      "html": "<div class=\"custom-grid\"><article><strong>Record intent</strong><p>Persist what should happen and assign a stable identity.</p></article><article><strong>Observe attempts</strong><p>Track start, heartbeat, result, and terminal error.</p></article><article><strong>Resume safely</strong><p>Retry from durable state with idempotent side effects.</p></article></div>"
-    },
-    {
-      "type": "sources",
-      "id": "further-reading",
-      "title": "Further reading",
+      "type": "metrics",
+      "_name": "What stays reusable",
       "items": [
-        { "label": "Amazon Builders' Library: Making retries safe", "url": "https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/", "note": "Idempotency and retry semantics" },
-        { "label": "Temporal: Durable Execution", "url": "https://docs.temporal.io/", "note": "A practical durable execution model" }
+        { "value": "19", "label": "Canonical blocks", "note": "One shared visual language.", "ok": true },
+        { "value": "1", "label": "HTML file", "note": "Easy to open and share.", "ok": true }
+      ]
+    },
+    {
+      "type": "flowchart",
+      "_name": "Authoring flow",
+      "steps": [
+        { "step": "Step 1", "title": "Pick a preset", "desc": "Start from the closest report shape." },
+        { "step": "Step 2", "title": "Choose blocks", "desc": "Use the visual catalog to select the right patterns." },
+        { "step": "Step 3", "title": "Edit JSON", "desc": "Replace the sample content and remove unused blocks." },
+        { "step": "Step 4", "title": "Render or publish", "desc": "Create a local file or upload it with its media." }
+      ]
+    },
+    {
+      "type": "collapsible",
+      "_name": "Common questions",
+      "items": [
+        { "title": "Do I edit the HTML engine?", "body": "<p>No. For normal reports, edit the JSON only. The shared engine owns layout and behavior.</p>" },
+        { "title": "Can a report stay local?", "body": "<p>Yes. Publishing is optional; the rendered HTML is already the deliverable.</p>" }
+      ]
+    },
+    {
+      "type": "specs",
+      "_name": "Responsibilities",
+      "groups": [
+        {
+          "title": "Separation of concerns",
+          "rows": [
+            { "label": "Report JSON", "desc": "Content, metadata, block selection, and optional publishing configuration." },
+            { "label": "HTML engine", "desc": "Typography, layout, responsive behavior, navigation, and block renderers." },
+            { "label": "Uploader", "desc": "Media upload, URL rewriting, HTML upload, and public URL verification." }
+          ]
+        }
       ]
     }
   ]

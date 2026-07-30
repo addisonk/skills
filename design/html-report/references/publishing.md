@@ -35,7 +35,7 @@ Environment values supply any omitted target. Credentials always come from the e
 
 ## Publish a report and its media
 
-Relative paths in gallery `image` fields and recording `video` or `poster` fields are resolved from the source JSON directory.
+Relative paths in `userflows` and `before-after` `image` fields and `recording` `video` or `poster` fields are resolved from the source JSON directory.
 
 ```bash
 node scripts/publish.mjs /path/to/report.json /path/to/report.html --key launch-readiness
