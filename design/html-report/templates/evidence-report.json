@@ -4,7 +4,7 @@
     "title": "Release verification",
     "summary": "A compact record of what was checked, what passed, and where the supporting evidence lives.",
     "verdict": "partial",
-    "device": "Chrome · macOS",
+    "device": "Chrome · Desktop + mobile web",
     "timestamp": "Jul 30, 2026",
     "testTypes": [
       { "name": "Browser flows", "status": "pass" },
@@ -50,6 +50,7 @@
     },
     {
       "_group": "Desktop",
+      "_eyebrow": "Chrome · 1440×900",
       "_name": "Userflow",
       "type": "userflows",
       "variant": "desktop",
@@ -61,10 +62,30 @@
     },
     {
       "_group": "Desktop",
+      "_eyebrow": "Chrome · 1440×900",
       "_name": "Recording",
       "type": "recording",
       "video": "recordings/desktop-flow.mp4",
       "poster": "screenshots/desktop-03.png"
+    },
+    {
+      "_group": "Mobile",
+      "_eyebrow": "Chrome · 393×852",
+      "_name": "Userflow",
+      "type": "userflows",
+      "steps": [
+        { "name": "Start", "note": "Initial mobile state.", "image": "screenshots/mobile-01.png" },
+        { "name": "Action", "note": "Primary action selected.", "image": "screenshots/mobile-02.png" },
+        { "name": "Complete", "note": "Success state with older helper copy.", "image": "screenshots/mobile-03.png" }
+      ]
+    },
+    {
+      "_group": "Mobile",
+      "_eyebrow": "Chrome · 393×852",
+      "_name": "Recording",
+      "type": "recording",
+      "video": "recordings/mobile-flow.mp4",
+      "poster": "screenshots/mobile-03.png"
     },
     {
       "type": "gaps",

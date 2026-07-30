@@ -14,7 +14,7 @@ try {
   const here = dirname(fileURLToPath(import.meta.url));
   const [sourceText, template] = await Promise.all([
     readFile(sourcePath, "utf8"),
-    readFile(join(here, "..", "templates", "qa-report.html"), "utf8"),
+    readFile(join(here, "..", "templates", "report-template.html"), "utf8"),
   ]);
   const source = parseReportSource(sourceText, sourcePath);
   const sourceErrors = validateReportSource(source);
