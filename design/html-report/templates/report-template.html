@@ -1052,7 +1052,7 @@ details.group-section[open] > summary.group-head .grp-chev { transform: rotate(9
     const idOf = (b, i) => `blk-${i}-${b.type}`;
     const galleryBlocks = (DATA.blocks || []).filter(b => R[b.type]);
     const coverEyebrow = r.eyebrow || "HTML report";
-    const coverTitle = r.title || "QA report";
+    const coverTitle = r.title || "Report";
     const coverSummary = r.summary ? `<p class="summary">${r.summary}</p>` : "";
     let html = `<header class="gallery-cover"><p class="eyebrow">${coverEyebrow}</p><h1>${coverTitle}</h1>${coverSummary}</header>`;
 

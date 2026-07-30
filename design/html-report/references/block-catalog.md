@@ -1,12 +1,20 @@
 # Canonical block catalog
 
-`../templates/qa-report-blocks.html` is the source of truth. Open it in a browser to see the exact report styling and its rendered examples. Expand **Show JSON** under a displayed block to copy its authoring shape; the schema comment and renderer map in the same file define the complete current set.
+`../templates/report-blocks.html` is the source of truth. Open it in a browser to see the exact report styling and its rendered examples. Expand **Show JSON** under a displayed block to copy its authoring shape; the schema comment and renderer map in the same file define the complete current set.
 
-The catalog and `../templates/qa-report.html` use the same renderers. Do not recreate a block from prose in this reference when the live catalog is available.
+The catalog and `../templates/report-template.html` use the same renderers. Do not recreate a block from prose in this reference when the live catalog is available.
+
+## Structure reports
+
+- Use flat blocks for one subject or scope. Do not wrap a single scope in a group.
+- For two or more scopes, keep shared context, conclusions, metrics, and gaps at the top level.
+- Put each scope's detailed blocks next to each other and give them the same `_group`. Grouping depends on adjacency.
+- Keep process narration out. Include only sections that change how the reader understands the result or decision.
+- Use `../templates/evidence-report.json` as the grouped example: shared findings first, then Desktop and Mobile evidence groups.
 
 ## Current blocks
 
-Blocks render in this fixed order when present:
+Use this canonical order for flat reports. In grouped reports, keeping each group's blocks adjacent takes precedence:
 
 1. `properties` — aligned label/value metadata
 2. `context` — prose paragraphs or a numbered list
