@@ -1,194 +1,61 @@
 ---
 name: simple-copy
-description: Write, edit, or rewrite copy so people understand it quickly. Use when creating new copy from a brief or improving existing reports, emails, posts, messages, articles, documents, product and UI text, titles, headings, labels, descriptions, summaries, buttons, and other reader-facing writing. Preserve the intended meaning, precise nouns, hierarchy, context, and voice while removing bloat, repetition, and vague language.
+description: Use when writing copy from a brief or editing or rewriting reports, emails, posts, messages, articles, or interface text that are bloated, vague, repetitive, or hard to scan.
 ---
 
 # Simple Copy
 
-Create copy from a brief or improve an existing draft. Treat every word as part of the reader's experience. Help them recognize the subject, understand the point, or know what to do next—with no extra language.
+Fast understanding: one job per part.
 
-Short is not the goal. Fast understanding is.
+## 1. Set the contract
 
-## Principles
+| Request words | Degree of change |
+|---|---|
+| Write, draft, create | Build from goals, facts, audience, and constraints. |
+| Edit, tighten, polish | Preserve names, fields, structure, and voice; correct specific local failures. |
+| Rewrite, rework, restructure | Rebuild language or structure; retain facts, intent, nuance. |
 
-1. **Give each part one job.** A title identifies. An opening leads. A paragraph explains. An action asks. Do not make one part carry all four.
-2. **Use less, but keep the meaning.** Remove words before adding them. Keep necessary distinctions, constraints, and domain nouns.
-3. **Make it self-explanatory.** Use active voice, positive phrasing, concrete nouns, and direct verbs. Keep related words together. Writing should reduce the need for more writing.
-4. **Stay unobtrusive and honest.** Do not add hype, personality, urgency, benefits, or certainty the source does not support.
-5. **Protect the hierarchy.** Do not repeat the title in the description, the opening in the conclusion, or the same point in every section.
+Identify the reader, channel, and result: `[Reader] should understand or do [X].` Read context. Ask when choices change the result.
 
-## Workflow
+## 2. Draft
 
-### 1. Choose the level of change
+- Main point first, then essential context.
+- Use active voice, concrete nouns, direct verbs, positive phrasing.
+- Treat a supplied brief as a closed book: every factual, causal, comparative, illustrative, or benefit claim explicitly traces to it. Preserve certainty, chosen emphasis, and tradeoff sides; surface assumptions.
+- For multi-field headers, broad Edit requests preserve each title exactly, including wording, capitalization, and punctuation. The eyebrow and description remain editable. Change the title only when asked explicitly.
+- Compare shortest, clearest, and natural drafts internally. Choose the shortest that keeps meaning and sounds human.
 
-- **Write:** Create new copy from the user's goal, facts, audience, and constraints. Do not invent missing claims or context.
-- **Edit:** Make the smallest changes needed for clarity, flow, and brevity. Keep the original structure and voice.
-- **Rewrite:** Rebuild sentences or structure when the draft's shape causes the problem. Preserve its facts, intent, and necessary nuance.
+## 3. Fit the shape
 
-Follow the user's requested level. If they do not specify one, infer it from the draft and ask only when the difference would materially change the result.
+| Shape | Target |
+|---|---|
+| Eyebrow | Exactly one or two words total; category only. |
+| Title, headline, subject | Thing, state, or outcome; usually one to seven words; key words first. |
+| Description or deck | Missing context; one sentence, or two to prevent misreading. |
+| Email or message | Purpose first; then request, owner, timing, and essential context. |
+| Post | One supplied idea; strongest point early; uncertainty visible. |
+| Article or report | Main conclusion early; one topic per paragraph; informative headings; summary keeps conclusion, evidence, and next step. |
+| Label or action | Familiar noun or result; usually one to four words. |
+| Helper, error, empty state | Constraint; event and next step; or state and useful action. |
 
-### 2. Find the job
+Example: `Target operating model · Alignment artifact` becomes `Architecture` when it is an eyebrow, not a second headline.
 
-Identify the reader, the channel, their current moment, and the one thing this copy must help them understand or do. Read the surrounding thread, document, or interface when available.
+## 4. Tighten
 
-If the intended meaning or action is genuinely unknowable, ask one short question. Otherwise infer it from context and proceed.
+Cut repeated ideas, title-description echo, throat-clearing, process narration, filler, stacked synonyms, corporate verbs, and empty adjectives. Each level adds information: category, subject, context, then action.
 
-### 3. Question the text
+## 5. Deliver
 
-When a draft exists, ask:
+Return copy exactly as it should appear in the requested format. Lead with one recommendation. Add at most two alternatives for a real meaning or tone tradeoff. Add a one-sentence `Why` only for a reviewable assumption or meaning change.
 
-- Does this part need to exist?
-- Is another nearby part already saying it?
-- Is it helping the reader, or exposing the writer's internal process?
-- What would the reader misunderstand if it were removed?
+Before finishing, verify:
 
-Delete redundant copy. Do not solve every copy problem by writing more.
+- The point is clear on the first pass.
+- Every field meets its shape target.
+- Every word protects meaning, tone, or rhythm.
+- Facts, distinctions, evidence, and uncertainty remain accurate.
+- What matters or happens next is apparent.
 
-### 4. Draft three ways internally
+## Common failures
 
-Draft a shortest version, a clearest version, and a most natural version. Choose the shortest one that preserves the full meaning and sounds human.
-
-Return one recommendation. Show up to two alternatives only when they express a real meaning or tone tradeoff, or when the user asks.
-
-### 5. Check the result
-
-- **Scan:** Can a new reader grasp it on the first pass?
-- **Deletion:** Can any word disappear without changing meaning?
-- **Overlap:** Does each title, sentence, paragraph, and action add something new?
-- **Expectation:** Does the copy accurately represent what will happen next?
-- **Force:** Is the sentence active, positive, specific, and direct?
-
-## Copy shapes
-
-### Eyebrow
-
-Name the category, not the message.
-
-- One or two words; usually no more than 24 characters.
-- No subtitles, project names, or punctuation-linked phrases.
-- Put the subject in the title and context in the description.
-
-```text
-Bad:  Target operating model · Alignment artifact
-Good: Architecture
-```
-
-### Title, headline, or subject
-
-Name the thing, state, or outcome.
-
-- Prefer one to seven words.
-- Use one idea and front-load the distinguishing words.
-- Do not stuff a title and subtitle into one line.
-
-```text
-Bad:  Manage notification preferences for your account
-Good: Notifications
-```
-
-### Description or deck
-
-Answer the most important question the title leaves open.
-
-- Use one short sentence; use two only when the second prevents a real misunderstanding.
-- Usually stay under 24 words.
-- Do not restate the title, announce the section, or narrate process.
-
-```text
-Title: Notifications
-Bad:   Manage your notification preferences and choose your notification settings.
-Good:  Choose which updates you receive.
-```
-
-### Label
-
-Use the familiar noun a reader expects. Prefer one to three words. Do not explain behavior inside a label.
-
-### Button
-
-State the action or result with a direct verb, usually in two to four words. Use `Save changes`, not `Submit`; `Create report`, not `Continue`, when the result is known.
-
-### Helper text
-
-Give the constraint or format the reader needs before acting. Do not describe the field again.
-
-### Error
-
-Say what happened and what the reader can do next. Be specific, calm, and blame-free.
-
-```text
-Bad:  An unexpected error has occurred while attempting to save your changes.
-Good: Couldn't save changes. Try again.
-```
-
-### Empty state
-
-Name the state, then offer one useful next action. Do not add cheerleading or a product pitch.
-
-```text
-No reports yet.
-Create your first report.
-```
-
-### Email or message
-
-Lead with the purpose. Put the request, owner, and timing where the reader can find them. Include only the context needed to understand or act. Keep greetings and sign-offs natural, not ceremonial.
-
-### Post
-
-Make one clear point. Put the strongest concrete idea early. Do not manufacture a hook, thread, call to action, emoji, or hashtags unless the user or channel calls for them.
-
-### Article or report
-
-Lead with the main point or useful question. Give each paragraph one topic and use headings that tell the reader what follows. Make summaries proportional to the source: retain the main conclusion, necessary evidence, and next step. Cut throat-clearing, process narration, and repeated conclusions.
-
-## What to cut
-
-- Preambles such as “This section allows you to” or “Here you can.”
-- Repeated nouns, synonyms, and title-description echo.
-- Weak qualifiers and filler: `very`, `really`, `just`, `actually`, `in order to`.
-- Corporate verbs when plain ones work: `utilize`, `leverage`, `facilitate`, `enable`.
-- Empty adjectives: `powerful`, `seamless`, `robust`, `innovative`, `intuitive`.
-- Internal framing: `target operating model`, `alignment artifact`, `strategic initiative`, unless those are established terms the reader needs.
-
-## What to preserve
-
-- Precise names and domain nouns.
-- Differences between similar concepts.
-- Safety, legal, accessibility, and technical constraints.
-- Specific evidence and honest uncertainty.
-- The author's established voice when it does not reduce clarity.
-
-Do not invent claims, benefits, proof, urgency, or emotional stakes. Do not replace precise language with generic simplicity.
-
-## Scope
-
-Edit only the requested copy. Preserve the format, hierarchy, facts, intent, and level of formality unless one causes the confusion. Do not turn a title request into a page rewrite or silently change the author's position.
-
-For persuasion, conversion, campaign strategy, or brand positioning, pair this skill with an appropriate marketing or brand skill. Use this skill to keep the resulting copy clear and restrained.
-
-## Output
-
-Lead with the recommended copy exactly as it should appear. Skip preamble and long rationale.
-
-For one item:
-
-```text
-Recommended
-Q3 hiring update
-```
-
-For structured copy, preserve its labels:
-
-```text
-Eyebrow
-Decision
-
-Title
-AI draft review
-
-Description
-Editors review AI-generated drafts before publication while preserving approval history for compliance.
-```
-
-Add one short `Why` note only when the edit changes meaning, removes a meaningful claim, or depends on an assumption the user should review.
+Imprecise: restore exact terms. Promotional: restore supported claims. Generic: restore concrete terms.
