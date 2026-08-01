@@ -1,112 +1,100 @@
 ---
 name: html-report
-description: Create a polished, shareable single-file HTML report from structured content. Use only when the user explicitly asks for an HTML report, shareable report, interactive report, or a report they can upload and send as a link. Supports reports, specs, plans, explainers, audits, research summaries, and QA evidence. Do not use for ordinary Markdown responses, production web pages, or UI prototypes.
+description: Use when the user explicitly asks for a polished single-file HTML report, shareable report, interactive report, or link-ready report for a specification, plan, explainer, audit, research summary, or QA evidence packet.
 ---
 
 # HTML Report
 
-Build a quick, disposable document that is easy to read and share. The report is throwaway; this skill's report engine, block catalog, presets, and uploader are the reusable parts.
+Create a disposable, decision-ready document with the reusable report engine. Keep ordinary answers in Markdown; use this skill only for the explicit HTML-report requests named in the description, not production pages or UI prototypes.
 
 ## Workflow
 
-### 1. Place the report close to its subject
+### 1. Establish the source contract
 
-Save the source JSON and rendered HTML in the current project, close to the work the report documents. Follow an existing reports or artifacts convention when one exists. Otherwise, place clearly named `<topic>-report.json` and `<topic>-report.html` files beside the nearest relevant module, page, or source material; for a project-wide report, use the project root.
+Before authoring, sort the input into four classes:
 
-Do not invent a new top-level directory or save generated reports inside this skill folder. Use a temporary directory only when no project folder applies or the user explicitly wants no files added to the project, and disclose that location.
+- **Supplied material** — facts, requirements, evidence, constraints, and exclusions. Preserve their meaning and certainty.
+- **Grounded synthesis** — conclusions directly supported by supplied material. Make the supporting material traceable in the report.
+- **Open items** — unknowns, gaps, and undecided choices. Keep them open.
+- **Recommendations** — new proposals or inferences. Include these only when the user asks for recommendations, and label them as recommendations rather than facts, evidence, requirements, or acceptance criteria.
 
-### 2. Choose a preset
+Authentic screenshots, recordings, documents, test output, and metrics remain source evidence. Preserve them rather than recreating their content. When evidence is missing, record a gap.
 
-Copy the closest JSON file from `templates/` into the report location chosen in step 1:
+This step is complete when every material claim has a clear source class and no open item has silently become a decision.
+
+### 2. Place the report and choose a preset
+
+Save the source JSON and rendered HTML in the current project, close to the work they document. Follow an existing reports or artifacts convention. Otherwise, use clearly named `<topic>-report.json` and `<topic>-report.html` files beside the nearest relevant source, or in the project root for a project-wide report. Use a temporary directory only when no project applies or the user wants no project files, and disclose its location.
+
+Copy the closest preset from `templates/`:
 
 - `report.json` — decisions, findings, status, risks, and recommendations
-- `spec-or-plan.json` — requirements, architecture, implementation steps, and acceptance criteria
+- `spec-or-plan.json` — requirements, architecture, steps, and acceptance criteria
 - `explainer.json` — concepts, mental models, flows, and examples
-- `evidence-report.json` — verdicts, tested flows, screenshots, recordings, and gaps
+- `evidence-report.json` — verdicts, tested flows, media, and gaps
 
-Read [document-types.md](references/document-types.md) only when the right preset is unclear.
+Read [document-types.md](references/document-types.md) only when the choice is unclear. Treat copied JSON and rendered HTML as disposable output; do not commit them unless the user asks.
 
-Treat the copied JSON and rendered HTML as disposable output. Name them so a casual reader can tell they are reports, and do not commit them unless the user asks.
+### 3. Shape the report for scanning
 
-### 3. Use the canonical blocks
+Open `templates/report-blocks.html` in a browser to inspect the exact visual library. Use only the block types and JSON shapes in that catalog or [block-catalog.md](references/block-catalog.md); the reference is the source of truth for block order, grouping, and metadata fields. Generated reports omit catalog-only **Show JSON** disclosures.
 
-Open `templates/report-blocks.html` in a browser before authoring. It is the exact visual block library shared with the E2E skill: the current styling, schemas, renderers, and catalog-only **Show JSON** examples live there. Generated reports do not include those authoring disclosures; use `collapsible` when reader-facing expandable content is intentional.
+Lead with a title and summary that state what the report establishes and why it matters. Keep only sections that help the reader understand or decide something.
 
-Do not invent block types or use the retired generic blocks from earlier versions of this skill. Use only:
+- Keep `context.body` to one or two sentences.
+- Move three or more parallel facts, rules, options, or steps into `context.items`, `properties`, `specs`, `ledger`, `flowchart`, or another fitting structured block.
+- Make the argument apparent from section and item titles; use descriptions for evidence, qualifications, and exceptions.
+- Prefer a few strong sections. Use `specs` for longer descriptions and `ledger` for compact key/value rows.
+- Use media blocks only when the referenced media exists.
+- Preserve the canonical monochrome presentation; reserve color for status.
 
-`properties`, `context`, `verdict`, `metrics`, `charts`, `flow-results`, `assertions`, `collapsible`, `flowchart`, `userflows`, `before-after`, `recording`, `specs`, `ledger`, `unit-tests`, `playwright`, `maestro`, `backend`, `gaps`.
+This step is complete when the headings alone form a useful outline and the report contains no work-log narration or unsupported content.
 
-Keep this top-level shape:
-
-```json
-{
-  "report": {
-    "eyebrow": "HTML report",
-    "title": "Decision-ready title",
-    "summary": "What this report establishes and why it matters.",
-    "verdict": "pass",
-    "footer": ["Shareable HTML report"]
-  },
-  "blocks": []
-}
-```
-
-Copy exact block shapes from the visual catalog or [block-catalog.md](references/block-catalog.md). `_name`, `_note`, `_eyebrow`, and `_group` control report section framing and are omitted from the catalog's **Show JSON** examples. Keep flat reports in canonical block order. For reports with multiple scopes, keep each scope's blocks adjacent under the same `_group`.
-
-Keep only sections that help the reader understand or decide something. Do not turn the report into a work log.
-
-### 4. Render
+### 4. Validate and render
 
 From this skill folder, run:
 
 ```bash
+node scripts/validate.mjs /path/to/report.json
 node scripts/render.mjs /path/to/report.json /path/to/report.html
+node scripts/validate.mjs --html /path/to/report.html
 ```
 
-The renderer validates the JSON and injects it into `templates/report-template.html`, the matching E2E report engine with generic report framing. The output is one responsive HTML file with inline layout and behavior. Do not edit the generated HTML or fork the engine for a one-off report; fix the source JSON instead.
+Fix the source JSON and rerun the commands until all three pass. The result is one responsive HTML file with inline layout and behavior. Keep the shared engine intact: do not edit generated HTML, add one-off block types, or fork the renderer.
 
-### 5. Look once, then hand it over
+### 5. Verify the rendered document
 
-Open the HTML in a browser. Check the opening view and one narrow mobile width. Fix obvious overflow, broken media, missing sections, or content that is hard to scan.
+Open the report in the available in-app browser. If the browser blocks a local `file://` URL, serve only the report directory on loopback with an available port, open the corresponding `http://127.0.0.1:<port>/...` URL, and stop that server after verification.
 
-Do not add a test suite, application scaffolding, package dependencies, or reusable abstractions to the generated report. This is a shareable document, not product code.
+Check the opening view at desktop width and one narrow mobile width. Correct overflow, broken media, missing sections, weak hierarchy, and passages that are hard to scan by editing the source JSON and rerendering.
 
-Return the absolute path to the HTML file.
+This step is complete only after both widths have been inspected and the validators still pass. Return the absolute path to the HTML file.
 
-### 6. Publish only when requested
+### 6. Publish only when explicitly requested
 
-Local rendering never requires credentials. If the user explicitly asks for a public link, read [publishing.md](references/publishing.md), then run:
+Local rendering requires no credentials. For an explicit request for a public link, read [publishing.md](references/publishing.md), then run:
 
 ```bash
 node scripts/publish.mjs /path/to/report.json /path/to/report.html --key short-report-name
 ```
 
-Publishing uploads relative screenshots and recordings first, rewrites a cloned source to their public URLs, uploads the HTML last, verifies every uploaded URL, and prints the report URL.
+Publishing uploads relative media first, rewrites a cloned source to public URLs, uploads the HTML last, verifies the URLs, and prints the report URL. Keep credentials out of report JSON. Published links and media must use absolute HTTPS URLs.
 
-Never put credentials in report JSON. Never publish without an explicit request to upload or share publicly.
+## Completion criteria
 
-## Authoring rules
+A finished report has:
 
-- Lead with the conclusion. Use the title and summary to orient the reader immediately.
-- Shape before rendering. Keep `context.body` paragraphs to one or two sentences. When a section contains three or more parallel facts, rules, options, or steps, use `context.items`, `properties`, `specs`, `ledger`, `flowchart`, or another fitting block instead of stacking prose.
-- Make the argument apparent from section titles and item titles alone; use descriptions for evidence, qualifications, and exceptions.
-- Prefer a few strong sections over a kitchen-sink report.
-- Preserve the canonical engine's monochrome presentation; reserve color for status.
-- Use real evidence. If evidence is unavailable, name the gap instead of inventing it.
-- Prefer `specs` for long descriptions and `ledger` for compact key/value rows.
-- Use `userflows`, `before-after`, and `recording` only when their media exists.
-- Keep published links and media as absolute HTTPS URLs. Relative media is allowed before `publish.mjs` rewrites it.
-- Do not add a `custom-html` block or modify the engine to create a one-off layout.
+- source JSON and a rendered single-file HTML document in the disclosed location;
+- no unsupported claims or silently resolved open decisions;
+- a conclusion-led, scannable structure using canonical blocks;
+- passing source and rendered-file validation;
+- verified desktop and narrow-mobile presentation;
+- no new application scaffolding, dependencies, reusable abstractions, or committed disposable output; and
+- a public URL only when the user explicitly requested publishing.
 
-## Included commands
+## Other included commands
 
 ```bash
-# Validate source JSON without rendering
-node scripts/validate.mjs /path/to/report.json
-
-# Validate an already rendered file
-node scripts/validate.mjs --html /path/to/report.html
-
 # Upload one standalone artifact
 node scripts/upload-artifact.mjs /path/to/file --key reports/name/file
 
