@@ -1,4 +1,4 @@
 interface:
   display_name: "HTML Report"
-  short_description: "Create quick, shareable HTML reports"
-  default_prompt: "Turn this material into a quick, polished, shareable HTML report using the closest preset."
+  short_description: "Create evidence-bounded HTML reports"
+  default_prompt: "Use $html-report to turn this material into a polished, evidence-bounded, shareable HTML report."
