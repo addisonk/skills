@@ -462,8 +462,8 @@ td code { font-family: var(--font-mono); font-size: 0.84rem; background: var(--s
 .gi-head { margin-bottom: var(--space-4); }
 .gi-name { margin: 0; font-size: var(--fs-title); font-weight: 500; letter-spacing: -0.025em; }
 .gi-note { margin: 10px 0 0; color: var(--text-muted); font-size: var(--fs-small); }
-.group-section { border-top: 1px solid var(--surface-strong); }
-summary.group-head { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px; padding: 20px 2px; margin: 0; }
+.group-section { --group-pad: 20px; border-top: 1px solid var(--hairline); }
+summary.group-head { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px; padding: var(--group-pad) 2px; margin: 0; }
 summary.group-head::-webkit-details-marker { display: none; }
 summary.group-head::marker { content: ""; }
 summary.group-head h2 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; color: var(--text); line-height: 1.2; }
@@ -472,7 +472,7 @@ summary.group-head h2 { margin: 0; font-size: 22px; font-weight: 600; letter-spa
 summary.group-head:hover .grp-chev { color: var(--text); }
 details.group-section[open] > summary.group-head .grp-chev { transform: rotate(90deg); }
 .group-body { padding-bottom: var(--space-2); }
-.group-body .gallery-item:first-child { border-top: 0; }
+.group-body .gallery-item:first-child { border-top: 0; padding-top: var(--group-pad); }
 .group-body .gi-name { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
 @media (prefers-reduced-motion: reduce) { .grp-chev { transition: none; } }
 .docs-nav a.nav-group { padding-top: 18px; }
@@ -521,6 +521,34 @@ details.group-section[open] > summary.group-head .grp-chev { transform: rotate(9
 .collapse-list .cl-body { padding: 0 2px var(--space-3); color: var(--text-muted); font-size: 0.95rem; line-height: 1.55; text-wrap: pretty; }
 .collapse-list .cl-body > :first-child { margin-top: 0; }
 @media (prefers-reduced-motion: reduce) { .collapse-list .cl-chev { transition: none; } }
+
+/* ---- Nested accordions: two-level disclosure for grouped detail ---- */
+.nested-list, .nested-children { list-style: none; margin: 0; padding: 0; }
+.nested-parent { border-bottom: 1px solid var(--hairline); }
+.nested-parent:last-child { border-bottom: 0; }
+.nested-parent-summary, .nested-child-summary { display: flex; align-items: center; cursor: pointer; list-style: none; }
+.nested-parent-summary { min-height: 56px; gap: 12px; padding: var(--space-2) 2px; }
+.nested-child-summary { min-height: 48px; gap: 10px; padding: 12px 0; }
+.nested-parent-summary::-webkit-details-marker, .nested-child-summary::-webkit-details-marker { display: none; }
+.nested-parent-summary::marker, .nested-child-summary::marker { content: ""; }
+.nested-title { flex: 1 1 auto; min-width: 0; margin-right: auto; color: var(--text); font-size: 18px; font-weight: 600; line-height: 1.35; }
+.nested-child-title { flex: 1 1 auto; min-width: 0; margin-right: auto; color: var(--text); font-size: 16px; font-weight: 500; line-height: 1.4; }
+.nested-count { flex: 0 0 auto; color: var(--text-muted); font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.nested-parent-summary .result, .nested-child-summary .result { flex: 0 0 auto; }
+.nested-chev { display: inline-flex; flex: 0 0 auto; color: var(--text-muted); transition: transform .15s ease; }
+.nested-chev svg { display: block; width: 18px; height: 18px; }
+.nested-parent-details[open] > .nested-parent-summary .nested-parent-chev,
+.nested-child-details[open] > .nested-child-summary .nested-child-chev { transform: rotate(90deg); }
+.nested-children { margin: 0 0 var(--space-2) 9px; padding-left: var(--space-3); border-left: 1px solid var(--hairline); }
+.nested-child + .nested-child { border-top: 1px solid var(--hairline); }
+.nested-child-body { max-width: 70ch; padding: 0 0 var(--space-3) 28px; color: var(--text-muted); font-size: 0.95rem; line-height: 1.55; text-wrap: pretty; }
+.nested-child-body > :first-child { margin-top: 0; }
+.nested-child-body > :last-child { margin-bottom: 0; }
+@media (max-width: 600px) {
+  .nested-children { padding-left: var(--space-2); }
+  .nested-child-body { padding-left: 28px; }
+}
+@media (prefers-reduced-motion: reduce) { .nested-chev { transition: none; } }
 
 /* ---- Sidebar meta panel (illustrative on the library) ---- */
 .nav-meta { display: flex; flex-direction: column; gap: var(--space-3); margin-bottom: var(--space-3); padding-bottom: var(--space-4); border-bottom: 1px solid var(--hairline); }
@@ -589,6 +617,7 @@ details.group-section[open] > summary.group-head .grp-chev { transform: rotate(9
                             flows: [ {name, device?, duration?, status} ] }
        { type:"assertions", lead?, items: [ "assert text" | {text, status} ] }
        { type:"collapsible", lead?, items: [ {title, status?, body} ] }  // expandable rows (HTML body), divided like the checklist
+       { type:"nested-accordions", lead?, items: [ {title, status?, items: [ {title, status?, body} ]} ] }  // two disclosure levels; both collapsed by default
        { type:"userflows",  lead?, label?, variant?: "mobile|desktop", steps: [ {num?, name, note?, image} ] }  // desktop = wider items; label = pill naming the flow
        { type:"flowchart",  lead?, steps: [ {step?, title, desc?} ] }  // left-to-right cards + connectors, scrolls horizontally
        { type:"before-after", lead?, pairs: [ {beforeLabel?, afterLabel?,
@@ -848,9 +877,9 @@ details.group-section[open] > summary.group-head .grp-chev { transform: rotate(9
   const DATA = JSON.parse(document.getElementById("report-data").textContent);
 
   // Fixed canonical order. Blocks render only if present in DATA.blocks.
-  const ORDER = ["properties", "context", "verdict", "metrics", "charts", "flow-results", "assertions", "collapsible", "flowchart", "userflows", "before-after", "recording", "specs", "ledger", "unit-tests", "playwright", "maestro", "backend", "gaps"];
+  const ORDER = ["properties", "context", "verdict", "metrics", "charts", "flow-results", "assertions", "collapsible", "nested-accordions", "flowchart", "userflows", "before-after", "recording", "specs", "ledger", "unit-tests", "playwright", "maestro", "backend", "gaps"];
   const TITLES = {
-    context: "Background", verdict: "Verdict", metrics: "Run summary", charts: "Charts", "flow-results": "Flow results", assertions: "Assertions", collapsible: "Details", flowchart: "Flow chart", ledger: "Details", specs: "Breakdown", properties: "Properties",
+    context: "Background", verdict: "Verdict", metrics: "Run summary", charts: "Charts", "flow-results": "Flow results", assertions: "Assertions", collapsible: "Details", "nested-accordions": "Nested details", flowchart: "Flow chart", ledger: "Details", specs: "Breakdown", properties: "Properties",
     userflows: "Userflows", "before-after": "Before / after", recording: "Recording",
     "unit-tests": "Unit tests", playwright: "Playwright", maestro: "Maestro", backend: "Backend", gaps: "Known gaps"
   };
@@ -947,6 +976,16 @@ details.group-section[open] > summary.group-head .grp-chev { transform: rotate(9
     }</tbody></table></div>`;
   }
 
+  function nestedAccordions(block) {
+    const parents = (block.items || []).map(parent => {
+      const children = parent.items || [];
+      const count = `${children.length} ${children.length === 1 ? "section" : "sections"}`;
+      const rows = children.map(child => `<li class="nested-child"><details class="nested-child-details"><summary class="nested-child-summary"><span class="nested-chev nested-child-chev">${ICON.chev}</span><span class="nested-child-title">${au(child.title)}</span>${child.status ? badge(child.status) : ""}</summary><div class="nested-child-body">${au(child.body || "")}</div></details></li>`).join("");
+      return `<li class="nested-parent"><details class="nested-parent-details"><summary class="nested-parent-summary"><span class="nested-chev nested-parent-chev">${ICON.chev}</span><span class="nested-title">${au(parent.title)}</span>${parent.status ? badge(parent.status) : ""}<span class="nested-count">${count}</span></summary><ul class="nested-children">${rows}</ul></details></li>`;
+    }).join("");
+    return `${head("nested-accordions", block.lead)}<ul class="nested-list">${parents}</ul>`;
+  }
+
   const R = {
     context: b => `${head("context", b.lead)}${b.items ? `<ol class="ctx-list">${
       b.items.map(it => `<li><div class="ctx-text"><h3>${au(it.title)}</h3><p>${au(it.desc)}</p></div></li>`).join("")}</ol>` : ""}${
@@ -988,6 +1027,8 @@ details.group-section[open] > summary.group-head .grp-chev { transform: rotate(9
 
     collapsible: b => `${head("collapsible", b.lead)}<ul class="collapse-list">${
       (b.items || []).map(it => `<li><details><summary><span class="cl-title">${au(it.title)}</span>${it.status ? badge(it.status) : ""}<span class="cl-chev">${ICON.chev}</span></summary><div class="cl-body">${au(it.body || "")}</div></details></li>`).join("")}</ul>`,
+
+    "nested-accordions": nestedAccordions,
 
     flowchart: b => `${head("flowchart", b.lead)}<div class="flow-scroll fc" tabindex="0" aria-label="Flow chart"><ol class="flow-track">${
       (b.steps || []).map((s, i) => `<li class="fc-node"><span class="fc-num">${au(s.step || ("Step " + (i + 1)))}</span><h3 class="fc-title">${au(s.title)}</h3>${s.desc ? `<p class="fc-desc">${au(s.desc)}</p>` : ""}</li>`).join(`<li class="fc-edge" aria-hidden="true"><span class="fc-line"></span></li>`)}</ol></div>`,
