@@ -16,6 +16,7 @@ Open-source skills for [Claude Code](https://claude.ai/code).
 | [html-report](design/html-report) | Create evidence-bounded, scannable HTML reports with the canonical E2E block library and optional CDN publishing |
 | [simple-copy](design/simple-copy) | Write, edit, or rewrite clear reports, emails, posts, messages, articles, and interface copy without losing meaning or voice |
 | [design-md](design/design-md) | Generate or re-sync a project's DESIGN.md following the Google Labs design.md spec, with a symmetric oklch ↔ hex color converter so both color forms live in the doc |
+| [product-md](design/product-md) | Generate or re-sync an evidence-bounded PRODUCT.md that explains the current product to new teammates and LLMs |
 
 ### Mobile
 
