@@ -47,6 +47,7 @@ Lead with a title and summary that state what the report establishes and why it 
   - **Glanceable** — a title, one value or status, and one short sentence. Use up to three columns.
   - **Comparative** — a short explanation plus one supporting layer such as a list, visual, or evidence note. Use up to two columns.
   - **Explanatory** — multiple supporting layers such as a metric, chart, rationale, evidence, and conclusion. Use one column, or split the layers into `specs`, `ledger`, or nested accordions.
+- Set `density` on every `verdict`, `metrics`, and `charts` block. Let the renderer choose the permitted column count; use optional `columns` only to make the grid narrower. The validator independently checks the payload and rejects an understated density or excessive column count. Read [block-catalog.md](references/block-catalog.md) for the exact content-fit contract.
 - Make the argument apparent from section and item titles; use descriptions for evidence, qualifications, and exceptions.
 - Prefer a few strong sections. Use `specs` for longer descriptions and `ledger` for compact key/value rows.
 - Use media blocks only when the referenced media exists.
@@ -64,7 +65,7 @@ node scripts/render.mjs /path/to/report.json /path/to/report.html
 node scripts/validate.mjs --html /path/to/report.html
 ```
 
-Fix the source JSON and rerun the commands until all three pass. The result is one responsive HTML file with inline layout and behavior. Keep the shared engine intact: do not edit generated HTML, add one-off block types, or fork the renderer.
+Fix the source JSON and rerun the commands until all three pass. Source and HTML validation both enforce grid content fit. The result is one responsive HTML file with inline layout and behavior. Keep the shared engine intact: do not edit generated HTML, add one-off block types, or fork the renderer.
 
 ### 5. Verify the rendered document
 

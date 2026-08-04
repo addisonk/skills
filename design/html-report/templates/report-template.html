@@ -610,9 +610,9 @@ details.group-section[open] > summary.group-head .grp-chev { transform: rotate(9
                pills?: [ "text" | {label, code} ], footer?: [ "html" ] }
      blocks: [
        { type:"context",    lead?, items?: [ {title, desc} ], body?: [ "paragraph" ] }
-       { type:"verdict",    lead?, items: [ {title (<=4 words), desc} | "text" ] }
-       { type:"metrics",    lead?, items: [ {value, label, note?, ok?} ] }
-       { type:"charts",     lead?, items: [ {kind:"pie|bar", title?, data: [ {label, value, color?} ]} ] }  // small only; max ~6 values each
+       { type:"verdict",    density:"glanceable|comparative|explanatory", columns?:1|2|3, lead?, items: [ {title (<=4 words), desc} | "text" ] }
+       { type:"metrics",    density:"glanceable|comparative|explanatory", columns?:1|2|3, lead?, items: [ {value, label, note?, ok?} ] }
+       { type:"charts",     density:"glanceable|comparative|explanatory", columns?:1|2|3, lead?, items: [ {kind:"pie|bar", title?, data: [ {label, value, color?} ]} ] }  // small only; max ~6 values each
        { type:"flow-results", lead?, stats?: {passed,failed,flaky,skipped,duration},
                             flows: [ {name, device?, duration?, status} ] }
        { type:"assertions", lead?, items: [ "assert text" | {text, status} ] }
@@ -887,6 +887,12 @@ details.group-section[open] > summary.group-head .grp-chev { transform: rotate(9
   const textOf = it => (typeof it === "string" ? it : it.text);
   // Even grid: prefer 3 when divisible by 3, else 2 when even, else up to 3.
   const evenCols = n => (n <= 1 ? 1 : n % 3 === 0 ? 3 : n % 2 === 0 ? 2 : Math.min(n, 3));
+  const DENSITY_MAX_COLUMNS = {glanceable: 3, comparative: 2, explanatory: 1};
+  const contentFitCols = b => {
+    const count = Math.max(1, (b.items || []).length);
+    const max = DENSITY_MAX_COLUMNS[b.density] || 1;
+    return Math.max(1, Math.min(count, max, b.columns || evenCols(count)));
+  };
   // au() tags authored-by-us text. Passthrough by default; wrap in
   // `<span class="au">` + re-enable the .au CSS rule to re-run the violet audit.
   const au = s => s;
@@ -991,14 +997,14 @@ details.group-section[open] > summary.group-head .grp-chev { transform: rotate(9
       b.items.map(it => `<li><div class="ctx-text"><h3>${au(it.title)}</h3><p>${au(it.desc)}</p></div></li>`).join("")}</ol>` : ""}${
       (b.body || []).map(p => `<p class="ctx-body">${au(p)}</p>`).join("")}`,
 
-    verdict: b => `${head("verdict", b.lead)}<ul class="findings" style="grid-template-columns:repeat(${evenCols(b.items.length)},minmax(0,1fr))">${
+    verdict: b => `${head("verdict", b.lead)}<ul class="findings" style="grid-template-columns:repeat(${contentFitCols(b)},minmax(0,1fr))">${
       b.items.map(it => { const o = typeof it === "string" ? {desc: it} : it;
         return `<li><span class="check" aria-hidden="true">✓</span><div class="ftext">${o.title ? `<h3>${au(o.title)}</h3>` : ""}${o.desc ? `<p>${au(o.desc)}</p>` : ""}</div></li>`; }).join("")}</ul>`,
 
     gaps: b => `${head("gaps", b.lead)}<ul class="gaps-list">${
       b.items.map(it => `<li><span class="gm">${ICON.warn}</span><span>${au(textOf(it))}</span></li>`).join("")}</ul>`,
 
-    metrics: b => `${head("metrics", b.lead)}<div class="metric-cols" style="grid-template-columns:repeat(${Math.min(b.items.length, 2)},minmax(0,1fr))">${
+    metrics: b => `${head("metrics", b.lead)}<div class="metric-cols" style="grid-template-columns:repeat(${contentFitCols(b)},minmax(0,1fr))">${
       b.items.map(m => `<div class="mcol"><span class="mval${m.ok ? " ok" : ""}">${m.value}</span><h3>${au(m.label)}</h3>${m.note ? `<p>${au(m.note)}</p>` : ""}</div>`).join("")}</div>`,
 
     userflows: b => `<div class="flow-head"><h2>${au(TITLES.userflows)}</h2>${b.lead ? `<p class="hint">${au(b.lead)}</p>` : ""}</div>` +
@@ -1019,7 +1025,7 @@ details.group-section[open] > summary.group-head .grp-chev { transform: rotate(9
           : `<tr><td colspan="2">${r.label}</td></tr>`).join("")
       }`).join("")}</tbody></table></div>`,
 
-    charts: b => `${head("charts", b.lead)}<div class="charts">${
+    charts: b => `${head("charts", b.lead)}<div class="charts" style="grid-template-columns:repeat(${contentFitCols(b)},minmax(0,1fr))">${
       (b.items || []).map(c => `<figure class="chart">${c.title ? `<figcaption>${au(c.title)}</figcaption>` : ""}${(c.kind === "bar" ? barChart : pieChart)(c.data)}</figure>`).join("")}</div>`,
 
     properties: b => `${head("properties", b.lead)}<dl class="props">${

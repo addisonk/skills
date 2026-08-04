@@ -79,6 +79,32 @@ Add authoring-only keys to a block when the report needs clearer navigation:
 
 These keys are stripped from the block JSON shown in the rendered report. They do not define new block behavior.
 
+## Content fit for grids
+
+Every `verdict`, `metrics`, and `charts` block requires a `density` value. The renderer derives the grid from that density and the item count:
+
+| `density` | Payload shape | Maximum columns |
+| --- | --- | ---: |
+| `glanceable` | Title or label, one value or status, and one short sentence | 3 |
+| `comparative` | Short explanation plus one supporting list, visual, or evidence layer | 2 |
+| `explanatory` | Several supporting layers or a developed argument | 1 |
+
+```jsonc
+{
+  "type": "verdict",
+  "density": "comparative",
+  "columns": 2,
+  "items": [
+    { "title": "Option A", "desc": "The short case and its supporting evidence." },
+    { "title": "Option B", "desc": "The short case and its supporting evidence." }
+  ]
+}
+```
+
+`columns` is optional and may only make the grid narrower than the density maximum. Validation infers the minimum density from the densest item: two supporting fields require at least `comparative`; three require `explanatory`; structured arrays, objects, or rich HTML require at least `comparative`; more than 40 words or two sentences require at least `comparative`; and more than 90 words or multiple structured layers require `explanatory`. A `charts` block is at least `comparative` because each item already contains a visual layer. Grid items accept only their canonical schema fields, so extra chart, proof, list, conclusion, or CTA fields fail validation instead of disappearing during rendering.
+
+When validation asks for a higher density, either use that density or move the supporting layers into `specs`, `ledger`, or nested accordions. Treat three columns as a compact summary pattern rather than the default for three items.
+
 ## Nested accordions
 
 Use `nested-accordions` when several parent topics each contain several optional details. Keep it to two disclosure levels; use separate report sections instead of nesting deeper.
