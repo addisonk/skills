@@ -20,7 +20,7 @@
       "type": "metrics",
       "_name": "What stays reusable",
       "items": [
-        { "value": "19", "label": "Canonical blocks", "note": "One shared visual language.", "ok": true },
+        { "value": "20", "label": "Canonical blocks", "note": "One shared visual language.", "ok": true },
         { "value": "1", "label": "HTML file", "note": "Easy to open and share.", "ok": true }
       ]
     },

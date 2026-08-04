@@ -24,17 +24,18 @@ Use this canonical order for flat reports. In grouped reports, keeping each grou
 6. `flow-results` — result summary band and flow table
 7. `assertions` — pass/fail checklist
 8. `collapsible` — expandable detail rows with HTML bodies
-9. `flowchart` — left-to-right connected steps
-10. `userflows` — mobile or desktop screenshot sequence
-11. `before-after` — paired comparison images
-12. `recording` — inline video and fallback links
-13. `specs` — grouped labels with long descriptions
-14. `ledger` — grouped compact key/value rows and links
-15. `unit-tests` — command/result table
-16. `playwright` — Playwright result summary and attachments
-17. `maestro` — linked Maestro artifacts
-18. `backend` — backend command/result table
-19. `gaps` — known limitations or missing evidence
+9. `nested-accordions` — parent groups containing expandable detail rows
+10. `flowchart` — left-to-right connected steps
+11. `userflows` — mobile or desktop screenshot sequence
+12. `before-after` — paired comparison images
+13. `recording` — inline video and fallback links
+14. `specs` — grouped labels with long descriptions
+15. `ledger` — grouped compact key/value rows and links
+16. `unit-tests` — command/result table
+17. `playwright` — Playwright result summary and attachments
+18. `maestro` — linked Maestro artifacts
+19. `backend` — backend command/result table
+20. `gaps` — known limitations or missing evidence
 
 ## Report metadata
 
@@ -77,3 +78,28 @@ Add authoring-only keys to a block when the report needs clearer navigation:
 - `_group` nests adjacent sections in a collapsible group.
 
 These keys are stripped from the block JSON shown in the rendered report. They do not define new block behavior.
+
+## Nested accordions
+
+Use `nested-accordions` when several parent topics each contain several optional details. Keep it to two disclosure levels; use separate report sections instead of nesting deeper.
+
+```jsonc
+{
+  "type": "nested-accordions",
+  "lead": "Open a group, then open only the detail you need.",
+  "items": [
+    {
+      "title": "Discovery",
+      "status": "pass",
+      "items": [
+        {
+          "title": "Inputs",
+          "body": "<p>Customer requests and known constraints.</p>"
+        }
+      ]
+    }
+  ]
+}
+```
+
+Both levels start collapsed. Parent and child `status` values are optional. Child `body` accepts the same authored HTML used by `collapsible`.

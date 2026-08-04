@@ -7,6 +7,7 @@ const BLOCK_FIELDS = {
   "flow-results": ["flows"],
   assertions: ["items"],
   collapsible: ["items"],
+  "nested-accordions": ["items"],
   flowchart: ["steps"],
   userflows: ["steps"],
   "before-after": ["pairs"],
@@ -75,6 +76,33 @@ export function validateReportSource(source) {
     }
     if (block.type === "specs" && !hasValue(block.groups) && !hasValue(block.rows)) {
       errors.push(`${at} requires groups or rows`);
+    }
+    if (block.type === "nested-accordions") {
+      if (!Array.isArray(block.items) || block.items.length === 0) {
+        errors.push(`${at}.items must be a non-empty array for nested-accordions`);
+      } else {
+        block.items.forEach((parent, parentIndex) => {
+          const parentAt = `${at}.items[${parentIndex}]`;
+          if (!isObject(parent)) {
+            errors.push(`${parentAt} must be an object`);
+            return;
+          }
+          if (!hasValue(parent.title)) errors.push(`${parentAt}.title is required`);
+          if (!Array.isArray(parent.items) || parent.items.length === 0) {
+            errors.push(`${parentAt}.items must be a non-empty array`);
+            return;
+          }
+          parent.items.forEach((child, childIndex) => {
+            const childAt = `${parentAt}.items[${childIndex}]`;
+            if (!isObject(child)) {
+              errors.push(`${childAt} must be an object`);
+              return;
+            }
+            if (!hasValue(child.title)) errors.push(`${childAt}.title is required`);
+            if (!hasValue(child.body)) errors.push(`${childAt}.body is required`);
+          });
+        });
+      }
     }
   });
 
