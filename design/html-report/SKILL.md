@@ -43,12 +43,16 @@ Lead with a title and summary that state what the report establishes and why it 
 
 - Keep `context.body` to one or two sentences.
 - Move three or more parallel facts, rules, options, or steps into `context.items`, `properties`, `specs`, `ledger`, `flowchart`, or another fitting structured block.
+- Choose columns by payload, not item count. Classify a repeated set by its densest item:
+  - **Glanceable** — a title, one value or status, and one short sentence. Use up to three columns.
+  - **Comparative** — a short explanation plus one supporting layer such as a list, visual, or evidence note. Use up to two columns.
+  - **Explanatory** — multiple supporting layers such as a metric, chart, rationale, evidence, and conclusion. Use one column, or split the layers into `specs`, `ledger`, or nested accordions.
 - Make the argument apparent from section and item titles; use descriptions for evidence, qualifications, and exceptions.
 - Prefer a few strong sections. Use `specs` for longer descriptions and `ledger` for compact key/value rows.
 - Use media blocks only when the referenced media exists.
 - Preserve the canonical monochrome presentation; reserve color for status.
 
-This step is complete when the headings alone form a useful outline and the report contains no work-log narration or unsupported content.
+This step is complete when the headings alone form a useful outline, every repeated set uses the column count allowed by its densest item, and the report contains no work-log narration or unsupported content.
 
 ### 4. Validate and render
 
