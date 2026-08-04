@@ -27,6 +27,7 @@
     },
     {
       "type": "verdict",
+      "density": "glanceable",
       "_name": "Key findings",
       "items": [
         { "title": "Direction is sound", "desc": "The proposed approach meets the primary goal without adding unnecessary machinery." },
@@ -35,6 +36,7 @@
     },
     {
       "type": "metrics",
+      "density": "glanceable",
       "_name": "Headline numbers",
       "items": [
         { "value": "3", "label": "Workstreams", "note": "All represented in this report.", "ok": true },

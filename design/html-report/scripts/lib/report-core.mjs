@@ -21,8 +21,62 @@ const BLOCK_FIELDS = {
   gaps: ["items"],
 };
 
+const CONTENT_FIT_BLOCKS = new Set(["verdict", "metrics", "charts"]);
+const CONTENT_ITEM_FIELDS = Object.freeze({
+  verdict: new Set(["title", "desc"]),
+  metrics: new Set(["value", "label", "note", "ok"]),
+  charts: new Set(["kind", "title", "data"]),
+});
+const CONTENT_DENSITIES = Object.freeze({
+  glanceable: { rank: 1, maxColumns: 3 },
+  comparative: { rank: 2, maxColumns: 2 },
+  explanatory: { rank: 3, maxColumns: 1 },
+});
+const IDENTITY_FIELDS = new Set(["title", "label", "value", "status", "ok", "kind", "color"]);
+
 const isObject = (value) => value !== null && typeof value === "object" && !Array.isArray(value);
 const hasValue = (value) => value !== undefined && value !== null && value !== "";
+
+function flattenText(value) {
+  if (typeof value === "string") return value;
+  if (Array.isArray(value)) return value.map(flattenText).join(" ");
+  if (isObject(value)) return Object.values(value).map(flattenText).join(" ");
+  return value == null ? "" : String(value);
+}
+
+function structuredLayerCount(value) {
+  if (Array.isArray(value) || isObject(value)) return 1;
+  if (typeof value !== "string") return 0;
+  return [...value.matchAll(/<(?:p|ul|ol|table|figure|details|pre|blockquote|svg|canvas|video|img)\b/gi)].length;
+}
+
+function payloadRank(item, blockType) {
+  const baseline = blockType === "charts" ? 2 : 1;
+  if (typeof item === "string") {
+    const words = item.trim().split(/\s+/).filter(Boolean).length;
+    const sentences = (item.match(/[.!?](?:\s|$)/g) || []).length;
+    return Math.max(baseline, words > 90 ? 3 : words > 40 || sentences > 2 ? 2 : 1);
+  }
+  if (!isObject(item)) return baseline;
+
+  const layers = Object.entries(item).filter(([key, value]) =>
+    !key.startsWith("_") && !IDENTITY_FIELDS.has(key) && hasValue(value)
+  );
+  const text = layers.map(([, value]) => flattenText(value)).join(" ");
+  const words = text.trim().split(/\s+/).filter(Boolean).length;
+  const sentences = (text.match(/[.!?](?:\s|$)/g) || []).length;
+  const structuredLayers = layers.reduce((count, [, value]) => count + structuredLayerCount(value), 0);
+
+  let rank = Math.max(baseline, layers.length >= 3 ? 3 : layers.length >= 2 ? 2 : 1);
+  if (structuredLayers > 0 || words > 40 || sentences > 2) rank = Math.max(rank, 2);
+  if (structuredLayers > 1 || words > 90) rank = 3;
+  return rank;
+}
+
+function inferredDensity(block) {
+  const rank = Math.max(1, ...(block.items || []).map(item => payloadRank(item, block.type)));
+  return Object.entries(CONTENT_DENSITIES).find(([, rule]) => rule.rank === rank)?.[0] || "explanatory";
+}
 
 export function parseReportSource(text, label = "report source") {
   try {
@@ -104,6 +158,41 @@ export function validateReportSource(source) {
         });
       }
     }
+    if (CONTENT_FIT_BLOCKS.has(block.type)) {
+      if (Array.isArray(block.items)) {
+        block.items.forEach((item, itemIndex) => {
+          const itemAt = `${at}.items[${itemIndex}]`;
+          if (typeof item === "string" && block.type !== "verdict") {
+            errors.push(`${itemAt} must be an object for ${block.type}`);
+          } else if (typeof item !== "string" && !isObject(item)) {
+            errors.push(`${itemAt} must be ${block.type === "verdict" ? "a string or object" : "an object"}`);
+          } else if (isObject(item)) {
+            for (const field of Object.keys(item)) {
+              if (!field.startsWith("_") && !CONTENT_ITEM_FIELDS[block.type].has(field)) {
+                errors.push(`${itemAt}.${field} is unsupported for ${block.type}; move supporting layers to a fitting block`);
+              }
+            }
+          }
+        });
+      }
+      if (!hasValue(block.density)) {
+        errors.push(`${at}.density is required for ${block.type}`);
+      } else if (!CONTENT_DENSITIES[block.density]) {
+        errors.push(`${at}.density must be glanceable, comparative, or explanatory`);
+      } else {
+        const inferred = inferredDensity(block);
+        if (CONTENT_DENSITIES[block.density].rank < CONTENT_DENSITIES[inferred].rank) {
+          errors.push(`${at}.density is ${block.density}, but its payload requires at least ${inferred}`);
+        }
+        if (hasValue(block.columns)) {
+          if (!Number.isInteger(block.columns) || block.columns < 1 || block.columns > 3) {
+            errors.push(`${at}.columns must be an integer from 1 to 3`);
+          } else if (block.columns > CONTENT_DENSITIES[block.density].maxColumns) {
+            errors.push(`${at}.columns cannot exceed ${CONTENT_DENSITIES[block.density].maxColumns} for ${block.density} content`);
+          }
+        }
+      }
+    }
   });
 
   return errors;
@@ -130,8 +219,16 @@ export function renderReport(source, template) {
 export function validateRenderedHtml(html) {
   const errors = [];
   if (!/^\s*<!doctype html>/i.test(html)) errors.push("rendered HTML must begin with <!doctype html>");
-  if (!/<script\s+type="application\/json"\s+id="report-data">[\s\S]*?<\/script>/i.test(html)) {
+  const embeddedMatch = html.match(/<script\s+type="application\/json"\s+id="report-data">([\s\S]*?)<\/script>/i);
+  if (!embeddedMatch) {
     errors.push("rendered HTML must contain embedded report-data JSON");
+  } else {
+    try {
+      const source = parseReportSource(embeddedMatch[1], "embedded report-data");
+      errors.push(...validateReportSource(source).map(error => `embedded report-data: ${error}`));
+    } catch (error) {
+      errors.push(error.message);
+    }
   }
   if (/<script\b[^>]*\bsrc\s*=/i.test(html)) errors.push("rendered HTML contains a remote script dependency");
 

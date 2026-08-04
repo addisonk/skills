@@ -24,6 +24,7 @@
     },
     {
       "type": "verdict",
+      "density": "glanceable",
       "_name": "Verdict",
       "items": [
         { "title": "Core flow works", "desc": "The primary path completes at both target widths." },

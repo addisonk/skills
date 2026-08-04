@@ -18,6 +18,7 @@
     },
     {
       "type": "verdict",
+      "density": "glanceable",
       "_name": "Decision",
       "items": [
         { "title": "Selected", "desc": "Render normalized blocks into the existing portable HTML report engine." },

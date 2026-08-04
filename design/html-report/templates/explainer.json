@@ -18,6 +18,7 @@
     },
     {
       "type": "metrics",
+      "density": "glanceable",
       "_name": "What stays reusable",
       "items": [
         { "value": "20", "label": "Canonical blocks", "note": "One shared visual language.", "ok": true },
