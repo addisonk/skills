@@ -1,57 +1,44 @@
-# Claude Code Skills
+# Agent Skills
 
-Open-source skills for [Claude Code](https://claude.ai/code).
+Open-source skills for AI coding agents.
+
+[![skills.sh](https://skills.sh/b/addisonk/skills)](https://skills.sh/addisonk/skills)
 
 ## Skills
 
-### Design
-
 | Skill | Description |
 |-------|-------------|
-| [dieter-rams-design](design/dieter-rams-design) | Industrial design auditor based on Dieter Rams' 10 principles |
-| [steve-jobs-product-design](design/steve-jobs-product-design) | Product design auditor based on Steve Jobs' principles |
-| [lucide-icon-svg-references](design/lucide-icon-svg-references) | SVG icon design auditor and generator based on Lucide's design system |
-| [react-bits-components](design/react-bits-components) | Author animated React components in the React Bits style — Motion / GSAP / OGL shaders / R3F / matter-js across the four-variant registry |
-| [html-artifact](design/html-artifact) | Produce single-file, self-contained HTML artifacts (specs, plans, reports, code-review explainers, design explorations, interactive playgrounds) instead of markdown |
-| [html-report](design/html-report) | Create evidence-bounded, scannable HTML reports with the canonical E2E block library and optional CDN publishing |
-| [simple-copy](design/simple-copy) | Write, edit, or rewrite clear reports, emails, posts, messages, articles, and interface copy without losing meaning or voice |
-| [design-md](design/design-md) | Generate or re-sync a project's DESIGN.md following the Google Labs design.md spec, with a symmetric oklch ↔ hex color converter so both color forms live in the doc |
-| [product-md](design/product-md) | Generate or re-sync an evidence-bounded PRODUCT.md that explains the current product to new teammates and LLMs |
+| [design-md](design-md) | Generate or re-sync a project's DESIGN.md following the Google Labs design.md specification |
+| [design-system-to-html](design-system-to-html) | Extract a product's design system into a reusable HTML reference for on-brand artifacts |
+| [dieter-rams-design](dieter-rams-design) | Audit product design using Dieter Rams' 10 principles |
+| [e2e-test](e2e-test) | Verify web and Expo iOS user flows end to end and publish a shareable HTML QA report |
+| [html-report](html-report) | Create evidence-bounded, scannable HTML reports with optional CDN publishing |
+| [presentational-components](presentational-components) | Build props-only React components and polished primitives with domain-focused hooks |
+| [product-md](product-md) | Generate or re-sync an evidence-bounded PRODUCT.md for teammates and agents |
+| [realtalk](realtalk) | Audit completed agent work against concrete git, PR, artifact, and process evidence |
+| [research-collector](research-collector) | Build a curated, deduplicated, semantically indexed corpus of prior art |
+| [share-screenshots](share-screenshots) | Capture web or Expo iOS screenshots and publish one shareable gallery link |
+| [simple-copy](simple-copy) | Write or edit clear reports, emails, posts, messages, articles, and interface copy |
+| [steve-jobs-product-design](steve-jobs-product-design) | Audit product decisions and experiences using Steve Jobs' design principles |
+| [task-orchestrator-loop](task-orchestrator-loop) | Drive implementation through verification, review, fixes, and re-review |
+| [test-desiderata](test-desiderata) | Evaluate and write tests using Kent Beck's 12 test desiderata |
 
-### Mobile
+## Install
 
-| Skill | Description |
-|-------|-------------|
-| [react-native-reusables](mobile/react-native-reusables) | React Native Reusables component builder and auditor |
-| [converting-web-to-react-native](mobile/converting-web-to-react-native) | Convert React web prototypes to production Expo Router + React Native |
+Browse this catalog on [skills.sh](https://skills.sh/addisonk/skills), or list it from the CLI:
 
-### Agents
+```sh
+npx skills add addisonk/skills --list
+```
 
-| Skill | Description |
-|-------|-------------|
-| [openclaw](agents/openclaw) | Expert guide for crafting OpenClaw agent workspace files (SOUL.md, AGENTS.md, TOOLS.md) |
-| [orchestrating-swarms](agents/orchestrating-swarms) | Multi-agent orchestration using Claude Code's TeammateTool and Task system |
-| [research-collector](agents/research-collector) | Turn an idea into a curated, indexed corpus of prior art via fan-out research, idempotent download, and semantic indexing (Software Factory pattern) |
-| [task-orchestrator-loop](agents/task-orchestrator-loop) | Reusable orchestration loop for coding, bugfix, UI, and design tasks through implementation, verification, review, fix, and re-review cycles |
+Install interactively:
 
-### Dev Tools
+```sh
+npx skills add addisonk/skills
+```
 
-| Skill | Description |
-|-------|-------------|
-| [browser-test-review](dev-tools/browser-test-review) | Review completed features by testing them in the browser |
-| [realtalk](dev-tools/realtalk) | Post-task reality audit — verifies what an agent actually did (git state, whether PRs really merged, files/processes left behind) and forces disclosure of buried friction: work that looks done but isn't, workarounds, guessed evidence, and required follow-ups |
-| [file-suggestion](dev-tools/file-suggestion) | File search using rg + fzf |
-| [userflow-capture](dev-tools/userflow-capture) | Document an app's architecture and main flows as `docs/userflows.html` (interactive swimlane diagram for humans) + `docs/userflows.js` (the same data as a JS file future LLM agents load before touching feature/bugfix work). Two siblings, no server, opens via double-click |
-| [v0-spec-pack-extractor](dev-tools/v0-spec-pack-extractor) | Extract spec packs from any codebase (routes, components, data models) |
-| [presentational-components](dev-tools/presentational-components) | Build props-only React components and polished primitives with domain-focused hooks |
+Install one skill directly:
 
-### Services
-
-| Skill | Description |
-|-------|-------------|
-| [fal-image-gen](services/fal-image-gen) | Generate images and visual assets using fal.ai models |
-| [iframely](services/iframely) | URL metadata extraction and rich media embedding via Iframely |
-
-## Usage
-
-Copy any skill folder into your project's `.claude/skills/` directory, or reference it from your Claude Code settings.
+```sh
+npx skills add addisonk/skills --skill design-md
+```
