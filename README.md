@@ -17,7 +17,6 @@ Open-source skills for AI coding agents.
 | [product-md](product-md) | Generate or re-sync an evidence-bounded PRODUCT.md for teammates and agents |
 | [realtalk](realtalk) | Audit completed agent work against concrete git, PR, artifact, and process evidence |
 | [research-collector](research-collector) | Build a curated, deduplicated, semantically indexed corpus of prior art |
-| [share-screenshots](share-screenshots) | Capture web or Expo iOS screenshots and publish one shareable gallery link |
 | [simple-copy](simple-copy) | Write or edit clear reports, emails, posts, messages, articles, and interface copy |
 | [steve-jobs-product-design](steve-jobs-product-design) | Audit product decisions and experiences using Steve Jobs' design principles |
 | [task-orchestrator-loop](task-orchestrator-loop) | Drive implementation through verification, review, fixes, and re-review |
