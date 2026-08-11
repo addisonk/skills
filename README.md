@@ -9,7 +9,6 @@ Open-source skills for AI coding agents.
 | Skill | Description |
 |-------|-------------|
 | [design-md](design-md) | Generate or re-sync a project's DESIGN.md following the Google Labs design.md specification |
-| [design-system-to-html](design-system-to-html) | Extract a product's design system into a reusable HTML reference for on-brand artifacts |
 | [dieter-rams-design](dieter-rams-design) | Audit product design using Dieter Rams' 10 principles |
 | [e2e-test](e2e-test) | Verify web and Expo iOS user flows end to end and publish a shareable HTML QA report |
 | [html-report](html-report) | Create evidence-bounded, scannable HTML reports with optional CDN publishing |
