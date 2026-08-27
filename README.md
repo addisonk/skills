@@ -12,7 +12,7 @@ Open-source skills for AI coding agents.
 | [dieter-rams-design](dieter-rams-design) | Audit product design using Dieter Rams' 10 principles |
 | [e2e-test](e2e-test) | Verify web and Expo iOS user flows end to end and publish a shareable HTML QA report |
 | [html-report](html-report) | Create evidence-bounded, scannable HTML reports with optional CDN publishing |
-| [im-a-product-designer](im-a-product-designer) | Speak to a product designer for the rest of the session, less implementation and more product |
+| [im-a-product-designer](im-a-product-designer) | Speak to a product designer or PM for the rest of the session, including while they run backend work |
 | [presentational-components](presentational-components) | Build props-only React components and polished primitives with domain-focused hooks |
 | [product-md](product-md) | Generate or re-sync an evidence-bounded PRODUCT.md for teammates and agents |
 | [realtalk](realtalk) | Audit completed agent work against concrete git, PR, artifact, and process evidence |
