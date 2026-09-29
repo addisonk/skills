@@ -1,0 +1,3962 @@
+# Iframely documentation
+
+> Iframely connects products and publishers through rich media, embeds, previews and URL data. Send any URL to the API and get back responsive embed code, oEmbed or unified URL metadata for 1900+ supported providers.
+
+---
+title: "Get started with Iframely API"
+description: "Iframely gives you responsive embeds via oEmbed, Twitter Cards and Open Graph parsers"
+source: https://iframely.com/docs
+---
+
+# Let's connect
+
+If you know where you are heading to, use links to the left. Otherwise, read on.<br>
+This introduction gives the same links in proper context.
+
+## Basic flow
+
+Iframely takes your URL as an input, fetches its semantics from the origin server and tries to return rich media embed codes and other URL data.
+If successful, you'll get `html` as embed code that follows your [API settings](/settings) and optional query-string [parameters](/docs/parameters).
+If the request fails, you'll get an [error code](/docs/result-codes) and a message.
+
+## API endpoint
+
+Iframely API follows JSON format. There are (just) two API endpoints available: one follows [oEmbed spec](/docs/oembed-api), another provides detailed [Iframely data](/docs/iframely-api).
+Think of it as the `&lt;head&gt;` of the origin URL with `&lt;meta&gt;` and media `&lt;link&gt;`s.
+
+oEmbed is excellent for simple embedding. Iframely data brings more [URL meta](/docs/meta) and details about rich media [types & feature flags](docs/links).
+
+[Embed.js](/docs/embedjs) lets you use Iframely without API calls.
+
+## What URLs to send
+
+[We suggest](/docs/providers) you send everything you have. Iframely knows rich media from over 1900 domains but recognizes thousands more.
+We offer that you control what you get by allowing [rich media types](/docs/embeds).
+
+## What to expect as output
+
+[Rich media](/docs/embeds) from third-party publishers comes in a variety of types. Many rich media embeds can be used as-is.
+Some may require an Iframely-hosted [iFrame helper](/docs/iframes) to display correctly.
+For example, [React](/docs/react) does not add third-party scripts, and you will need to [omit scripts](/docs/omit-script).
+
+[Hosted iFrames](/docs/iframes) deliver Iframely interactives such as [summary cards](/docs/cards), [click-to-play](/docs/click-to-play) and [player events](/docs/playerjs).
+
+## Customize & fine-tune
+
+You can control every aspect of Iframely via your [settings](/settings), API [query-string parameters](/docs/parameters) and WYSIWYG editors.
+Initially, your account is configured for the most common use cases.
+
+You can give your authors our [URL options](/docs/options) for individual URLs to choose the media variant just the way they want it.
+
+## Deliver the content
+
+You should cache API responses, including error codes, on your end and refresh your local data periodically.
+We recommend cache time-to-live of 1 to 24 hours.
+
+You can have longer TTLs if you use [hosted iFrames](/docs/iframes) because Iframely will keep updating its rich media for you in the background.
+You may deliver iFrames via [your own CDN](/docs/cdn).
+
+For CMS use, we recommend our [content IDs](/docs/ids) so that you can refresh Iframely data in batches of up to 100 URLs in your articles.
+Otherwise, we recommend that you [manage your origins](/docs/allow-origins).
+
+## Available integrations & guides
+
+Some Iframely integrations are available.
+[WordPress](/wordpress) plugin, [Meteor](https://github.com/itteco/meteor-oembed/) package,
+[Medium](/docs/medium)-like text editor add-on, [CKEditor](/docs/ckeditor) supports Iframely,
+[NodeBB](https://github.com/nodebb/nodebb-plugin-iframely) forums, to mention a few.
+There are also integration guides for [React](/docs/react), [Angular](/docs/angular) and [AMP](/docs/amp).
+
+If you use of Iframely with Web Components, please read about required [Shadow DOM](/docs/shadow-dom) tweaks.
+
+## Become a publisher
+
+Learn about [our robot](/docs/about) and how to recognize and allow it on your network.
+[Publish your rich media](/docs/publish) for Iframely.
+If you already provide embed codes for your users, [submit your site](/qa/request) as a provider.
+
+---
+title: "What URLs to send to Iframely APIs"
+description: "Send us as many URLs as you like. You won't be billed for poor results"
+source: https://iframely.com/docs/providers
+---
+
+# What URLs to send to Iframely?
+
+Iframely is your single API endpoint. We strive to provide embed code or data for every URL. If we miss a provider you think we should support, please [let us know](/qa/request).
+
+Traditional rich media involves a list of URL patterns. It is to detect supported embeds providers and route accordingly. We encourage you to go ahead and send us all your URLs.
+
+Instead of having an allow-list, choose from [supported media types](/docs/embeds) and Iframely interactives in your settings. Request Iframely to reply with an error otherwise. If a URL does not match your criteria, it won't be billed.
+
+## URL patterns
+
+Giving you a definite list of providers is quite a challenge. We simply gave up trying and stopped counting:
+
+- Iframely has rich media from over [1900 domains](/domains) in our QA database.
+- Number of providers offer custom domain for thousands of their customers. Brightсove, Bandcamp, Tumblr, Behance, 23video, Libsyn, Podbean, Art19, Custed, Droplr and many others.
+- Thousands websites make videos they embed discoverable for SEO. We recognize: YouTube, Vimeo, Wistia, Brightcove, Kaltura, Dailymotion, JWPlayer, SoundCloud and others.
+- Local news stations of USA Today, CNE, NBC and other news networks.
+- Self-hosted distributed platforms such as Peertube and Mastodon.
+- Every news, media and blogging site that we provide a [summary card](/docs/cards) for.
+- Direct URL links to an image, [GIF](/docs/gifs), MP4 video, PDF or office file.
+- Any variation of URL shorteners and URL redirects that may mask original URL.
+
+This said, we recommend you send us all URLs that match `/^https?:\/\//i`.
+
+If you absolutely need one, here's the ever-changing list of domains we have in our QA database: [iframe.ly/domains.json](https://iframe.ly/domains.json).
+
+## Manage your own providers list
+
+Alternatively, you can always build a list of URL patterns you want to allow on your end.
+
+To block any of the available domains, you can simply head to [provider settings](/providers) and add any domains that want Iframely to ignore. We'll respond with [error 417](/docs/result-codes#417), no matter the URL redirects.
+
+To disable rich media from individual providers, you may send [&media=0](/docs/parameters#media=0) API parameter. Iframely will disable the media for that individual URL (perhaps, falling back to a [summary card](/docs/cards) if allowed).
+
+> Your providers block list is limited to ~ 800 digits. Use `*` wildcard if required.
+
+## Follow the rules
+Before you send a URL to us, please remember about legal implications of doing so.
+
+According to our [Terms of Use](/terms), Iframely is only a technical intermediary.
+Whereby, you are responsible for adhering to the terms of service for each provider.
+
+For your convenience and quick reference, here are the links to the terms of use of our most popular rich media providers:
+[YouTube](https://www.youtube.com/t/terms), [Twitter](https://developer.twitter.com/en/developer-terms/agreement-and-policy.html),
+[Facebook](https://developers.facebook.com/policy/) and [Instagram](https://www.instagram.com/about/legal/terms/api/).
+
+Each provider will also have their own privacy policy. Please consider our [GDPR](/gdpr) input. If needed or wanted, take a look at our [Consents](/docs/consents) feature.
+
+> Please manage a list of providers if you need to control which third party Terms of Use you bind yourself too.
+
+---
+title: "Third party rich media embed types and sizes"
+description: "Send us as many URLs as you like. You won't be billed for poor results"
+source: https://iframely.com/docs/embeds
+---
+
+# What to expect as rich media
+
+Third-party publishers provide and host rich media. It comes in a variety of types. Iframely lets you control what to allow as embedded content.
+
+The `html` field in API responses depends on your preferences. Many rich media embeds can be used as-is. Some would require an Iframely [iFrame helper](/docs/iframes) to display correctly.
+
+If any widget type does not fit into your system, you can disable it in your settings. Iframely will try and generate an [Iframely card](/docs/cards) instead. You may disable cards too and get URL data to build URL preview yourself..
+
+## Third-party rich media
+
+Iframely gives you granular control and information about rich media types and general URLs data.
+
+In your [media settings](/settings/media), please choose rich media types that work for your product. You do it via [functional use cases](/docs/links#functional-use-case-rels), `rel` in terms of [Iframely API](/docs/iframely-api) format.
+
+- **Apps** - posts, maps, infographics and widgets, ex. Twitter, Facebook, Instagram, Google Maps, CodePen.
+- **Players** - video, audio, podcasts, slideshows, playlists, ex. YouTube, iTunes, NY Times, SoundCloud.
+- **Photos & images** - provider-hosted images like Imgur, 500px, Flickr. Otherwise, images are pulled & hosted by Iframely.
+- **Raw media files** - GIFs and other direct links to image, video or audio files; served by Iframely.
+- **Readers** - long-form readers like Tumblr articles, Twitter timelines, GitHub gists.
+- **PDF** and **Office files** - served via Google Reader and MS Office live. Beware of [GDPR](/gdpr).
+- **Surveys** - include polls, surveys and forms, ex. Apester, PollDaddy, Quizlet, JotForm.
+- **Summary** - publisher's own branded cards for their URL previews, ex.: NY Times, Medium, Airbnb.
+- **Attachment** - attached promo media, such as players embedded in an article. Wrapped into a [media card](/docs/cards).
+
+You may disable any of the types. Instead, Iframely would try to build a [summary card](/docs/cards) in that case. [&media=0](/docs/parameters#media=0) API parameter lets you disable rich media for individual URLs.
+
+Please refer to the list of additional Iframely API [rel flags](/docs/links#functional-use-case-rels).
+
+> You can set APIs to respond with [error 417](/docs/result-codes#417) ("expectation failed") when an URL ends up with no HTML based on your preferences. We do not charge for error URLs.
+
+## Iframely-hosted HTML helpers
+
+Iframely provides and hosts additional optional interactives:
+
+- [Cards](/docs/cards) - summary cards are URL previews. Media cards may contain a player attachment.
+
+- Images - to avoid hot-linking to images, they are delivered via hosted iFrame. Images are fetched and optimized for the user.
+
+- [Click-to-play](/docs/click-to-play) - an image placeholder with the "play" button, so player loads only when the user requests it. If publishers' video autoplays, we cover it with click-to-play by default.
+
+- [MP4 player](/docs/click-to-play) - Iframely-hosted MP4 player delivers raw MP4 files and streams.
+
+- [Player events](/docs/playerjs) - unified JavaScript API helps you control playback.
+
+- [Playback sync](/docs/playerjs) - Iframely stops a playing video if a user starts interacting with another one.
+
+- [Autoplay](/docs/autoplay) - videos are started on scroll, optionally muted.
+
+- [GIFs](/docs/gifs) - Iframely transcodes GIFs into smaller auto-looping MP4 files.
+
+- [User consents](/docs/consents) - if needed for [GDPR](/gdpr) or for its own intrinsic privacy value, you can ask user consents before exposing them to third-party rich media.
+
+Iframely also resolves the number of technical inconsistencies from third-party publishers. Depending on your development environment, you might need a [hosted iFrame](/docs/iframes) to deliver media to an end-user.
+
+---
+title: "Iframely Responsive Async iFrame Helpers"
+description: "Iframely can wrap raw html embed codes into hosted iFrames for security, speed and required fallbacks"
+source: https://iframely.com/docs/iframes
+---
+
+# Iframely-hosted rich media helpers
+
+Iframely hosts iFrame containers for [rich media embeds](/docs/embeds) from publishers. iFrames are served from our or [your](/docs/cdn) CDN.
+
+By default, we activate iFrame helpers only when required for specific rich media. Depending on your system, you may request our iFrames for all content. Or to help with specific technical requirements only. Or disable each fallback or Iframely interactive that may use an iFrame.
+
+Hosted iFrames provide technical features and improvements. Iframely knows [rich media](/docs/embeds) from [over 1900 domains](/domains). It might be overwhelming to keep up with all the inconsistencies. Our iFrame helpers aim to resolve it for you.
+
+All Iframely interactives require a hosted iFrame. It includes [cards](/docs/cards), [consents](/docs/consents), images, [click-to-play](/docs/click-to-play) covers, [player events](/docs/playerjs), sync and [GIFs](/docs/gifs).
+
+> iFrames are part of APIs for billing purposes. They trigger billing hits the same way. Because of this, our default is to activate iFrame only when required.
+
+## Technical and system consistency
+
+Hosted iFrames add the following technical features to all providers.
+
+- **Async load** - our iFrames do not block scripts waiting for `<body>`'s `onload` event. The iFrames load empty, fire `load` event instantly, and only after that, they start rendering their third-party content.
+
+- **JavaScript-friendly** - embeds from some publishers cannot be added to the DOM of your page via JavaScript. For example, if they use `document.write`. We wrap those into iFrame by default to fix that.
+
+- **Third-party scripts** - many systems set HTML via `innerHTML` (say, [React](/docs/react)). They do not execute any third-party scripts in the added HTML. We can wrap such HTML embeds into iFrame and give you a single [embed.js](/docs/embedjs) script that you need to make an exception for. Read more in [Omit scripts](/docs/omit-script) guide.
+
+- **Minimizing layout shift** - Iframely tries to predict the height of dynamic scripted widgets, so they take the required space right away and minimize [CLS](https://web.dev/cls/). It covers Twitter, Facebook and Instagram and other HTML widgets. Our iFrames adjust the height to the exact actual value when it becomes known.
+
+- **HTTPs** - if rich media is not SSL-friendly, we wrap it into our iFrame. If loaded over HTTP, iFrames will show third-party rich media. Over HTTPs, iFrame will fall back to a [summary card](/docs/cards). You can disable all non-SSL rich media.
+
+- **Caching**: Iframely iFrames keep updating their URLs and rich media in the background. You do not need to re-cache embed codes on your own that often.
+
+- **URL options** - you can give your authors our [URL options](/docs/options) for individual URLs to choose the media variant just the way they want it.
+
+- **Web components** - while we call it "iFrames", we use Shadow DOM and imports when it's beneficial. In browsers that support it, we bulk-insert web components via a single HTTP request. You can disable this upgrade in your settings or via `&import=0` [API parameter](/docs/parameters#import=0).
+
+- **AMP** - Iframely interactives and rich media embeds formatted for [Accelerated Mobile Pages](/docs/amp).
+
+- **[Lazy-loading](/docs/lazy-load)** - for all iFrames or players only. For players, we show an image placeholder right. Then swap it with an actual player it finishes loading.
+
+## How we source iFrame helpers
+
+Iframely handles billions of frame-views via our global content-delivery network and through the [bring-your-own CDN](/docs/cdn) option.
+
+Depending on your [plan](/pricing) and settings, the iFrame source will either include the [hashed value](/docs/allow-origins) of your API key or permanent public embed code through the [Content IDs](/docs/ids).
+
+The iFrames with content ID will keep being available even if you decide to cancel your subscription later. Check the box in your [iFrames settings](/settings/media) page or use &id=1 API parameter to turn content IDs on.
+
+HTML of the embed code may contain Iframely's [embed.js](/docs/embedjs) script to resolve the unknown widget height and other features. Embed.js script is available [on GitHub](https://github.com/itteco/embedjs) if you wish to self-host.
+
+To limit the use of your iFrames to your domains only, please refer to [Allow origins](/docs/allow-origins) guide.
+
+## How to activate iFrame helpers
+
+You can activate hosted iFrames in your [API settings](/settings) or by sending `&iframe=1` [query-string parameter](/docs/parameters) with your API requests.
+
+API settings let you configure the use of iFrames in a more flexible way. For example, skip certain domains or only use iFrames when a technical fix or Iframely interactive are needed.
+
+If you'd instead not get any iFrames at all, you may use `iframe=0` with your API calls to disable any helpers.
+
+---
+title: "Keep your Iframely API keys secure"
+description: "Control origins that have access to your Iframely account, activate CORS and CSP"
+source: https://iframely.com/docs/allow-origins
+---
+
+# Keep your API key secure
+
+Iframely authorizes API access using API key tokens. You can create multiple keys and disable/pause them at any time. It is your responsibility to keep your API keys secure.
+
+Iframely has different factor authorization mechanisms depending on how you use your API keys. There's a full API key value, that is meant for server-server communication (also known as "private" key). There is also an API key hash value that you can use in client-facing applications (also known as a "public" key).
+
+Manage your API keys and their restrictions [in your dashboard](/settings/keys). If your key is client-facing, or for [iFrames](/docs/iframes) and thumbnail images, you can restrict referring domain origins.
+
+## Private server access
+
+A private API key (`&api_key` parameter) is meant to make API calls from your server to our servers via [Iframely API](/docs/iframely-api) or [oEmbed API](/docs/oembed-api) endpoints. That is assumed to be a private communication, though the onus is on you to keep the API key safe. If the breach does occur, we recommend generating a new key to replace it right away.
+
+If your not sure about your server API key privacy, you may also set and send us an extra secret HTTP header to authorize API calls. In your key details, enter a HTTP header name and allowed value of your choosing. Iframely will check headers in API calls with your `api_key` and raise `403` response if header is incorrect or not present.
+
+## Public client access
+
+When you make API calls from a client-facing JavaScript, you want to secure your API key.
+
+For this purpose, instead of the private `api_key` parameter that is intended for the server-server calls only, use the client `key`. It should be the MD5 hash value of your actual API key. You can find it on your [keys page](/settings/keys):
+
+  
+
+Unless you use [Content IDs](/docs/ids), we also include that client `key` parameter as the `src` attribute of [Iframely iFrames](/docs/iframes).
+
+This way, no end-user will see your private API key. Only a public client hash value may be exposed to users and can be sure it is used in the client context only. It will allow you to control traffic with that key, allowing only certain referring origins.
+
+If you use [Custom CDN](/docs/cdn), please make sure you configure the `origin` header to be passed through to Iframely.
+
+## Configure allowed origins
+
+> We advise against reconfiguring production API keys as it is likely to cause disruptions. Instead, we recommend adding a new restricted API key. This way, you can test before launching and retire the old key when it is no longer in use.
+
+  
+
+- Select the key from the list to edit it and find the "Activate origin check. Allow these domains only" checkbox.
+- In the text area below the checkbox, list the domain names of your sites, one per line.
+- You can use a wildcard for subdomains such as`*.yourdomain.com`. Beware though, wildcard will allow only the subdomains. Make sure to include your root domain separately if you need it.
+- `www.yourdomain.com` and `yourdomain.com` are two different domains in terms of security. Include `www.` if required.
+
+> Your changes may take up to an hour to propagate through our CDN. Any errors in security headers will stay in the cache for that hour. Make sure you know what you're doing.
+
+Beware of nested browsing context. When our iFrame is in your own iFrame on host A, and you load them both onto your site B, then both A and B domains need to be white-listed.
+
+If the "Activate origin check" checkbox is off, all domains are allowed.
+
+## Technically speaking: CORS and CSP
+
+This is what happens when you activate your domain allowlist:
+
+- `frame-ancestors` HTTP header for Content-Security-Policy is added to Iframely-hosted iFrames. Internet browsers display such iFrames only on the allowed domains and show an error elsewhere.
+
+- Iframely API endpoints start checking the `origin` HTTP header. If the origin isn't on your list, API call is rejected with the error `403` and no cross-origin resource sharing is allowed.
+
+- If an `origin` isn't present at all in a client call, we can also raise error `403`. Please turn the "Require an origin" option on.
+
+> However, Iframely will keep allowing your API calls without an origin when you send your full private API key as `api_key` parameter. We assume it is a server-side API call.
+
+You may skip the restriction for iFrames and thumbnail images and leave it only for data API endpoints.
+
+---
+title: "oEmbed API - Responsive Embeds"
+description: "oEmbed API for Responsive Web Embeds. Open-Source or hosted"
+source: https://iframely.com/docs/oembed-api
+---
+
+# oEmbed API endpoint
+
+One of the (only) two Iframely endpoints follows the [oEmbed](http://oembed.com) protocol:
+
+- You make an HTTP GET request with your link as the `&url=` query-string parameter.
+- If any, HTML embed code is in the `html` field of JSON response.
+
+The `html` and rich media content depend on your [API settings](/settings) and optional [request parameters](/docs/parameters).
+
+If we cannot find third-party rich media for your URL, we will prepare a [summary card](/docs/cards). We deliver it via a [hosted iFrame](/docs/iframes).
+You may request to get an iFrame every time if you need any other technical improvements or Iframely interactives it brings.
+
+## API request
+
+- `url` and `api_key` parameters are required.
+- `url` needs to be URL-encoded.
+- For additional security, you may substitute `api_key` with the `key` parameter. It should be the md5 hash value of your actual API key (see [Allow origins](/docs/allow-origins) guide).
+- There are also other optional [query-string parameters](/docs/parameters) available.
+
+> If you make API calls for each user via client-side JavaScript, use our CDN at `iframely.net/api/oembed/…`.
+
+If you use [Content IDs](/docs/ids), you can repeat the API call at `iframe.ly/{ID}.oembed`.
+You can even fetch data in batches of up to 100 content IDs, separated by `-` hyphen.
+
+## API Response
+
+Iframely responds with a JSON that has a top-level `html` field for embed code and other oEmbed-specific data.
+
+[Here’s an example response for Vimeo](https://iframe.ly/api/oembed?url=https://iframe.ly/qH98az):
+
+```json
+{
+	"url": "https://vimeo.com/141567420",
+	"type": "video",
+	"version": "1.0",
+	"title": "Input/Output",
+	"description": "A new short from Terri Timely and Park Pictures",
+	"author": "Terri Timely",
+	"author_url": "https://vimeo.com/user1946955",
+	"provider_name": "Vimeo",
+	"thumbnail_url": "https://i.vimeocdn.com/…5aebf015a6472-d_295x166",
+	"thumbnail_width": 295,
+	"thumbnail_height": 166,
+	"html": "<div style=\"left: 0px; width: 100%; height: 0px; position: relative; padding-bottom: 56.25%;\"><iframe src=\"https://player.vimeo.com/video/141567420\" style=\"top: 0px; left: 0px; width: 100%; height: 100%; position: absolute;\"></iframe></div>"
+}
+```
+
+Iframely supports `photo`, `video` and `rich` types as oEmbed output.
+
+For valid links, oEmbed API returns `link` type object and URL data when Iframely doesn't have any embed code for your URL. You can also get an [error code](/docs/result-codes) if URL fails.
+
+> Beware: `photo` type in oEmbed spec provides `url` as a hotlink to the image, no `html`.
+
+On plans that support it, Iframely also returns `options` object. Use it to pass [URL embed options ](/docs/options) to your authors.
+
+---
+title: "Iframely API for Responsive Web Embeds"
+description: "Mighty API for Responsive Web Embeds. Based on oEmbed, Open Graph, Twitter Cards"
+source: https://iframely.com/docs/iframely-api
+---
+
+# Iframely API endpoint
+
+Iframely-formatted endpoint provides complete JSON data Iframely could fetch about your URL.
+
+The basic flow is the same as with [oEmbed API](/docs/oembed-api):
+
+- You make an HTTP GET request with your link as the `&url=` query-string parameter.
+- If any, HTML embed code is in the `html` field of JSON response.
+
+The `html` and rich media content depend on your [API settings](/settings) and optional [request parameters](/docs/parameters).
+
+If we cannot find third-party rich media for your URL, we will prepare a [summary card](/docs/cards). We deliver it via a [hosted iFrame](/docs/iframes).
+You may request to get an iFrame every time if you need any other technical improvements or Iframely interactives it brings.
+
+In addition to the main `html` field, Iframely data will also give you URL's unified semantics and attribution as `meta` data and all available publisher's media variants as `links`.
+
+Together, `links` and `meta` sections mimic the `<head>` of a requested web page, similar to Iframely [embeds discovery](/docs/publish).
+
+## API request
+
+- `url` and `api_key` parameters are required.
+- `url` needs to be URL-encoded.
+- For additional security, you may substitute `api_key` with the `key` parameter. It should be the md5 hash value of your actual API key (see [Allow origins](/docs/allow-origins) guide).
+- There are also other optional [query-string parameters](/docs/parameters) available.
+
+> If you make API calls for each user via client-side JavaScript, use our CDN at `iframely.net/api/iframely/…`.
+
+If you use [Content IDs](/docs/ids), you can repeat the API call at `iframe.ly/{ID}.json`.
+You can even fetch data in batches of up to 100 content IDs, separated by `-` hyphen.
+
+## API response
+
+Iframely responds with a JSON that has a top-level `html` field with our recommendation as embed code. Plus all other information we have found about your URL.
+
+[Here’s an example response for Vimeo](https://iframe.ly/api/iframely?url=https://iframe.ly/qH98az):
+
+```json
+{
+  "id": "qH98az",
+
+  // URL Content ID (if available) plus canonical URL
+  "url": "https://vimeo.com/141567420",
+
+  // Rel use cases and html code for primary variant of embed
+  // Check for `autoplay` if you requested it
+  "rel": ["player", "ssl"],
+
+  // That's the embed code we recommend
+  "html": "<div …>…</div>",
+
+  // Meta object with attribution & semantics
+  "meta": {
+    "title": "Input/Output",
+    "description": "A new short from Terri Timely and Park Pictures",
+    "author_url": "https://vimeo.com/user1946955",
+    "author": "Terri Timely",
+    "site": "Vimeo",
+    "canonical": "https://vimeo.com/141567420",
+    "duration": 249,
+    "date": "2015-10-06",
+    "medium": "video"
+  },
+
+  // Plus list of all media that we have for this URL
+  // Embed src links with functional rels, for example:
+  "links": {
+
+    // List of player embed widgets
+    "player": [{
+
+      // SRC of embed
+      "href": "https://player.vimeo.com/video/141567420",
+
+      // Functional and technical use cases
+      "rel": ["player", "ssl", "html5"],
+
+      // Link's MIME type, says "embed as iFrame"
+      "type": "text/html",
+
+      // Media query, e.g. aspects
+      "media": {
+        "aspect-ratio": 1.777778
+      },
+
+      // Plus generated HTML code for simplicity of use
+      "html": "<div … ></div>"
+    }, {
+      …
+      // Might have multiple variations of the same player.
+      // Say, one that 'autoplay's, one as MP4 video, one as https.
+    }],
+    "thumbnail": [{
+      "media": {
+        // Exact sizes here
+        "height": 360,
+        "width": 640
+      },
+
+      // We repeat the same rel for consistency
+      "rel": ["thumbnail"],
+      "type": "image",
+
+      // "Use href as src of an image"
+      "href": "http://cdn1.aka … med_1381670134_00040.jpg"
+    }, {
+      …
+    }],
+
+    // Also possible: header-menu, image (as rel), reader, survey, file, logo, icon
+
+    "icon": [{
+      …
+    }]
+  }}
+```
+
+- `rel` is the primary information about the use case of the embeds. Primary rels are `player`, `thumbnail`, `app`, `image`, `reader`, `survey`, `summary`, `icon` and `logo`.
+
+- `meta` will contain the list of semantic attributes we could get and unify to the standard naming.
+
+> Array values with only one element will go as a single object (i.e. no `[]`).
+
+On plans that support it, Iframely also returns an `options` object. Use it for [URL Options](/docs/options) editor.
+
+---
+title: "Embed.js library to unfurl rich media embeds"
+description: "Generate responsive embed codes for media players, rich other embeds and summary cards"
+source: https://iframely.com/docs/embedjs
+---
+
+# Embed via JavaScript
+
+Iframely hosts the `embed.js` JavaScript library that works in orchestrations with [hosted iFrames](/docs/iframes) for third-party rich media and Iframely interactives.
+
+We include the `embed.js` by default as `<script>` to the HTML code of API responses when required if you get your data via our [oEmbed](/docs/oembed-api) or [Iframely API](/docs/iframely-api).
+
+This document describes the library's events, methods and callbacks that you can use.
+
+You may also use the library to unfurl URLs on your page without making API requests first. Instead of content-specific HTML codes from APIs, you could create an HTML template yourself. The HTML code will be less optimized for [layout shift](https://web.dev/cls/) but will work well otherwise.
+
+## Unfurl URLs without API calls
+
+### Add `embed.js` to your page
+
+You can add the `embed.js` script in `<head>` of your page, or in its `<body>`. In the latter case, you'd probably want to add it before all other to avoid the need to run load function.
+
+```html
+<script async src="https://iframely.net/embed.js?key={MD5_KEY}"></script>
+```
+
+To load the `embed.js` script conditionally, only when rich media is on your page, please copy-paste this [example gist](/docs/omit-script#load-when-required).
+
+- `src` should have either your `api_key` or its MD5 hash value as a `key` parameter in the query-string.
+- Securing API by managing [allowed origins](/docs/allow-origins) is recommended for production use.
+- You may add any of the other supported [query-string parameters](/docs/parameters).
+- If you use a [custom CDN](/docs/cdn), source the `embed.js` script from your domain name.
+
+> You may also self-host the `embed.js` script. It is available [on GitHub](https://github.com/itteco/embedjs) and NPM.
+
+### HTML templates for your URLs
+
+Iframely's `embed.js` will search for the following links on your page with `data-iframely-url` attribute:
+
+```html
+<div class="iframely-embed">
+	<div class="iframely-responsive">
+		<a data-iframely-url href="{URL_TO_EMBED_HERE}"></a>
+	</div>
+</div>
+```
+
+During its load cycle, `embed.js` replaces all such URLs with Iframely iFrame corresponding to the `href` link.
+
+If all links are already in the DOM before you load the `embed.js` script, you'd get all links unfurled. If you load the `embed.js` before adding HTML template elements to your page, please see "Adding links dynamically" below.
+
+You may add `iframely-embed` and `iframely-responsive` styles to your page yourself, as described in our <a href="/docs/omit-css">omit-CSS</a> document. It helps with layout shift until after `embed.js` is loaded.
+
+> Still, if [cumulative layout shift](https://web.dev/cls/) is critical, you'd be better off using APIs instead.
+
+### Adding links dynamically
+
+If you add links dynamically, say, in a chat application or after the `embed.js` script is loaded, there's an extra step for you. Please call `embed.js` loader explicitly:
+
+```js
+iframely.load();
+```
+
+It will fetch all the missing links and unfurl them. You can also specify an element which `<a>` element to replace with its rich media Frame:
+
+```js
+iframely.load(linkElement);
+// linkElement - is an <a> with 'href' attribute to replace
+```
+
+Alternatively, you may skip the HTML template altogether and specify container element and an URL to put there directly:
+
+```js
+iframely.load(containerElement, 'https://{YOUR_URL_HERE}');
+```
+
+### Act when unfurling fails
+
+Perhaps an original link or its rich media are no longer available. For example, it was removed from YouTube, became private on Facebook, or changed you changed API settings and didn't allow that media type any longer.
+
+Embed.js will automatically hide such failed rich media. If there's a container of rich media elements you want to hide, there are a couple of ways to do it.
+
+- You may source `embed.js` with optional `&parent=…` parameter containing CSS style name of the parent container. Iframely will find the first parent element with such class name and hide it, leaving the rest of your page tidy.
+
+```js
+<script async src="https://iframely.net/embed.js?api_key=…&parent={CLASS_NAME}"></script>
+```
+
+- Alternatively, you can listen for the "after cancel" event and handle it as your app requires:
+
+```js
+iframely.on('cancel', function (url, parentNode) {
+	// url - the original URL to rich media
+	// parentNode - container of the deleted rich media
+	//   e.g.: send a notification to your CMS to remove URL
+	//   or restore simple <a href> link so users can click on it
+});
+```
+
+- If you only need to restore the failed URl as `a href` link to the same resource, you can source `embed.js` with the parameter `&cancel=0`, and it will convert cancelled widgets into a link.
+
+## Card events
+
+`embed.js` raises a click event if you need to runa ny analytics when your user clicks in a [summary card](/docs/cards):
+
+```js
+iframely.on('click', function (href) {
+	// For example, call Google Analytics
+	ga('send', 'event', {
+		eventCategory: 'URL preview',
+		eventAction: 'click',
+		eventLabel: href
+	});
+});
+```
+
+All clicks in cards open the URL in a new tab, except for the cards of your own domain. The same domain URLs are opened in the same window to allow for seamless navigation.
+
+To change that, override `iframely.openHref` function:
+
+```js
+iframely.openHref = function (href) {
+	// You're in full control now
+};
+```
+
+## URL options events
+
+iFrames that are sourced with [content IDs](/docs/ids) will declare [per-use options](/docs/options) for a URL they represent.
+
+For Iframely in a text editor, use those options to build a unique customization form for that URL.
+
+```js
+iframely.on('options', function (widget, options) {
+	// Use our options.js to build the options form for your text editor
+});
+```
+
+## Shadow DOM
+
+When you place Iframely card and other rich media embed codes into Shadow DOM, there may be issues.
+
+Please see the guide about how to [use Iframely embeds with Web Components](/docs/shadow-dom).
+
+---
+title: "Optional query string parameters for Iframely APIs"
+description: "Configure parameters in your settings or send with every API call"
+source: https://iframely.com/docs/parameters
+---
+
+# Additional API parameters
+
+Together with your API settings, optional query-string API parameters help you fine-tune what you receive from APIs.
+
+API parameters let you override your settings for individual URLs and API calls.
+
+For individual URLs, Iframely also offers an [options editor](/docs/options).
+It adds a variety of provider-specific `_`-prefixed parameters to fine-tune particular rich media.
+
+## Required parameters
+
+### `api_key`
+
+The API key you see in your profile. If your code faces users, you may replace `api_key` with `key` parameter, which should be the MD5 hash of your actual API key.
+
+See how to [restrict API access](/docs/allow-origins) with your `key` in that case.
+
+### `url`
+
+URL-encoded value of the URL. Also, make sure it's HTTP or HTTPs link (we suggest you match against `/^https?:\/\//i`).
+
+<div id="url-encode"></div>
+
+> Please URL-encode the URLs you send to Iframely. Seriously.
+
+## iFrame helpers
+
+Below parameters are meant to complement your API settings. If you are in production and want to test some features, you may activate them via these query-string parameters.
+And vice versa - if you have a feature in your settings, you can disable it via query-string.
+
+To choose between query-string and API settings, consider this. Unlike your API settings, API query-string will be included with embed codes and you won't be able to undo it without making another API request.
+Settings will be applied to all Iframely [iFrames](/docs/iframes) that are already on your site.
+
+> When we give `=1` as parameter value, `=0` is also available to undo the feature in your settings.
+> You can use `true` and `false` values instead, if you like it better.
+
+### `iframe=1`
+
+Explicitly activates our async [iFrames](/docs/iframes).
+
+Rich media from the publisher will be put into Iframely-hosted iFrame and include the required delivery helper.
+The media inside an iFrame will be kept up-to-date in the background on our end.
+
+### `iframe=0`
+
+- Disables any required iFrame [display helper](/docs/iframes#technical-and-system-consistency).
+- Disables any allowed Iframely interactive such as [cards](/docs/cards), [click-to-play](/docs/click-to-play) and images.
+- If any, you will get rich media from the publisher as-is and handle it yourself.
+
+> In [oEmbed API](/docs/oembed-api) format, we cannot fit any autoplaying videos.
+
+### `id=1`
+
+If your plan supports it and during the initial trial period, the parameter adds a [content ID](/docs/ids) to the API response.
+
+When you need to refresh the cache, you can use those IDs to re-fetch data in batches of up to 100 URLs.
+
+For [hosted iFrame](/docs/iframes), it will link the source to content ID rather than your API key.
+iFrames with IDs will remain in service even if you decide to cancel your subscription.
+
+### `omit_script=1`
+
+[Rich media](/docs/embeds) embed codes may also include `<script>` tag. Your system, for example, [React](/docs/react), may nullify scripts to prevent cross-site scripting attacks. The HTML content will not properly render.
+
+`omit_script` parameter puts all such rich media into [Iframely iFrame](/docs/iframes). This affects Twitter, Facebook, Instagram, TikToks and others.
+
+Our [embed.js](/docs/omit-script) script is also excluded from responses. We ask you to make an exception for it and add it to your page directly.
+
+See our complete [scripts delivery guide](/docs/omit-script).
+
+### `import=0`
+
+In browsers that support it, we may switch to bulk insert or rich media embeds. We use Web Components instead of iFrames to save on HTTP requests.
+
+`import=0` disables shadow DOM and imports. Iframely will use iFrame elements only.
+
+### `omit_css=1`
+
+Replaces inline styles in HTML embed code with [CSS class names](/docs/omit-css).
+
+It also lets you fine-tune embed codes via CSS. It will add `iframely-embed` class, rel classes such as `iframely-player`, and domain classes such as `iframely-youtube`.
+
+### `align=left`
+
+Removes default center aligning of Twitter, Facebook, Instagram and other media restricted with a max-width by publisher.
+
+### `lazy=1`
+
+Activates [lazy-loading](/docs/lazy-load) when Iframely returns a [hosted iFrame](/docs/iframes). For players, we put an image placeholder first. Then swap it with the video when it is loaded.
+
+## Interactive features {#iframe=card}
+
+### `card=1`
+
+Puts rich media into a [media card](/docs/cards#media-cards). Works for players, images and some apps.
+
+Use `&card=small` to force a compact card layout.
+
+### `amp=1`, `amp=iframely`, `amp=iframe`
+Formats HTML code output for Accelerated Mobile Pages framework. See [our AMP guide](/docs/amp).
+
+### `playerjs=1`
+
+Activates [Player.js](/docs/playerjs) events to control playback where possible. Requires and is delivered via [hosted iFrame](/docs/iframes).
+
+### `click_to_play=1`
+
+Activates [click-to-play](/docs/click-to-play) mode for players. The player will be loaded only when requested by user.
+
+### `consent=1`
+Puts rich media into a [hosted iFrame](/docs/iframes) and activates [consents](/docs/consents) before your user is exposed to third-party rich media. Though not required for [GDPR](/gdpr), can be used for its own privacy value.
+
+### `theme=dark`, `theme=light`, `theme=auto`
+Overrides your default [theme settings](/docs/cards#themes) for cards, [consents](/docs/consents) and select rich media publishers that support themes (say, Twitter).
+
+In "auto" mode, Iframely will match the user's operating system preferences. Cards will work out of the box.
+
+Our auto-toggle for third-party providers uses `Sec-CH-Prefers-Color-Scheme` client hint header. It will require [additional configuration](https://web.dev/migrate-to-ua-ch/#strategy:-delegating-hints-to-iframes) of your (parent) page and [your CDN](/docs/cdn#for-any-cdn-provider):
+
+> For `theme=auto` to work, your parent page needs to request client-hints from user's browser by setting this HTTP header: `Accept-CH: Sec-CH-Prefers-Color-Scheme`. Iframely will handle the rest.
+
+## Content filters
+
+### `language`
+
+`Accept-Language`. For all publishers, it makes Iframely parsers fetch HTTP resources with that locale as the top choice via `accept-language` header (default is `en,*`). Many sites render different meta depending on language locale.
+
+For some supporting rich media publishers, it also sets interface language.
+
+The parameter value is an [ISO 639-1](http://www.loc.gov/standards/iso639-2/php/code_list.php) fully specified locale of two-letter language and region codes.
+For example, `fr-CA` or `fr-FR` are both valid values. For some languages, Iframely might accept just the two-letter language code and add the default region code automatically.
+
+We recommend testing your locale choice with Twitter, Facebook, YouTube and TED before pushing it live.
+Instagram should also use either that language or the one from the user's browser.
+
+### `ssl=1`
+
+Returns only rich media that works under HTTPs with no active SSL mixed-content warnings.
+
+### `media=1`
+
+"Prefer media-only". For some publishers, Iframely knows status-like `app` rich media AND simple media, such as photos or video.
+This option will make Iframely return the most straightforward media in the `html` field instead.
+
+### `media=0`
+
+Disables any rich media from a publisher and forces URL to try and resolve into a [summary card](/docs/cards) instead.
+
+### `autoplay=1`
+
+Activates [autoplay](/docs/autoplay) for players when possible. Check for `autoplay` in main `rel` to confirm. Add `&mute=1` to mute the playback.
+
+## Code helpers
+
+### `maxwidth`
+
+Integer value, in pixels and without a unit of measure, for example `=800`. This is how it applies:
+
+- When third-party rich media is a responsive iFrame-based (for example a YouTube player), requesting a `maxwidth` parameter will make Iframely to echo it as `width` attribute of the resulting iFrame. The `height` attribute of the iFrame include the properly calculated height according to the requested width.
+
+> This is just a code helper for environemnts that restrict iFrames to having `width` and `height` parameters. The `maxwidth` does not affect the size of the iFrame in HTML. iFrame will still resize to 100% of the available width. If need be, we ask you to restrict the width the container on your side or use [&omit-css=1](#omit_css=1) instead.
+
+- When third-party rich media is a responsive iFrame-based, `maxwidth` parameter will also make Iframely add `width` and `height` properties to our response in [oEmbed API](/docs/oembed-api) format. Use this if you need to migrate your legacy oEmbed integration that relies on width and height.
+
+- `maxwidth` will also filter out a tiny number of third-party media that only supports a fixed size that is bigger than requested.
+
+- `maxwidth` does not affect Iframely [cards](/docs/cards) and rich media that is not iFrame based, such as script-based Twitter, Facebook, Instagram, TikTok and others.
+
+### `maxheight`
+
+- Integer value, in pixels and without a unit of measure, for example `=600`.
+- Or a percent of viewport height, as in `=100vh`.
+
+Parameter applies in the following cases:
+
+- For responsive apps, players and images with fixed aspect ratio. Iframely takes your `maxheight` and media's aspect ratio and calculates the max width that would match your `maxheight`. It is set as `max-width` inline style of HTML output so that responsive media isn't taller than the requested `maxheight`.
+
+- In Iframely iFrame, for HTML-based embeds like Twitter, Facebook, Instagram, Gists whose dynamic height becomes known only after rendering. The `maxheight=` parameter in pixels is respected, and such widget won't exceed the requested size. Instead, if rich media becomes taller than the max-height, Iframely iFrame starts showing an internal scrollbar.
+
+> `maxheight` is ignored in all other cases.
+
+### `origin`
+
+It is an optional text value tag that will help you later verify your API traffic. The default value is the one you give for your [API keys](/settings/keys).
+
+You may override origin to indicate your end-customer or other functional categories. That way, you may request us to delete all links with origin from your account. It addresses the "right to be forgotten" of the EU GDPR act.
+
+### `callback`
+
+Name of a JavaScript function, if you need the response as JSONP.
+
+### `format=xml`
+
+For oEmbed API only, if you'd like to get your response as XML.
+
+### `title=1`
+
+Adds title attribute to all iFrames in the embed codes (hosted or native). Use this if you need to meet Level AA of Web Content Accessibility Guidelines (WCAG) 2.1.
+
+For `a`-based hosted code, it adds page title as the text in `<a>…</a>` tag. Use this if your CMS sanitizes links with no content or if you have SEO concerns.
+
+This title also makes the links that are no longer available at the origin (e.g. 404) to keep falling back to a regular HTML link (otherwise, Iframely removes such N/A widgets by default).
+
+## For individual embeds publishers
+
+Many rich media publishers provide various embedding options.
+
+By default, Iframely provides rich media that we believe fit the most common use cases. But you, of course, might want it differently.
+
+Most frequently requested adjustments are available for self-service in your [settings](/providers).
+For other cases, our team can configure the exact embeds you like for your favourite publishers. [Ask away](mailto:support@iframely.com).
+
+## For individual URLs
+
+### `_ … =`
+Per-use customization is available for CMS and text editors.
+
+In addition to your default account's settings, API parameters and custom providers configuration, your users may choose a variant for an individual rich media in a specific post.
+
+Our [per-URL options](/docs/options) editor will suggest additional query-string parameters for each URL and rich media publisher, starting with underscore `_` prefix.
+
+You give these options to your editors to choose from, then repeat requests to Iframely APIs with the chosen query-string for a specific rich media variant.
+
+---
+title: "Iframely result codes and error handling"
+description: "Here's the error codes you might receive from Iframely"
+source: https://iframely.com/docs/result-codes
+---
+
+# Result codes, error handling
+
+If all goes well, Iframely responds with HTTP status code `200` and URL data. For problems with the URL or with your account, Iframely returns an error status in `4xx` range and a text message:
+
+```json
+{
+	"status": "403",
+	"error": "Valid api_key is required to access API"
+}
+```
+
+Depending on your [app's settings](/settings/about), Iframely can also reiterate `status` as the HTTP status code of API response.
+By default, Iframely mutes such HTTP errors.
+You always get HTTP code `200` instead as an "OK" signal about the API status itself.
+
+> Please handle all `4xx` result codes: these are valid responses and need to be cached.
+
+## Issues with requested URL
+
+### `404`
+
+The destination URL is no longer available at the origin. Provider replied with `404` or `5xx` error, or there was a problem establishing a connection to the destination server.
+
+### `410`
+
+"Gone". Similar to `404`, but for URLs that were previously available but now return HTTP errors. You can remove obsolete URL data from your system now.
+
+### `403` or `401`
+
+For private pages that Iframely could not reach for processing. Or if the robots directive on the page prevents Iframely from parsing it.
+
+### `415`
+
+"Unsupported media types". For example, ISO-2022 encoding or direct links to JavaScript files are not supported.
+
+If we see unrendered server templates, we may raise a `415` code for React or Angular origin servers. You users don't need to see it in URL meta.
+
+### `418`
+
+Originally the code `408`, we changed it not to cause any issues in your reverse proxies. We raise "timeout" code when an origin server takes too long to respond.
+
+By default, Iframely expects origins to finish responding within 10 seconds. Iframely will wait 10 mins before re-trying such timed-out URLs again to give the troubled origin server some time to recover.
+
+### `417`
+
+Any other response with a non-`200` status or other connection issue will get a status `417` raised by Iframely.
+
+In that case, we will also add the `:status` property to the response with actual HTTP/2 status code we received:
+
+```json
+{
+    "status": 417,
+    "error": "Iframely could not fetch the given URL. 503",
+    ":status": 503
+}
+```
+
+If there was a connection issue, the response will include `:error` property instead of `:status`. The property will contain any of the Node.JS TCP, SSL and HTTP or HTTT/2 [error code literals](https://nodejs.org/api/errors.html#nodejs-error-codes). 
+
+```json
+{
+    "status": 417,
+    "error": "Iframely could not fetch the given URL. ECONNREFUSED",
+    ":error": "ECONNREFUSED"
+}
+```
+
+Most frequent errors are `ENOUTFOUND` (of "not found" if raised by us), `ETIMEDOUT`, `ECONNREFUSED`, `ECONNRESET`, `EPROTO`, `EAI_AGAIN`, `EHOSTUNREACH`, `ERR_INVALID_URL`, `ERR_SSL_*`, `ERR_INVALID_HTTP_TOKEN` and more.
+
+## Your account or API settings
+
+### `403`
+
+If the API request cannot be authorized:
+
+- An API key isn't valid.
+- An account is not in good standing.
+- Your settings do not allow an origin of the API call ([about blocking referrers](/docs/allow-origins)).
+
+### `417` - "expectation failed"
+
+Iframely will also respond `417` when a URL was ignored based on user list or other settings. 
+
+- Returned if you opted to ignore URLs that do not yield [third-party rich media](/docs/embeds) or an Iframely interactive.
+- When explicitly block specific publisher domain via your API settings (see below).
+
+As Iframely is constantly evolving, we may need to introduce other additional codes from time to time. Please let us know if you requre any help with interpreting our results.
+
+> In an unlikely event that you received a `5xx` HTTP error, please [let us know](mailto:support@iframely.com) right away to address our server-side problem.
+
+---
+title: "Embed Options - per-use embed code customization"
+description: "Let your users customize individual rich media embeds for their posts, right in the text editor"
+source: https://iframely.com/docs/options
+---
+
+# URL options form in your editor
+
+Designed for text editors and CMS, Iframely per-use URL options let your authors fine-tune individual rich media, choosing from specific micro variants each publisher supports for their embed codes.
+
+Iframely declares available micro customization options as additional, provider- and content-specific query-string parameters for each URL you give us.
+
+You can preview the options available for your URLs in our [Check URLs](/try) tool. The media customization form is right below an embed code:
+
+Options come in a simple JSON structure. Use it to generate an HTML form and give it to your authors and editors. When your user selects an option, please send it to Iframely as the query-string parameter.
+
+> Alternatively, you may simply point your authors to [this guide](/docs/cherry-pick) and let them cherry-pick embed for each URLs and use options without the need of full options editor.
+
+## Options JSON format
+
+Options declaration should be intuitive and easy to read. Here's the simplest JSON declaration of text caption option for individual Instagram's posts:
+
+```json
+{
+	"options": {
+		"_showcaption": {
+			"value": true,
+			"label": "Show author's text caption"
+		}
+	}
+}
+```
+
+Essentially, we declare available query-string parameters for API calls. You can repeat your API calls with those options as parameters that are unique for each provider and URL:
+
+```
+iframe.ly/api/oembed?url={URL}&_showcaption=false
+```
+
+- Available query parameters come as the keys in the `options` object.
+- Each parameter is an object. It includes a current `value` and a `label` to describe that option to the end-user.
+- Type of `value`, as well as other attributes, describe the form UI element for that option.
+- For example, a boolean `value` translates into a simple checkbox.
+
+Parameters that are specific to given rich media will start with `_` underscore prefix.
+
+Iframely may add some of its interactive options based on all URL data. We do not underscore such options as they match our [API parameters](/docs/parameters). For example, [&media=0](/docs/parameters#media=0) parameter for a [media card](/docs/cards#media-cards).
+
+Options JSON may also have a reserved `query` key. It echoes any API parameters that you send to us. It is to help your app detect default option values and the ones that your user selected:
+
+<pre><code class="language-json">"query": ["_theme", "_playlist","_artwork"]</code></pre>
+
+## Parameter input types
+
+### Checkbox
+
+Ex. Twitter:
+
+```json
+_hide_thread: {
+	value: true,
+	label: "Hide parent Tweet"
+}
+```
+
+### Text input
+
+Ex. YouTube:
+
+```json
+_start: {
+	value: "7",
+	label: "Start from",
+	placeholder: "ex.: 11, 1m10s"
+}
+```
+
+### Radio group / selectbox
+
+Ex. Soundcloud:
+
+```JSON
+_height: {
+	value: "400",
+	label: "Adjust height",
+	values: {
+		"300": "300px",
+		"400": "400px",
+		"600": "600px"
+	}
+}
+```
+
+### Range input
+
+Ex. Google Maps:
+
+```JSON
+_zoom: {
+	value: 17,
+	label: "Zoom",
+	range: {
+		max: 21,
+		min: 3
+	}
+}
+```
+
+These're all the option types you may get. See below for hints on the options form UI.
+
+### Example & test
+
+Here's an example of full options object with most of these types (CodePen):
+
+```json
+options: {
+	_theme: {
+		value: "dark",
+		values: {
+			auto: "Default",
+			dark: "Dark",
+			light: "Light"
+		},
+		label: "Theme color"
+	},
+	_click_to_load: {
+		value: true,
+		label: "Use click-to-load"
+	},
+	_height: {
+		value: "600",
+		label: "Adjust height",
+		placeholder: "ex.: 600, in px",
+	},
+	query: ["_height", "_theme"]
+}
+```
+
+Can you tell what's a checkbox, what's a radiogroup and what's a text input? Which options are not default?
+
+[Check yourself](/try?url=http%3A%2F%2Fcodepen.io%2Fdudleystorey%2Fpen%2FHrFBx?_theme=dark&_height=600).
+
+## The options flow
+
+Iframely assumes the following workflow.
+
+- You get available parameters JSON from us in two ways: a) as part of an API response and b) as an event message from [iFrames](/docs/iframes) itself.
+- If options JSON is available, you generate a form UI for your URL using declared parameters and give that form to your users to fine-tune their rich media.
+- When a user chooses an option, you need to listen for or request a new options JSON. Selecting parameters may affect further customization options. Then, re-render the form with updated options.
+- We recommend keeping parameters selected by your users. We suggest storing them as data- attributes of the URL element in your CMS for future use.
+- To retrieve an updated embed code, or when you need to refresh URL's cache, repeat API calls to Iframely with the user-selected options as API query-string parameters.
+
+This flow doesn't require the use of [Hosted iFrames](/docs/iframes) and will work just as well if you opt for native embed codes from the publisher (retrieve options only via API requests in that case).
+
+However, suppose you choose to use our iFrames as a WYSIWYG preview. In that case, you can append the query string to iFrame's src and get an updated preview right away (and your CMS can, later on, retrieve the actual optimized embed codes for that URL and parameters, hosted iFrames or native).
+
+## Rendering options form
+
+> Spoiler: Iframely also offers `options.js` script with handy render helpers. Skip to next.
+
+### Mapping parameters to input types
+
+Mapping parameters to HTML inputs should be reasonably intuitive and follow HTML naming specs for the attributes. Here're some less apparent considerations:
+
+- We recommend a radio group instead of a select box if there are less than three choice options in suggested `values`.
+- You may go as far as to have an "inline" one-line radio group if the labels of the values are short.
+- If the current `value` of text input is an integer, you might consider input type `number`.
+- Text inputs will also help `placeholder` attribute to hint your users.
+- For range sliders, use the `min` and `max` of a `range` object of an option.
+
+### Before you render
+
+Make sure you understand the following caveats.
+
+- Iterate through `options` keys, but don't forget to skip the reserved `query` key.
+- Store the initial state of `options` the first time you receive it. This way, you won't need to send us the default values if the user changes the form back to defaults.
+- Not only options are unique for each provider. They also depend on URL content itself, as well as on previously selected options.
+- Therefore, please change the request's query-string and re-render the form when your user updates any option. A new option may become available, or some older ones become disabled.
+- If you use our iFrames for WYSIWYG previews and append the parameters as query-string to its `src`, don't forget to run an API request with the same query-string before publishing the codes to the end-user. This way, you'll get an optimized and production-ready HTML with proper sizing and other attributes.
+- As the form is on your side (we only suggest `options`), you control which parameters to use. For example, you might skip all options that do not start with `_` as these are options for Iframely-powered interactives. Say, [card=1](/docs/parameters#card=1) when we return a card.
+- Labels internationalization is out-of-scope, at least for now. To translate labels on your end, see the suggestion in the next section.
+
+Not every URL will declare customization options. The `options` will be undefined for such URLs. iFrame event will always be triggered, even with `null` options, if only to clear the previous form.
+
+> We'll be happy to add more customization options if we miss any you need. Ping support.
+
+### An exception to options mapping
+
+Last but not least, there is an edge case:
+
+```json
+media: {
+	value: "",
+	values: {
+		"1": "Just the image"
+	}
+}
+```
+
+We ask that you treat all such single `values` as a checkbox, and if it's checked - send the actual value to us. If unchecked - skip that parameter altogether.
+
+## Render a form with options.js
+
+Iframely offers the `options.js` script that takes an `options` object and outputs HTML code that you can contextually add to your text editor. Use it as-is, or customize, or just take a look as the implementation reference.
+
+[See it on GitHub](https://github.com/itteco/embedjs)
+
+### Source options.js
+
+`options.js` is an extension of our [embed.js](/docs/embedjs) script and can be sourced from our CDN as [iframely.net/options.js](https://iframely.net/options.js). Or you can get it [on Github](https://github.com/itteco/embedjs) and adapt/host yourself.
+
+Please add `embed.js` to your page before you load `options.js`.
+
+### Register URL options
+
+If you use [hosted iFrames](/docs/iframes) with [Content IDs](/docs/ids), you can start by listening for a message from them:
+
+```javascript
+iframely.on('options', function (widget, options) {
+	// register options to the context, perhaps invisible
+	// set any context ID - you'll need it next
+	// when user clicks for the context edit menu
+	// show form, using the next method
+});
+```
+
+Or simply register options when you get it in an API response in a similar way.
+
+### Build options form
+
+When it's time to build and show the form, call:
+
+```javascript
+iframely.buildOptionsForm(id, formContainer, options[, translator]);
+```
+
+- `id` - any id, likely unique to URL. Used to remember default options and is echoed back when options change.
+- `formContainer` - HTML DOM Element where the script will add form's HTML to.
+- `options` - options JSON you received from Iframely, either as iFrame message or API response.
+- `translator` - optional translator function that takes a label and returns a new string. You can use built-in `iframely.optionsTranslator('fr')` (with user's language) or create your own. The built-in function, however, requires building `options.js` with additional JSON files with the translation of known labels to your user's language.
+
+### Act on option changes
+
+options.js will add HTML and event listeners for inputs. You'll get notified when user changes options in the following way:
+
+```javascript
+iframely.on('options-changed', function (id, formContainer, query) {
+	// id and form container are echoed from the build request
+	// query contains key: value object with the modified options (excluding the default ones, if user undid the previous choice)
+	// keep query string here,
+	// update iFrame src for WYSIWYG
+	// or request new embed codes by repeating API requests
+	// then build the form anew, as the options are conditional and may have changed
+});
+```
+
+### Customize the script
+
+The default options.js package has predefined HTML templates. You may customize them via CSS on your end, or change the templates in the library and build anew. [Here are the templates](https://github.com/itteco/embedjs/tree/master/src/options/templates).
+
+The included translator function (`iframely.optionsTranslator`) takes the translation strings from JSON mapping for all known options.
+
+To add new languages, add more JSON files to the build.
+Here's the [JSON template](https://github.com/itteco/embedjs/tree/master/src/options/lang/labels.LAN.example.js) and example [for French](https://github.com/itteco/embedjs/tree/master/src/options/lang/labels.fr.js) (Pull-request with more translations are welcome).
+
+---
+title: "Iframely Summary Cards for URL Previews"
+description: "Iframely generates number of summary previews and fallbacks, when used along with short URLs. Here's some"
+source: https://iframely.com/docs/cards
+---
+
+# Card URL previews
+
+Iframely generates cards as URL previews when we can't find rich media embed codes from the publisher.
+
+If allowed in your [settings](/settings/cards), Iframely will try to generate a card previews. It follows this logic.
+
+- Simple summary card for any public URL we have a thumbnail image for, if no other rich media is found from publisher.
+- Summary card as fallback when publisher's rich media won't work for your user (Flash-only, or lack of SSL support) or when you specifically disabled that particular type of rich media in your settings.
+- Media card, when we find rich media that is attached to the article (say, a post with embedded YouTube video in it).
+- Media card for any video URL, if requested with `&iframe=card` API parameter or configured as preference in your settings.
+
+Cards rely on our [iFrames](/docs/iframes) and follow the design your configure in your settings.
+
+When Iframely suggests a summary preview for your URL, the primary `rel` array of [Iframely API](/docs/iframely-api) will contain `summary` in it.
+For media card, we'll add `promo` to the list of rels. [oEmbed API](/docs/oembed-api) endpoint returns both as `rich` type.
+
+## Summary cards
+
+Summary cards are URL previews. We do it for articles, for media players that we do not allow, and also for general URLs that at least have a thumbnail image (thus, trying to avoid private links and internal in-app URLs).
+
+  
+    
+  
+  
+    
+  
+
+To always get a summary card (i.e. disable rich media for a particular URL), you can make your API requests with `&media=0` in query-string [parameters](/docs/parameters).
+
+Compact card is generated when we only have a smaller or portrait thumbnail image. Plus, you can also force a compact card in your cards settings or by adding `&card=small` parameter to your API call.
+
+## Media cards
+
+Media cards wrap rich media such as players into a card with all URL attribution details. By default, we do it for players that are "attached" to the article - meaning that they do not represent the main content of the webpage (or simply don't have an attribution link to the canonical URL). You can also request it for any player by adding `&iframe=card` to your API call.
+
+  
+    
+  
+  
+    
+  
+
+Media cards can be combined with [click-to-play](/docs/click-to-play) and also will support [player events](/docs/playerjs) if requested. A compact media card will always go with click-to-play, even if we don't actually have an autoplaying media.
+
+## Change design of the cards
+
+You can change the layout and design for the cards via our flexible [WYSIWYG editor](/settings/cards). Load a few samples from presets to get some inspiration. Change the design of click-to-play buttons separately in your [player settings](/settings/players).
+
+Let us know if you need a hand with it.
+
+## Dark and light themes {#themes}
+
+Iframely supports theming of the cards and [user consents](/docs/consents). If your app offers dark or light themes to your users, you can change cards to match the user preferences.
+
+- Using the [WYSIWYG editor](/settings/cards), define colours for two card themes: dark and light.
+- You can configure the default card theme to be dark or light specifically, or "auto" mode. Iframely will then match the user's operating system preferences.
+- Override your default theme for an individual user using query-string parameters below with `dark` , `light` or `auto` values.
+
+There are a few ways to override your default setting of theme for a specific user:
+
+- You may repeat the API calls with `&theme=…` parameters.
+- You may call `setTheme` method of Iframely's [embed.js](/docs/embedjs) script:
+
+  ```js
+  iframely.setTheme('dark');
+  ```
+
+- If you use the [omit_script](/docs/omit-script) API parameter and add our embed.js script to the page yourself, you can add query-string to the `src` of the file:
+
+  ```html
+  <script src="https://iframely.net/embed.js?theme=dark">
+  ```
+
+If you run into the issue of flickering while loading cards in light mode and then switching to a dark one, please lazy-load iFrames with `&lazy=1`.
+
+---
+title: "Click-to-play Embedded Videos"
+description: "Iframely speeds up your site by holding video loads until user interacts with it"
+source: https://iframely.com/docs/click-to-play
+---
+
+# Click-to-play videos
+
+When Iframely knows that a video autoplays, we prevent it by putting a video placeholder with your custom "play" button inside our iFrame.
+We call it "click-to-play" as the actual video loads only when user requests it.
+
+You may choose "click-to-play" mode as your preference for all supported publishers. Iframely knows both regular and "autoplay" version for most popular videos sources.
+It will speed up your site's load time significantly and improve the user experience.
+
+On desktop, our iFrames actually start pre-rendering video when user only just starts reaching out to the play button.
+So in many cases, video is readily available when click occurs, creating great speedy impression.
+
+Click-to-play mode for all videos brings additional bonus of branding the "play" button your way across most videos on your site.
+
+Finally, when [player events](/docs/playerjs) are requested, Iframely will add partial events for all click-to-play players.
+Even to those publishers that do not natively support playback control.
+
+## Example for general videos
+
+Here’s YouTube video, which is wrapped into "click-to-play" iFrame helper:
+
+## MP4 player
+
+Iframely's video player will always use "click-to-play". Here's an example for [Daily Mail](https://iframely.com/embed/lAwPwq) video:
+
+The player supports video files and HTTP Live Streaming (HLS). There's a link to the video source in the player, so users can check and see the original URL.
+
+## MP3 player
+
+Iframely audio player relies on a compact [media card](/docs/cards#media-cards), supports [player events](/docs/playerjs), [autoplay](/docs/autoplay) and playback sync.
+
+The audio media cards follow both your click-to-play and cards design settings.
+
+## Click-to-play in a card
+
+Click-to-play also works with the cards. If you strictly request compact layout as your [cards design](/settings/cards), Iframely may turn on 'click-to-play' even for videos that we don't actually have an autoplaying variant.
+
+Here's a compact click-to-play card for a TED video hosted on YouTube:
+
+## Change players design
+
+You can change the design of click-to-play videos via our flexible [WYSIWYG editor](/design/click-to-play). Load a few samples from presets to get some inspiration:
+
+  
+
+Let us know if you need any help with it.
+
+## A word about mobile
+
+On mobile touch devices, Iframely will use click-to-play approach only for YouTube, Vimeo, Wistia, Streamable, MP4 videos, MP3 audio and GIFs. We do it via provider's [playback control via JavaScript APIs](/docs/playerjs).
+For other providers, we'll show the original non-autoplay player if there's one to avoid double-tap to play.
+
+This is due to the long-lasting effect of early versions of Apple's iOS, which would not start a video except as a reaction to user gesture. This started to change [in iOS10](https://webkit.org/blog/6784/new-video-policies-for-ios/).
+But, regardless, some publishers would still not honor `autoplay` variants of their videos on mobile.
+
+There has been significant progress in unification in the past couple years. There's now a [feature policy](https://wicg.github.io/feature-policy/) HTML spec that lets origins delegate permissions to the iFrames.
+As browsers adopt the [user gestures delegation](https://github.com/WICG/gesture-delegation/blob/master/explainer.md) and combine it with the feature policies, a reliable click-to-play on mobile becomes a reality.
+Unfortunately, we are not quite there yet. We monitor and will add support for more providers when it becomes feasible.
+
+---
+title: "Player Events & Playback Sync"
+description: "Iframely unifies player events across multiple publishers"
+source: https://iframely.com/docs/playerjs
+---
+
+# Player events & playback sync
+
+Iframely [iFrames](/docs/iframes) give you an option to listen, react or control embedded video playback with JavaScript using unified events-methods model.
+
+That flow relies on cross-window communication via `postMessage` mechanism available for iFrames. To make it happen, Iframely adds JavaScript connectors for number of video publishers, unifying their various APIs into a consistent event model.
+
+Say, you may listen to an event that video is paused or start video playback using your custom button. Our iFrames helpers can cover one use-case out-of-the-box: make sure that only one player is active at a time.
+
+## Player events API
+
+Iframely events API follows [Player.js](http://playerjs.io) spec, published under Creative Commons by our colleagues from Embedly.
+
+- Add `&playerjs=1` to your API calls to get Iframely iFrames that follow Player.js spec. It works when Iframely iFrame is returned.
+- To orchestrate the players, you can get player.js library [on GitHub](https://github.com/embedly/player.js/), or simply listen to the specified events yourself.
+- If you use [Iframely JSON](/docs/iframely-api) as your API format, check `rel` array attribute. We add `playerjs` value there if we could make player be compatible.
+
+## Browser support
+
+Please be advised that most browsers have caveats when starting media with sound. Please see the browser support warning in our [Autoplay](/docs/autoplay) document. Therefore, consider muting your media before playing it, especially if there is no user interaction.
+
+> If a video with sound would not start when asked, please try to muted it first, then play again.
+
+## Supported publishers
+
+Iframely recognizes YouTube, Vimeo, SoundCloud, Dailymotion, Brightcove, Streamable, Vid.me, Facebook videos, Wistia, all MP4 videos (+ [friendly gifs](/docs/gifs)) and MP3 audio, Office Mix, sendvid, playstv.
+
+[Click-to-play](/docs/click-to-play) mode adds partial player events to all publishers with an autoplaying media variant. Albeit, with a "stop" function that reverts back to an original "not-started" state.
+
+We constantly monitor, discover and add new publishers that can fit into unified events API.
+
+## Playback sync
+
+The most common use case for player events is to synchronize playback across multiple videos on your site. So that when user clicks to play a new video - the one that is already playing will stop automatically.
+
+Iframely covers this feature without the need to handle events on your side. Simply activate it in your [player settings](/settings/players), and Iframely will let only one video play at a time (among popular players that we can control).
+
+## Quick demo
+
+Here's the playback sync in action. Try starting a video, and then another. It works across multiple browser tabs too.
+
+---
+title: "Autoplay Embedded Videos, Audio and GIFs"
+description: "Iframely lets you safely autoplay videos when user sees them"
+source: https://iframely.com/docs/autoplay
+---
+
+# Autoplay video, audio and GIFs
+
+Iframely lets you safely autoplay embedded players. It works as "play-on-scroll": playback starts when/if user sees the media. Player pauses or stops when it leaves the viewport or another player is started.
+
+The Autoplay feature is powered by Iframely [Hosted iFrames](/docs/iframes) and [Player events & playback sync](/docs/playerjs), with visibility detections via [embed.js](/docs/embedjs).
+
+## API parameters
+
+To use Autoplay, make your API calls to our [oEmbed](/docs/oembed-api) or [Iframely API](/docs/iframely-api) endpoints with the following optional query-string parameters:
+
+### `&autoplay=1`
+
+<div id="autoplay=1"></div>
+
+To start media playback when player is visible.
+
+HTML code in API response will point to Iframely iFrame and will also include the `embed.js` script. You can [omit the script](/docs/omit-script), as with any other API call.
+
+Due to differences in implementations, the video may fail to start in some browsers in some cases. Please consider muting the video before playing it if that's your case.
+
+If a video with sound would not start when asked, Iframely will retry it muted, albeit with a few seconds delay. The experience may be better if you mute it yourself right away.
+
+### `&mute=1`
+
+<div id="mute=1"></div>
+
+To mute the players on start for supported publishers.
+
+> The combination of `&autoplay=1` and `&mute=1` is ambiguous for audio. Iframely will return a regular player instead so you can safely make API calls targeting only muted video.
+
+### `&mute=0`
+
+If a video with sound would not start when asked, Iframely will retry it muted with a few seconds delay. To disable that fallback and simply fail, disable it with `&mute=0`.
+
+## Supported browsers
+
+### Visibility detection
+
+First and foremost, Autoplay feature relies on [Intersection Observer](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) to detect when media is visible to your user.
+
+Most modern browsers support the observers. [See the coverage](https://caniuse.com/#feat=intersectionobserver).
+
+We deliberately do not fall back to the old school of visibility detections for the legacy browsers. The intention is to be gentle on end-user's CPU and not to render your site sluggish with constant synchronous visibility checks.
+
+If we cannot run visibility checks, Iframely will simply fall back to non-autoplaying media variants.
+
+### Chrome browser
+
+Chrome's [Autoplay Policy](https://developers.google.com/web/updates/2017/09/autoplay-policy-changes) checks Media Engagement Index (MEI). It is calculated individually for your web domain.
+
+Muted autoplay is always allowed. Autoplay with sound is allowed if user has interacted with the domain (click, tap, etc.) or if MEI threshold has been crossed.
+
+In other words, whether a media will autoplay or not depends on your site's user experience and engagement of an individual user.
+
+If autoplay isn't possible, most media publishers will simply catch a JavaScript error, and will fall back to their non-autoplaying variants by themselves.
+
+> Please consider `&mute=1` and have all playback muted if most of your visitors are first-timers with no prior domain interactions.
+
+For development and debugging purposes, you may also opt to change Autoplay-Policy via developer switches in `chrome://flags/#autoplay-policy`.
+
+### Mobile
+
+Most mobile platforms require a user gesture to autoplay a media with sound. Iframely will therefore try and mute media playback on mobile for all publishers that allow such control (see below).
+
+For publishers that don't provide such mute control, Iframely will simply fall back to non-autoplaying media variants.
+
+Additionally, WebKit has released the support of intersection observers in iOS 12.2. Older browser versions will fall back to non-autoplaying media.
+
+## Supported media publishers
+
+"Autoplay" requires playback sync so to pause/stop a playing video when another one on the page starts. Therefore, the list of supported media publishers for "Autoplay" is the same our list of publishers for "Playback sync". [See here](/docs/playerjs#supported-publishers).
+
+---
+title: "Embed GIF by converting them to looped MP4 videos (GIFV)"
+description: "Iframely Embeds API will present your GIFs in mobile-friendly way"
+source: https://iframely.com/docs/gifs
+---
+
+# Web-friendly GIFs
+
+Converting plain GIF files into looped MP4 videos is Web- and mobile-friendly approach, pioneered by Gfycat, Imgur and Twitter. Iframely does the same.
+
+Here’s why. MP4 version is nearly 10 times smaller:
+
+  
+    
+  
+  
+    <img src="https://iframely.net/files/gifv-example.gif" width="400" height="213" alt="Original GIF, 2.7Mb">
+  
+
+> Try clicking on Iframely version above - you&#39;ll see that your clicks pause and resume the&nbsp;playback.
+
+Iframely downloads the original GIF file, transcodes it and serves as video in our <a href="/docs/iframes">iFrames helper</a> to save some bandwidth for your users. We call it GIFV - the name suggested by Imgur for such "GIF Videos".
+
+## How to activate
+
+Support for GIFVs is turned on by default. In your [settings](/settings/media), you can disable GIF files as allowed media types. If your plan doesn't include GIFVs, Iframely will consider them disabled too.
+
+When Iframely returns a GIFV, the `rel` array in [Iframely API](/docs/iframely-api) format will include `gifv` value. [oEmbed API](/docs/oembed-api) will return GIFV as `video` type.
+
+While transcoding may take a few seconds, depending on the GIF size, our iFrames may initially use original GIF file until after the MP4 file is ready.
+
+## Click-to-play
+
+You can make GIFs to not load at all until user interacts with it first. Just activate [click-to-play](/docs/click-to-play) for them in your [players settings](/settings/players). On desktop, click-to-play starts GIFV when user hovers it. On mobile - when user clicks it. For example,
+
+Click-to-play is the default behaviour of converted GIFs on mobile devices that don't support autoplaying MP4 videos (say, all WebViews in iOS apps as of April 2018).
+
+---
+title: "Iframely user consents for third-party rich media"
+description: "Increase privacy by asking users to consent to third party media embeds"
+source: https://iframely.com/docs/consents
+---
+
+# User consents for third-party rich media
+
+Iframely gives you an option to request user consent before exposing them to third-party rich media embeds. Though we do not see it as required for [GDPR](/gdpr) you might want it to be on the safe side or for its intrinsic privacy value.
+
+If you activate the feature, all rich media will be wrapped into [iFrame](/docs/iframes) hosted on our `iframely.net` domain or [your own CDN](/docs/cdn). If the user previously provided consent, we'll show rich media without delay. Otherwise, the consent form will wait for user input before loading third-party resources.
+
+> We do not set cookies in the process. We rely on users' local storage and handle everything solely in their browser. Chrome 115 and later [partitions local storage](https://privacysandbox.google.com/cookies/storage-partitioning) for iframes. Iframely user consents are now unique for each hosting domain.
+
+## Example of a consent form
+
+## Set up your form
+
+You can activate the consent form in your [settings](/settings/consents) or with the `consent=1` API parameter.
+You may also [change the design](/design/consents) of the form in your settings.
+
+### Action buttons
+
+  
+
+The form may have one or two buttons. The scope of the consents for the buttons can be one of the following:
+
+- **Per media** - "Only this media". Users will consent once for that specific rich media embed.
+
+- **Per provider** - "Always for {provider}". Users will scope the entire provider. For example, "YouTube", "Twitter", "Facebook", etc. We will put the provider name instead of the `{provider}` string. Once the user allows any of YouTube videos, all other YouTube videos will also be allowed.
+
+- **Per page** - "Everything on this page". When users allow one media on a page, all other media on that page are also allowed.
+
+- **Per site** - "Allow all media". Once the user allows media on your site, all media is allowed.
+
+"Page" and "site" buttons may require some [technical configuration](#technical-configuration) of your web application.
+
+If you configure the same button for both primary and secondary action, the form will have only one button.
+
+### Texts
+
+  
+
+You can change all text on the consent form to your language or your liking. Please make sure your text fits into the available space. We'll use our default (English) texts if you leave the text fields empty.
+
+Please keep `{provider}` if you want us to include a provider name into the button or anywhere in other texts.
+
+## User settings page link
+
+This is a link inside the widget to your page where you host Iframely [consents settings form](#user-settings-form) as described in the next section. The link to the consents settings form is optional, leave empty to skip it.
+
+To activate the settings link in a widget, add your text and the link to _your_ page that embeds Iframely form.
+
+## User settings form
+
+User may need to undo the granted consents. For this purpose, we host a simple settings form for that purpose.
+
+> Because Chrome 115 and later [partitions local storage](https://privacysandbox.google.com/cookies/storage-partitioning) for iframes per hosting domain, Iframely standalone user settings page will no longer work. You need to embed that form on the same user domain as Iframely media widgets.
+
+- Settings page gives user access to their consents in browser's local storage. Two contexts must match for user to have the access to proper local storage partition: Iframely CDN and your referring origin domain.
+
+- Add a dedicated page in your app to host the settings form. You can link to that page in your own documentation and can also add it [as link to media widgets](#user-settings-page-link).
+
+- The settings form is hosted at `/consents` path of the CDN in use. If you use our default CDN, it [iframely.net/consents](https://iframely.net/consents). Please replace `iframely.net` with your [custom CDN](/docs/cdn) host, if use it.
+
+```html
+<div class="iframely-embed">
+	<div class="iframely-responsive">
+		<iframe
+			src="https://iframely.net/consents?color={COLOR}&site={DOMAIN.NAME}"
+			scrolling="no"
+		></iframe>
+	</div>
+</div>
+<script src="https://iframely.net/embed.js" async></script>
+```
+
+- `color` - the hex code of accent colour of actions on the page to match your branding (please, no `#` to keep URL valid);
+- `site` - your domain name (we'll add "allow all" control for that domain name);
+- `theme` - `dark` or `light`, if you want a specific theme. By default, adjusts to user's browser preferences.
+
+Here is the consents form for our default CDN (iframely.net) and on this website (iframely.com):
+
+## Technical configuration
+
+If you want "Site" or "Page" scope for one of your consent buttons, the widget will need to have access to the `Origin` and `Referer` header.
+
+The corresponding consent button will not show if the request headers are not present. You need to check your site's referrer policy and your CDN settings.
+
+### Referrer-policy
+
+Iframely needs a unique [Referer](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referer) header for our iFrames as an identifier of your page. When users allow "all widgets on a page", we check against that as an identifier.
+
+If your website works over HTTPs, it is the default user browser behaviour for cross-origin requests to send only the host value as the `Referer` header. A full path may have undesirable consequences for user security and privacy.
+
+Therefore, `Referer` is the same for all your pages by default, and single consent will apply to your entire website.
+
+To avoid that problem, please change your [Referer-Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy):
+
+```yaml
+Referrer-Policy: unsafe-url
+```
+
+If the risk of a potential leak of private information is a concern, please consider against the use of the "Page" consent scope.
+
+### Custom CDN
+
+If use [your own CDN](/docs/cdn) with Iframely:
+
+- Embed [User settings form](#user-settings-form) off that same CDN as the origins must match.
+- If you want "Site" or "Page" consent buttons - allow your CDN to forward `Referer` and `Origin` headers to Iframely.
+- Additionally, please ensure that your CDN set up listens and allows the `referer` and `origin` values as the cache-control `vary` field set by Iframely widgets.
+
+---
+title: "Iframely Content IDs for Rich Media URLs"
+description: "Iframely will give you a short ID that you can use for batch cache refreshes or as permanent source for the iFrame embed"
+source: https://iframely.com/docs/ids
+---
+
+# Iframely content IDs
+
+For content management systems, Iframely can generate short identifiers (IDs) for each unique URL.
+Use it to source [iFrames](/docs/iframes) in HTML embed codes, edit [URL options](/docs/options), for batch URL refreshes or to request different formats such as [AMP](/docs/amp).
+
+Content IDs are unique within your account and are linked to your API settings. The feature is available on subscription [plans](/pricing) that support it.
+
+Content IDs are a permanent source of Iframely iFrames in HTML codes and URL data and survive the termination: we keep maintaining the embed codes and refresh related media content even if you no longer have an active subscription with us.
+
+Because of this commitment, URLs with associated IDs are stored permanently on Iframely network, unlike regular URLs that get cleaned up after a period of inactivity according to our privacy policy.
+
+## How to get content IDs
+
+There are three scopes you can request to generate content IDs for:
+
+### iFrame settings
+
+Configure this as default for iFrame `src`s in your [iFrames settings](/settings/media).
+
+When Iframely needs to generate an [iFrame helper](/docs/iframes) based on publisher's data or according to your other API settings, the `html` field for such embed codes will link to permanent public short URL address:
+
+```html
+<iframe src="https://iframely.net/ABCDEFG" …></iframe>
+```
+
+By default, and on plans that don't support content IDs, our iFrame codes link to the hashed API key instead:
+
+```html
+<iframe src="https://iframely.net/api/iframe?url={URL}&key={API_KEY}" …></iframe>
+```
+
+### `id=1`
+
+To activate IDs for all URLs, whether we wrap HTML embed code into our iFrame helper or not, make you API call with `&id=1` [query-string](/docs/parameters) parameter in [oEmbed](/docs/oembed-api) or [Iframely](/docs/iframely-api) formats. You'll get content `id` field in response JSON even when Iframely returns the native embed code from publisher without our iFrame helper.
+
+### `id=0`
+
+This query-string parameter overrides your [iFrames settings](/settings/media), and forces iFrame helpers, if any, to link to your hashed API key instead.
+
+> Iframely Content IDs are case-sensitive.
+
+## API calls with content IDs instead of URLs
+
+When content ID is available, it will be returned as `id` field in the JSON response. You can use it for subsequent API calls to Iframely. Such API calls don't require your API key and are a good fit for public facing implementations.
+
+### Fetch single content by ID
+
+If you have received short `id` for your previous API call, your repeat calls may go directly to:
+
+- [iframe.ly/{ID}.json](https://iframe.ly/qH98az.json) - for [Iframely API](/docs/iframely-api) format
+- [iframe.ly/{ID}.oembed](https://iframe.ly/qH98az.oembed) - for JSON in [oEmbed](/docs/oembed-api) format
+
+Such API calls do not require `api_key` and are publicly available (yet are still linked to your account).
+
+You may add any [optional API parameters](/docs/parameters) to such anonymous calls. For example, quickly get an [AMP-formated](/docs/amp) iFrame with `&#38;amp=1`.
+
+> If you fetch JSON data from users' browser, please use CDN: `iframely.net/{ID}.json` (or your own domain if you're on "bring your own CDN").
+
+### Batch request up to 100 IDs
+
+Instead of making a hundred API calls, we suggest you combine it into one. Simply generate an endpoint address this way: IDs delimited with `-` hyphen. For example:
+
+- [iframe.ly/{ID1}-{ID2}-…-{IDn}.json](https://iframe.ly/qH98az-7QPpxhS.json) - for [Iframely API](/docs/iframely-api) format
+- [iframe.ly/{ID1}-{ID2}-…-{IDn}.oembed](https://iframe.ly/qH98az-7QPpxhS.oembed) - for JSON in [oEmbed](/docs/oembed-api) format
+
+Again, you can use any of the [optional API parameters](/docs/parameters).
+
+The response will contain Iframely or oEmbed JSONs as values, with IDs as the root level keys:
+
+```json
+{
+  "ID1": {
+    …
+  },
+  "ID1": {
+    …
+  },
+  …
+  "ID-N": {
+    …
+  }
+}
+```
+
+In other words, `body.IDn` from response of such batch calls will be the same JSON object as if you called `iframe.ly/IDn.json` or `iframe.ly/IDn.oembed` for a single ID.
+
+> The order of IDs in response may not match the order from request. We fill the data based on latency of an individual ID.
+
+---
+title: "Bring your own CDN"
+description: "Get Iframely iFrames via your own CDN"
+source: https://iframely.com/docs/cdn
+---
+
+# Bring your own CDN
+
+You can have Iframely [iFrame helpers](/docs/iframes) served via your own content delivery network. Say, Amazon CloudFront, Cloudflare or others. Enterprise plan requires a custom CDN provided. We will reach out if that becomes an issue.
+
+To have it configured, point your CDN distribution to our servers and give the address of your distribution to our support team. We will verify your setup and add your CDN to your account options.
+
+After that, Iframely will start returning embed codes with your own CDN proxy that fetches white-labeled iFrames from our cloud and delivers it to your users.
+
+If you [&omit_script](/docs/omit-script) and add [embed.js](/docs/embedjs) to your pages yourself, please load it off your custom CDN as well.
+
+> You may also opt to self-host embed.js script. It is available [on GitHub](https://github.com/itteco/embedjs) and NPM.
+
+## For any CDN provider
+
+Basically, you need to map to the root of our domain, and let Iframely orchestrate your CDN's cache. The general requirements for any CDN are these:
+
+- Point your distribution to `iframe.ly` domain.
+- Forward us the `host` header so we recognize your CDN name.
+- Cache based on the origin headers - we'll ochestrate TTL and `vary`.
+- Match the HTTP/HTTPs protocol or choose HTTPs-only.
+- Forward all the query-string parameters.
+
+Select HTTP headers needs to be forwarded to origin to enable certain Iframely features:
+
+- Forward `Accept` header so we can deliver [WebP](https://developers.google.com/speed/webp/faq) images and other progressive features.
+- Forward `Origin` or `Referer` if you configure that as the action scope for a [user consents](/docs/consents#custom-cdn) button or if you activate any [API origin restrictions](/docs/allow-origins).
+- Forward `Sec-CH-Prefers-Color-Scheme` client header if you want [auto dark/light themes](/docs/parameters#theme) for supported rich media publishers.
+
+## Configure Amazon CloudFront
+
+Create a new CloudFront distribution. For it, configure the following general settings that are required by Iframely:
+
+- Delivery method: `web`.
+- Origin domain name: `iframe.ly`.
+- Origin path: leave empty.
+- Forward headers: `whitelist`, add header `CloudFront-Forwarded-Proto`. Otherwise, we won't be able to tell if a request comes via SSL or not. Also add `host`, `origin` and `referer`.
+- Object caching: `use origin cache headers`.
+- Forward Query Strings: `yes`.
+- All the other fields can be left with default values.
+
+You may create custom CNAME subdomain from your main domain that points to CloudFront distribution if you like, but don't forget to get a custom SSL certificate from Amazon in that case as well.
+
+## Configure Cloudflare
+
+You can either create a subdomain for your existing Cloudflare site, or register a custom root-level domain and add it to Cloudflare separately.
+
+- In DNS, create subdomain as the `CNAME` record and point it to `iframe.ly`. You can safely use `CNAME Flattening` setting to make DNS resolution a bit faster for your users.
+- In Caching, make sure the following settings are applied:
+  - `Browser Cache TTL: Respect Existing Headers` - Minimum cache TTL will depend on your Cloudflare plan.
+- In Rules/Page Rules, create a rule for `yourcdn.yourdomain.com/*` (use your own domain) and add these two settings:
+  - `Cache Level: Cache Everything` - it makes Cloudflare cache everything, including text/html resources too.
+  - `SSL level: Full` - Iframely needs to know that requests come over SSL.
+
+> Iframely needs all query string parameters. If you need other Cache Control values elsewhere on your domain, then you will not be able to set CDN as subdomain.
+> You will have to register a separate domain for your custom CDN with Iframely, as our iFrames don't work without query strings.
+
+- Don't forget to activate SSL in Crypto section if you need HTTPs connections.
+
+## Contact us to finalize
+
+Once you've configured your CDN, [send us](mailto:support@iframely.com) your CDN domain name. We will verify that everything is right and configure it as domain name for your Iframely iFrames.
+
+> If you use User Consents feature, you may also need to allow `referer` and `origin` headers, depending on your configuration. [Read here](/docs/consents#technical-configuration). The `origin` header may also be required for your [API key security configuration](/docs/allow-origins).
+
+---
+title: "Omit third-party scripts from HTML embed codes of rich media"
+description: "Use &omit_script=true to skip Iframely script"
+source: https://iframely.com/docs/omit-script
+---
+
+# Omit scripts from HTML
+
+Third-party rich media embed codes may include a `<script>` tag. If your system adds HTML code via `innerHTML`, script tags will be ignored per HTML5 [specification](https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML) to prevent cross-site scripting attacks.
+
+It causes issues with any rich media with an otherwise legit script as part of its HTML. It will not render correctly or not at all.
+
+It affects providers such as [Twitter](/domains/x-formely-twitter), [Facebook](/domains/facebook), [Instagram](/domains/instagram) and [Tiktok](/domains/tiktok) in system environments such as [React](/docs/react) and [Angular](/docs/angular).
+
+Instead, Iframely suggests our [hosted iFrames](/docs/iframes) render scripted rich media.
+
+Iframely's [embed.js](/docs/embedjs) script still needs to be excepted, but only this single script. Add it to your page yourself. To adjust the sizes of the iFrames and to handle other events.
+
+## Omit third-party scripts
+
+There are two ways to use [iFrame renders](/docs/iframes) for all rich media with third-party scripts:
+
+- Set this option in your [API settings](/settings/about).
+- Include `&omit_script=1` [query-string parameter](/docs/parameters#omit_script=1) with every API call or as needed.
+
+It will only affect third-party rich media, whose HTML code includes a `<script>` tag. You'll get Iframely `<iframe>`- based code instead.
+
+Please load Iframely's [embed.js](/docs/embedjs) script to your page yourself as described below
+
+> Please load Iframely's [embed.js](/docs/embedjs) script to your page yourself as described below.
+
+## Omit Iframely embed.js script
+
+By default, we include our [Embed.js](/docs/embedjs) as `<script>` element in the HTML code when we [host](/docs/iframes) JavaScript-based rich media and for most of the Iframely [interactives](/docs/embeds#iframely-hosted-html-helpers).
+
+Interactive examples include [cards](/docs/cards), [MP4 players](/docs/click-to-play) and playback sync. [Lazy-loading](/docs/lazy-load) delivery also requires emebed.js.
+
+When you request `&omit_script=1`, we do not include our script with the HTML code. However, it is still required on your page and you need to add yourself. Please see an example below.
+
+> Multiple Iframely embed.js script tags on your page do not put a drag on user's bandwidth or your site's performance.
+> Browsers will load it only once, there is no need to omit Iframely script for that single reason.
+
+## Embed.js is required {#load-when-required}
+
+Embed.js is still required so your page can communicate with Iframely iFrames, for example to adjust the height of rich media. You can simply load embed.js by adding it to the head of your page:
+
+```html
+<script async src="https://iframely.net/embed.js"></script>
+```
+
+Your page may or may not have our embeds on it. Here is an example code that loads embed.js only when it is required:
+
+See the [embed.js](/docs/embedjs) document if you need events and controls that our Embed.js script provides.
+
+> If you use a [custom CDN](/docs/cdn) option, please, source the embed.js script from your distribution.
+> You may also opt to self-host embed.js script file. It is available [on GitHub](https://github.com/itteco/embedjs) and NPM.
+
+---
+title: "Fine-tune Iframely embeds with CSS"
+description: "Use &omit_css=true to switch Iframely to use class names instead of inline CSS styles"
+source: https://iframely.com/docs/omit-css
+---
+
+# Omit CSS and adjust styles
+
+Iframely wraps responsive iFrames into two `div` elements. By default, required styles are included inline so the HTML works right away.
+
+You may add a bit of required CSS to the stylesheet of your page and use Iframely with class names. Here's when it's particularly useful:
+
+- If your content management system is sensitive for inline styles;
+- Just to get slimmer HTML codes so they take less space in your database;
+- To activate the predictive height mechanism for the apps such as Twitter and Facebook.
+
+## Add required styles to your page
+
+First of all, add these required classes either as `<style>` section in the head of your page, or your main CSS file as they no longer come with our HTML codes:
+
+```css
+.iframely-responsive {
+	position: relative;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 0;
+	padding-bottom: 56.25%;
+}
+.iframely-responsive > * {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	border: 0;
+}
+```
+
+It includes most CSS styles. But in your CMS, you still need to white-list `padding-bottom: …`, `pading-top`, `height` and `max-width` as iFrames' sizing may differ and Iframely will keep including required styles with HTML codes.
+
+## Omit CSS from API responses
+
+Make your API requests with `&omit_css=true` and you will get an HTML similar to this:
+
+```html
+<div class="iframely-embed">
+	<div class="iframely-responsive">
+		<iframe src="…" allowfullscreen scrolling="no"></iframe>
+	</div>
+</div>
+```
+
+Both native and [hosted iFrames](/docs/iframes) will be returned with class names.
+
+In the styles you added to your page, you match all elements as `.iframely-responsive>*`, not just iFrames, because Iframely may include other features depending on your settings, say a video placeholder.
+
+## Customize embeds via class iframely-embed
+
+The class `iframely-embed` is yours to define and customize.
+
+For example, here's styles if you'd like to center the `max-width`'ed embeds or portrait videos, provided that your parent div is `embed-parent`:
+
+```css
+.embed-parent {
+	display: flex;
+	justify-content: center;
+}
+.embed-parent .iframely-embed {
+	width: 100%;
+}
+```
+
+If need be, you can add a `max-width` for responsive videos wrapped into `iframely-embed`; or define `padding` after the embed, etc.
+
+For a possible UI fix for Facebook embeds that do not fit on smaller iOS screens (min width for Facebook posts is 350px): try adding `-webkit-overflow-scrolling: touch; overflow-x:scroll;` for class `.iframely-embed`. Horizontal overflow will be scrollable and will not affect your main content.
+
+## Other class names
+
+Iframely will add some more feature class names to the main embed code so that you can fine-tune CSS the way you want:
+
+- Main feature names `iframely-player`, `iframely-app`, `iframely-image`, `iframely-reader`, `iframely-survey`;
+- Additional feature flags for players: `iframely-audio`, `iframely-playlist`, `iframely-gifv`, `iframely-slideshow`, `iframely-3d`;
+- Iframely cards will come with `iframely-card`. Additionally, there will be `iframely-small` for compact cards.
+- Finally, the domain class `iframely-youtube`, `iframely-twitter` and the like. We take the domain name, and remove trailing `.com`, `.net` and `.io` from it. After that, any remaning dots `.` are replaced with dashes `-`.
+
+For example,
+
+```html
+<div class="iframely-youtube iframely-player iframely-embed">
+	<div class="iframely-responsive">
+		<iframe src="…"></iframe>
+	</div>
+</div>
+```
+
+> For HTML widgets such as Twitter, Facebook and Instagram, class names are added only when HTML code is wrapped into Iframely iFrame.
+> Native codes from publishers will have no additional class names.
+
+---
+title: "Lazy-load your embed iFrames"
+description: "Iframely will make embeds on your page load in a snap"
+source: https://iframely.com/docs/lazy-load
+---
+
+# Lazy-load your iFrames
+
+Lazy-loading yields priority to other resources that your user may need first. It postpones loading of all other iFrames until they are about to come into browser's viewport.
+
+iFrames in general are great for security of your site. But your page's `onload` event is delayed until all iFrames load. If you have various scripts that wait for body to load, iFrames loading may add up and have significant drag on your site's performance, perceived or actual, and particularly for mobile users.
+
+Our async [iFrames](/docs/iframes) fix it. iFrame loads empty and fires `onload` in a snap, yields rendering priority to your page, and then loads media in the background.
+
+That approach makes wonders. But it still loads all media with no delay, even if it is way below the fold. This is because iFrames cannot discover whether they are visible or not on their own. They need some help from JavaSript on the parent page.
+
+> If your site has multiple 3rd party add-on scripts such as ad networks or analytics, lazy-loading of rich media may give priority to those secondary 3rd party scripts and so make your primary content appear with a little delay. If that's your case, we recommend to limit lazy-loading to players only.
+
+## How it works
+
+Responsive players will be lazy-loaded with thumbnail image as placeholder first. When iFrame if about to come into viewport, it will be seamlessly replaced with an actual player when it's ready.
+
+## How to activate lazy-loading
+
+There are two ways to activate lazy-loading:
+
+- Via [Player settings](/settings/players): select "Lazy-load" and it will only apply to players.
+
+- Via query-string parameter for all media: add `&lazy=1&iframe=1` to your our API request.
+
+> Heads up: lazy-loading will not turn on when Iframely returns native publisher's code. It only works with our own iFrames. Add [&iframe=1](/docs/parameters) if need be.
+
+## What you get
+
+The lazy-loaded Iframely iFrame will use this approach:
+
+```html
+<div style="…">
+	<iframe data-iframely-url="https://iframely.net/NdU7I4" data-img …></iframe>
+</div>
+```
+
+Our iFrame will have no `src` attribute initially. Embed.js script renders such iFrame when it's time. The iFrame sizes are already in the code to avoid screen flicks.
+
+To omit embed.js script from API responses and add it to your page yourself, use [&omit_script](/docs/omit-script).
+
+## Set a custom loading indicator for players
+
+Iframely will not place a loading indicator for players by default. It's because a number of autoplaying videos will have their own spinner.
+
+But there's a simple way to have your own custom loading indicator, all via CSS, if you do want one:
+
+It relies on a single `div` element with the class `iframely-loader` that our script always places on top of the image placeholder while video loads. Your team can add CSS for that loader class. Any one-element loader will work. You can inspire, for example, from this great [collection of examples](https://projects.lukehaas.me/css-loaders/).
+
+---
+title: "Iframely domains widget - embeddable widget of supported publishers"
+description: "Iframely supports over two thousand providers, and you can share some of those providers with your users"
+source: https://iframely.com/docs/domains-widget
+---
+
+# Domains widget
+
+Iframely supports over two thousand [rich media](/docs/providers) providers. While it is a challenge for us to maintain the full list, we do our best and maintain an embeddable widget of supported publishers, so you can share some of those providers with your users.
+
+Here’s how the widget looks:
+
+Widget is built as a web component so you can program it without cross-domain restrictions. Here's its basic embed code:
+
+```html
+<iframely-domains></iframely-domains>
+<script type="module" src="https://iframely.net/domains.js"></script>
+```
+
+The widget is configurable. You can change the icon styles, page size, as well as choose some tag categories and the first page. Read this complete specification of every widget attribute, or [customize your widget here](/domains-widget) with WYSIWYG editor.
+
+## Attributes
+
+To change the behaviour of domains widget, you can set different attribute values. For example, here's a dark theme with small icons:
+
+```html
+<iframely-domains theme="dark" icon-size="small"></iframely-domains>
+<script type="module" src="https://iframely.net/domains.js"></script>
+```
+
+> Please note that `src` of widget's script can be sourced from your [custom CDN](/docs/cdn).
+
+Below is the list of the attributes with possible values.
+
+### `theme`
+
+**Values**: `auto`, `light`, `dark`<br>
+**Default:** `auto`
+
+Sets the widget color mode (dark and light theme). `auto` mode automatically chooses between light and dark modes depending on users' system settings.
+
+### `font-family`
+
+**Values**: `inherit`, `system-ui`, `sans-serif`, `serif`<br>
+**Default:** `inherit`
+
+Sets the font. To use your custom font, use default `inherit` value. `system-ui` will use user's default operating system font.
+
+### `icon-size`
+
+**Values**: `small`, `medium`, `large`<br>
+**Default:** `medium`
+
+### `icon-style`
+
+**Values**: `fill`, `fill-accent`, `border`, `border-accent`, `plain`<br>
+**Default:** `fill-accent`
+
+### `icon-shape`
+
+**Values**: `square`, `round-square`, `squircle`, `circle`<br>
+**Default:** `round-square`
+
+### `sort`
+
+**Values**: `rank`, `sitename`, `accent-color`<br>
+**Default:** `rank`
+
+Defines the order of the providers in the list. Default is the rank that we take from SimilarWeb, smallest number being the most popular on the Internet. `sitename` will sort the widget alphabetically.
+
+### `tags`
+
+**Values**: comma-separated list of keywords<br>
+**Default:** empty
+
+The widget is searchable by keywords and provider names. You may have some of the keyword tags be added as categories in your widget. The categories will show up as the tab navigation.
+
+The navigation will be added only for supported tags. If a tag yields no publishers, it will be omitted.
+
+### `lead-tags`
+
+**Values**: comma-separated list of keywords<br>
+**Default:** empty
+
+Similar to `tags` above, `lead-tags` are to choose categories that go onto the front page. Whatever tags you choose will form the landing "lead" list of publishers in your widget.
+
+### `page-size`
+
+**Values**: number<br>
+**Default:** `60`
+
+The number of providers per page. The widget is responsive, but pagination always using the same number of providers so you can control it.
+
+Please put the widget on your page and see if you need to adjust the page size so it fits well with no empty spaces.
+
+60 is the default value so it works well in many scenarios, yielding full rows with 2, 3, 4, 5, 6 columns.
+
+## Events
+
+The widget raises a few events so you can change some behaviours.
+
+### `iframely-domains-click`
+
+If you need one, add a handler for when your user clicks on a provider. The event body will come with the provider information.
+
+```js
+document.querySelector('iframely-domains').addEventListener('iframely-domains-click', (event) => {
+	event.preventDefault();
+	// Handle `event.detail` in your code here...
+});
+```
+
+The provider/domain information will come as event's `detail` property:
+
+```js
+// event.detail
+{
+  sitename: 'Iframely',
+  domain: 'iframely.com',
+  slug: 'iframely',
+  url: 'https://iframely.com'
+}
+```
+
+### `iframely-domains-load` and `iframely-domains-update`
+
+These are the events when the widget loads its initial size or updates the size.
+
+Because the widget has no height initially, you may experience quite a bit of layout shift. To avoid that, you may reserve the empty space for the list of providers and adjust that space on widget's triggers.
+
+---
+title: "Iframely embeds for CKEditor oEmbed plugin"
+description: "How-to guide to CKEditor embeds configuration"
+source: https://iframely.com/docs/ckeditor
+---
+
+# Configure Iframely for CKEditor
+
+> This guide is for CKEditor 5. For previous version, refer to [CKEditor 4 guide](/docs/ckeditor4).
+
+[CKEditor](http://ckeditor.com/) includes [Media Embed](https://ckeditor.com/docs/ckeditor5/latest/features/media-embed.html) feature as `@ckeditor/ckeditor5-media-embed` package.
+See the [default demo](https://ckeditor.com/docs/ckeditor5/latest/features/media-embed.html#demo) and documentation.
+
+## Understanding Media Embed feature
+
+CKEditor distinguishes between rich media embeds codes that are meant for `preview` in text editor itself (that is, when an author writes an article) and embed codes that are meant to be shown to end-user by your CMS ("actual" embed codes).
+
+By default, CKEditor comes with limited support for text editor `preview` embed codes, and only for select number of predefined publishers.
+You can extend or overwrite those preview codes yourself.
+
+When it comes to saving an article into CMS/database, CKEditor offers two options:
+
+- "Semantic data output" (default): that is when generic `<oembed url="…">` tags are saved in the article's markup body;
+- Save HTML embed `preview` codes that were used in the editor.
+
+It is recommended that you save semantic data output. Then your CMS gets the actual rich media embed codes on your server-side and replaces `<oembed>` tags with real up-to-date HTML codes, before serving an article to your end-users.
+
+The reasoning behind is simple - CKEditor avoids using any 3rd party scripts as `preview` embed codes as it makes DOM changes and histories uncontrollable.
+This would include embed codes from Twitter, Facebook, Instagram, Iframely [cards](/docs/cards) and many others. CKEditor prefers `iframe` as the `preview` code.
+
+Iframely voiced support for this approach during feature development. And we have our own reasons too: your CMS needs to periodically update rich media embed codes from the publishers and use fresh data.
+
+## Media previews in your CKEditor
+
+We recommend simply using Iframely [iFrames](/docs/iframes) for all rich media previews in your CKEditor. Steps you need to take:
+
+- Configure CKEditor to templated Iframely [iFrame](/docs/iframes) code as previews for all URLs. Include your `api_key` and `url` as the iFrame src's query-string parameters.
+- Add Iframely [embed.js](/docs/embedjs) on the page with your text editor. The script will simply adjust the height of preview iFrame according to its sizes.
+- Optionally add Iframely [default CSS](/docs/omit-css) to the page with your editor (this way you'll have a nicer and slimmer template for your previews).
+
+Here's the complete gist for CKEditor previews:
+
+> Don't forget to add our embed.js file to the webpage with your text editor as below.
+> The parameter `?cancel=0` will recover [URLs with no preview](/docs/embedjs#act-when-unfurling-fails) as regular `&lt;a&gt;` link.
+
+```javascript
+<script async src="https://iframely.net/embed.js?cancel=0"></script>
+```
+
+## On your server / CMS
+
+Please make sure to keep CKEditor's default semantic output in your config.
+That way you'll get `<oembed url="…">` tags that you can replace on your server with actual production-ready embed codes.
+
+To get the codes on your server, please use our [oEmbed](/docs/oembed-api) or full [Iframely API](/docs/iframely-api) endpoints.
+The HTML you'll get will follow your API settings and API [query-string parameters](/docs/parameters).
+
+You may want to keep the `html` from Iframely API in the cache of your CMS not to make API calls every time.
+
+From the other hand, if your plan supports [Content IDs](/docs/ids), we recommend that you use those and, when time comes to refresh the codes, you refresh all rich media in your article with single API call (in form of `iframe.ly/{ID1}-{ID2}-…-{IDn}.json`) - see [Batch ID requests](/docs/ids#batch-request-up-to-100-ids).
+
+## Fare warning
+
+As you'll figure out, you may of course skip making API calls to retrieve actual HTML codes from Iframely from your CMS. The preview iFrame codes can of course be used technically and will work for your end-users on your site's front-end (provided, you also include our embed.js script yourself on those pages).
+
+But we recommend you don't. Please make the API calls as the HTML codes you will get are better optimized for high traffic, production-ready and will bring better user experience. Besides, that way you'll be able to change your [API settings](/settings) with Iframely and have those reflected on your front-end.
+
+If anything, say your CMS can't make API calls in general or you don't have time for it right away, please consider unfurling `<oembed>` URL tags with features of our [embed.js](/docs/embedjs) script.
+
+---
+title: "AMP Embeds - Accelerated Mobile Pages embeds via Iframely"
+description: "Iframely helps you deliver embeds with your AMP pages"
+source: https://iframely.com/docs/amp
+---
+
+# Iframely embeds for AMP Framework
+
+The [Accelerated Mobile Pages](https://amp.dev/) (AMP) Project is a Google initiative that lets publishers create mobile-optimized content.
+Google serves AMP view of the articles from their CDN when mobile users search for news.
+
+The AMP framework needs that components for rich media embeds follow the required HTML markup and handle specific JavaScript events flow.
+Iframely give you both the markup output in response to API calls and end-user render helpers via [Iframely iFrames](/docs/iframes).
+
+To accomplish this, AMP includes Iframely-specific component - [`<amp-iframely>`](https://amp.dev/documentation/components/amp-iframely/).
+If you'd like, however, we can also provide a markup for a hosted `<amp-iframe>`, or for supported publisher-specific AMP components such as `<amp-youtube>`, `<amp-facebook>`, `<amp-tiktok>` and the like.
+
+## See it in action {#test-it-now}
+
+Here's a quick demo. Enter some example URLs (one per line) and hit the button to generate a sample AMP article with that rich media components:
+
+## How to get embeds for AMP
+
+To get an AMP-compatible component, send `&#38;amp=1` as a [query string parameter](/docs/parameters) with your API call.
+The `html` field of API response will include an `<amp-` component if any.
+
+Like regular API calls, output HTML can either point to a (specially optimized) [Iframely iFrame](/docs/iframes) or publisher AMP component for supported providers.
+
+By default, we follow your [iFrame settings](/settings/media), including generating [Iframely helpers](/docs/embeds#iframely-hosted-html-helpers) when required,
+for cases such as [cards](/docs/cards), [consents](/docs/consents), [MP4s](/docs/click-to-play) and publishers that AMP does not support yet.
+
+> Add `&iframe=1` parameter to your call to always get an Iframely-hosted component.
+
+### Iframely iFrame-powered components
+
+When Iframely returns a hosted iFrame, we can wrap it into Iframely-specific [`<amp-iframely>`](https://amp.dev/documentation/components/amp-iframely/) component
+or the generic [`<amp-iframe>`](https://amp.dev/documentation/components/amp-iframe/) component, the latter being slightly more restrictive.
+
+- `&#38;amp=1` parameter defaults to `<amp-iframely>` component (see pull quote below for legacy support).
+- You may also call `&#38;amp=iframely` to explicitly request all Iframely iFrames be returned as `<amp-iframely>` component.
+- Use `&#38;amp=iframe` to request `<amp-iframe>` instead when we need to generated hosted code.
+
+> Earlier API version defaulted to `<amp-iframe>` for `&#38;amp=1` parameter. Legacy customers will keep getting `<amp-iframe>` on `&#38;amp=1` requests.
+> To migrate, start sending `&#38;amp=iframely`, or uncheck that feature flag in your [Iframes settings](/settings/media).
+
+### Provider-specific AMP components
+
+Alternatively, if you do not wish to rely on `<amp-iframely>`, our APIs can also generate the following publisher-specific components supported by AMP.
+Unfortunately, AMP support is limited only to these publishers:
+
+`<amp-apester-media>`, `<amp-brightcove>`, `<amp-dailymotion>`, `<amp-facebook-page>`, `<amp-facebook>`, `<amp-gfycat>`, `<amp-gist>`,
+`<amp-google-document-embed>`, `<amp-imgur>`, `<amp-instagram>`, `<amp-izlesene>`, `<amp-jwplayer>`, `<amp-kaltura-player>`,
+`<amp-megaphone>`, `<amp-pinterest>`, `<amp-reddit>`, `<amp-soundcloud>`, `<amp-tiktok>`, `<amp-twitter>`,
+`<amp-vimeo>`, `<amp-wistia-player>`, `<amp-youtube>`
+
+Each component requires a specific JavaScript file to enable it. Please see the gist below for the guide on adding required scripts.
+
+## Include required JavaScript for provided AMP components
+
+AMP requires JavaScript for each component that needs to be enabled. For example, for [`<amp-iframely>`](https://amp.dev/documentation/components/<amp-iframely>/) include this script in the `head` of your page:
+
+```html
+<script
+	src="https://cdn.ampproject.org/v0/amp-iframely-0.1.js"
+	custom-element="amp-iframely"
+	async
+></script>
+```
+
+Overall, we suggest checking the returned embed code and extracting the component name. Having the name, you can then map it to the required JavaScript version, similar to this Gist:
+
+Similarly, you may also add the required CSS for AMP Bento components.
+
+## Avoid placing some media close to the top
+
+Resizable AMP components [cannot appear](https://www.ampproject.org/docs/reference/components/<amp-iframe#behavior) close to the top of the document except when iFrame also uses an image placeholder.
+It includes Twitter, Instagram and other script-based rich media.
+
+Iframely will put a required image placeholder on all responsive and resizable embeds to make iFrames work anywhere on the AMP page.
+However, AMP may ignore a resize request when an embed is already in the viewport.
+
+Therefore, we recommend placing Twitter, Instagram etc. below 600px from the top of your page or 75% of the user's viewport.
+
+---
+title: "Iframely Embeds for Facebook Instant Articles"
+description: "Iframely helps you deliver embeds for use in Facebook Instant Articles"
+source: https://iframely.com/docs/instant-articles
+---
+
+# Iframely embeds for Instant Articles
+
+All of Iframely embeds should work fine in Facebook Instant Articles out-of-the-box. There are couple of caveats though.
+
+If you're new to Instant Articles, follow [these instructions](https://www.facebook.com/instant_articles/signup) to sign up for it with Facebook.
+
+## How-to: use op-interactive
+
+> Please refer to [this Facebook documentation](https://developers.facebook.com/docs/instant-articles/reference/embeds) about `op-interactive`.
+
+Using Iframely embed codes with Instant Articles is simple:
+
+```html
+<figure class="op-interactive">
+	<iframe class="no-margin">
+		<!-- place HTML code you get from Iframely here -->
+	</iframe>
+</figure>
+```
+
+Any HTML code you get from us should work well: our [iFrame](/docs/iframes) helpers, cards, or native publisher's "as-is" code.
+
+## Avoid pitfalls
+
+### iFrame tag should not have attributes
+
+Leave iFrame tag in `op-interactive` wrapper empty: just `<iframe>`.
+
+If Facebook sees any attributes in iFrame, it will also request that `width` and `height` are supplied, and then FB will use those for resizing iFrames dynamically using fixed aspect-ratio, which isn't right for a number of embeds publishers.
+
+### Make sure figure is standalone
+
+We saw people having issues with Instant Articles because `<figure>` was also wrapped into `<p>` element. The `<figure>` should stand by itself. Here's what Facebook's documentation says:
+
+> The `<figure>` element representing the embed must be included standalone within the body of the article and not enclosed within a `<p>` element.
+
+## Transformer rules
+
+If you use Instant Article SDK with automatic [Transormer Rules](https://developers.facebook.com/docs/instant-articles/sdk/transformer-rules), here's the rule that you need to transform Iframely rich media embeds into `op-interactive` given above.
+
+The below transformer rule code assumes that you wrap all Iframely rich media embeds into a `<div class='iframely-wrapper'> … </div>`:
+
+```json
+{
+	"class": "InteractiveRule",
+	"selector": "div.iframely-wrapper",
+	"properties": {
+		"interactive.iframe": {
+			"type": "children",
+			"selector": "div.iframely-wrapper"
+		}
+	}
+}
+```
+
+> If you use [WordPress](/wordpress) with Gutenberg editor, your rich media is wrapped into two `div`s.
+> Get your transformer rule from [this gist](https://gist.github.com/nleush/abeb2931c74acd4406c1b45f2269ef15).
+
+Please [let us know](mailto:support@iframely.com) if you run into other issues. We'll be debugging with you and updating this manual as required.
+
+---
+title: "How to use Iframely embeds with React"
+description: "Make React work with Twitter, Instagram, Facebook embeds and the like"
+source: https://iframely.com/docs/react
+---
+
+# Add Iframely to React
+
+> **Known issue**
+>
+> [React](https://facebook.github.io/react/) sets HTML via `innerHTML`.
+> Per HTML5 [specification](https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML), any `&lt;script&gt;` tag is ignored.
+> It means that rich media from publishers like Twitter, Instagram, Facebook and TikTok will not work out-of-the-box. It requires a [hosted iFrame](/docs/iframes).
+
+Please read details about `innerHTML` issue and our suggested general solution for it in our [&omit_script=true](/docs/omit-script) guide.
+This guide will provide React-specific instructions only.
+
+The issue affects any scripted third-party [rich media](/docs/embeds) such as Twitter, Instagram, Facebook, TikTok, Imgur and GitHub Gists, and Iframely interactives - [summary cards](/docs/cards) and [lazy-loaded](/docs/lazy-load) players.
+
+Because we still need to listen to the control events posted by iFrames, we provide our [embed.js](/docs/embedjs) script.
+It is a single script that to make an exception for and add to the page yourself.
+
+## The approach
+
+Assuming you get your HTML codes from us via [API calls](/docs/oembed-api):
+
+- The fix involves putting all rich media that requires it into a [hosted iFrame](/docs/iframes).
+- For this, add [&omit_script=1](/docs/omit-script) parameter to your API requests.
+- The parameter will make sure that your HTML codes link only to iFrames, native or Iframely-hosted.
+- [Add our embed.js](/docs/omit-script#load-when-required) as a single third-party script for correct iFrame sizing.
+- Use `dangerouslySetInnerHTML` to properly render rich media HTML content within your React application. Otherwise, the HTML markup will not display properly.
+- Run Iframely's loader for each element if needed.
+
+### Fetching HTML code
+
+Fetching of HTML code can be done in multiple ways. See our general recommendation for server-side API calls to [oEmbed](/docs/oembed-api) or [Iframely API](/docs/iframely-api) and serving the HTML from your cache.
+
+If you absolutely need to make API calls from the client, please send requests to the CDN shield `iframely.net/api/…`, or via [your own CDN](/docs/cdn) distribution.
+
+There is also an option to create HTML templates and skip API calls altogether. If the layout shift is not a concern, please read this approach [embed.js](/docs/embedjs#html-templates-for-your-urls) documentation. You' need to run Iframely's loader for each of your elements; see next.
+
+### Add embed.js script
+
+When you [&omit_script=1](/docs/omit-script), Iframely omits our own embed.js too. You'll need to [add embed.js script](/docs/omit-script#load-when-required) to your page yourself.
+
+It is required to adjust the sizes of the iFrames correctly and to handle other [events](/docs/embedjs#card-events).
+
+### `dangerouslySetInnerHTML`
+
+`dangerouslySetInnerHTML` is required to render this HTML content within a React application correctly, or else any markup embedded in that string will not display.
+
+Naming means making sure you trust the source. `dangerouslySetInnerHTML` is safe when you use it with &omit_script because there will be no third-party scripts (and they are not executed by React anyway).
+
+### Run iFrame loader
+
+You might need to run Iframely's loader for lazy-loaded content explicitly. It depends on whether `window.iframely` is available before or after your iFrames are loaded. Because it is asynchronous, execute it every time you add an element to be safe:
+
+```js
+window.iframely && window.iframely.load();
+```
+
+If you implement a class, trigger Iframely loader either in `componentDidMount`, or `componentDidUpdate`, depending on your lifecycle.
+
+> From React: "Do note that `componentDidMount` will however not be called on component updates".
+
+## Example component
+
+```javascript
+import React, { useEffect, useState } from 'src/data/docs/react';
+
+const KEY = 'MD5_HASH_OF_YOUR_API_KEY';
+
+export default function Iframely(props) {
+	const [error, setError] = useState(null);
+	const [isLoaded, setIsLoaded] = useState(false);
+	const [html, setHtml] = useState({
+		__html: '<div />'
+	});
+
+	useEffect(() => {
+		if (props && props.url) {
+			fetch(
+				`https://iframely.net/api/iframely?url=${encodeURIComponent(props.url)}&key=${KEY}&iframe=1&omit_script=1`
+			)
+				.then((res) => res.json())
+				.then(
+					(res) => {
+						setIsLoaded(true);
+						if (res.html) {
+							setHtml({ __html: res.html });
+						} else if (res.error) {
+							setError({ code: res.error, message: res.message });
+						}
+					},
+					(error) => {
+						setIsLoaded(true);
+						setError(error);
+					}
+				);
+		} else {
+			setError({ code: 400, message: 'Provide url attribute for the element' });
+		}
+	}, []);
+
+	useEffect(() => {
+		// Make sure you load Iframely embed.js script yourself
+		window.iframely && window.iframely.load();
+	});
+
+	if (error) {
+		return (
+			<div>
+				Error: {error.code} - {error.message}
+			</div>
+		);
+	} else if (!isLoaded) {
+		return <div>Loading…</div>;
+	} else {
+		return <div dangerouslySetInnerHTML={html} />;
+	}
+}
+```
+
+---
+title: "Add rich media embeds to React Native header-menu via Iframely webview"
+description: "How to set up a WebView to use YouTube, Twitter, Instagram, Facebook embeds and many more."
+source: https://iframely.com/docs/react-native
+---
+
+# Iframely embeds in React Native
+
+If your build a mobile app using React Native, we suggest wrapping HTML codes you get from Iframely APIs for rich media embeds into a self-adjusting WebView.
+
+> You don't need a separate component if you already serve your entire article's content in a WebView.
+> The HTML codes will work just fine with the rest of your HTML content. This guide is for apps that want to render rich media embeds separately.
+
+We took inspiration for the approach from Facebook [Instant Articles](/docs/instant-articles) and their `op-interactive` component.
+
+- You first get HTML embed codes from our [oEmbed](/docs/oembed-api) or [Iframely](/docs/iframely-api) API endpoints.
+- Then you put those HTML codes as the source property of `WebView` component of React Native framework.
+- Plus, inject a simple JavaScript that sends a message to the parent to change the height of the WebView once the embed codes unfurl themselves.
+
+The tricky part is to set up the initial WebView sizing correctly to avoid flicks of the rest of your content as embed codes expand.
+The other potential issue is to accurately detect when the rich media inside the WebView changed its sizes.
+
+> Please make API calls with &ssl=1 to avoid Iframely's default protocol-less `//` embed codes. The protocol of your WebView is likely `file://`.
+
+## Suggested component
+
+Here's a working component that you can copy and expand as required:
+
+You can see that Iframely's HTML embed code provides initial media sizing. The resizes triggers go via window messaging.
+
+> The gist requires React Native 0.57. Before the 0.57 release, window messaging [wasn't reliable](https://facebook.github.io/react-native/blog/2018/08/27/wkwebview).
+> If you need to support earlier versions, you may use [this lib](https://github.com/iou90/react-native-autoheight-webview) for messages instead.
+
+## Recommended API query-string and settings
+
+First of all, make sure you turn SSL on in your [API settings](/settings/about) or via `&ssl=1` parameter. It avoids our protocol-less `//…` embed codes, which may translate into `file://` in your WebView and fail.
+
+The above approach for React Native component will work with any HTML codes returned by Iframely otherwise. You may use any [query-string](/docs/parameters) or API options.
+
+However, we recommend using APIs with at least `&omit_script=1`, or even with `&iframe=1`, so that you get Iframely-hosted iFrames for all script-based embeds such as Twitter, Instagram, Facebook etc.
+You can also achieve the same with your API settings.
+
+Omitting scripts will kick in our "predictive-height" mechanism, and there will be minimal layout shift and friction while rich media renders.
+
+Additionally, with Iframely iFrames, there will be more reliable detection that content inside an iFrame changes its size as iFrames will raise such messages.
+
+---
+title: "How to use Iframely embeds with Angular"
+description: "Make Angular.js work with Twitter, Instagram, Facebook embeds and the like"
+source: https://iframely.com/docs/angular
+---
+
+# Add Iframely to Angular
+
+Angular has a common known issue of most JavaScript frameworks. The framework won't execute any `<script>`s in the HTML that you add to page.
+You need to have a special handler for each of such needed scripts.
+
+This said, Angular cannot support any JavaScript-based embeds out-of-the-box.
+It means you need a workaround fix publishers such as Twitter, Facebook, Instagram, Imgur, GitHub Gists, Iframely own [cards](/docs/cards) and [lazy-loaded](/docs/lazy-load) iFrames, and many more.
+
+iFrame-based rich media such as YouTube videos are generally fine without any extra precautions.
+
+## The solution
+
+To simplify the JavaScript handlers in HTML embed codes for you, we suggest the following approach.
+
+- Configure Iframely (in [app settings](/settings/about)) to always wrap 3rd party JavaScript into an [iFrame](/docs/iframes).
+- The config option name is "My engine won't run 3rd party scripts after adding HTML".
+- With this on, you'll get Iframely [embed.js](/docs/embedjs) script in your HTML codes instead of publisher's scripts. So it will be the only script you'll need to deal with.
+- You can omit our embed.js from HTML codes or keep it. But you'll need to load embed.js to your page on your own anyway, because Angular won't execute any inline scripts.
+- Once you add HTML for rich media embed code to your page, you also call `iframely.load()` to trigger Iframely unfurling logic explicitly.
+
+You can make exception in your settings to get code from specific publishers as-is, without Iframely wrappers. Please make such exception in case you feel like dealing with some of publisher's scripts on your own.
+
+> Iframely's own summary cards and lazy-loaded iFrames go with our script anyway.
+> Please add our embed.js to your page on your own and call `iframely.load();` in any case to make those features work for you.
+
+## Example integration code
+
+In your code, you'd need the following.
+
+- Get HTML embed code from Iframely API fetched in either of API endpoints (this step is omitted in this guide).
+- Inject this HTML code into Component variable for template processor.
+- Create a pipe for HTML sanitizer and make it available for component usage.
+- Make sure to trigger `iframely.load()` each time your component updates the embedded HTML.
+
+### Component
+
+```js
+/** iframely-embed.component.ts */
+import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
+import { Input, Output } from '@angular/core';
+import { samples } from './samples';
+
+// Importing Iframely's embed.js as library.
+import { iframely } from '@iframely/embed.js';
+// It is also available on GitHub at https://github.com/itteco/embedjs,
+// Or you can load it off our CDN.
+
+@Component({
+  selector: 'header-menu-iframely-embed',
+  template: `<div>
+    <p bind-innerHTML="htmlCode | safeHtml"></p>
+  </div>`,
+})
+export class IframelyEmbedComponent implements OnInit {
+  /** Get html via JSON API calls to /api/oembed or /api/iframely. */
+  htmlCode = '< … >';
+
+  constructor() {
+    /** Trigger on data load from source in case html has embed.js. */
+    iframely.load();
+  }
+
+  ngOnInit() {}
+}
+```
+
+### Template
+
+Let's insert HTML from an array of samples and tell sanitizer to omit this HTML checkups.
+
+```html
+<div>
+	<p bind-innerHTML="htmlCode | safeHtml"></p>
+</div>
+```
+
+### HTML sanitizer @Pipe example
+
+We need to disable HTLM sanitizer to allow arbitrary 3rd party HTML code. Iframely will have our required CSS inline, though you can reduce the number of CSS by using [&omit_css](/docs/omit-css).
+
+```javascript
+// safe.pipe.ts
+import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
+
+@Pipe({
+    name: 'safeHtml'
+})
+export class SafeHtmlPipe implements PipeTransform {
+  constructor(private sanitized: DomSanitizer) {}
+  transform(value) {
+    return this.sanitized.bypassSecurityTrustHtml(value);
+  }
+}
+```
+
+Pipe has be registered with templating system to be recognized. For example, use it project-wide.
+
+```javascript
+// header-menu.module.ts
+import { SafeHtmlPipe } from './safe.pipe';
+
+// …
+
+@NgModule({
+  declarations: [
+    // …
+    SafeHtmlPipe
+  ]
+})
+```
+
+The example above will also allow `<script>` tags without being sanitized. Though they won't be executed, you might still have security concerns. If that bothers you, you may simply ask Iframely to [omit-script](/docs/omit-script) (embed.js and any 3rd party ones) and then block any script in your sanitize (but please allow inline CSS as we'll still need it).
+
+### Package embed.js
+
+If you import Embed.js, it should be included and installed via project dependencies:
+
+```json
+"name": "iframely.angular",
+"dependencies": {
+  "@iframely/embed.js": "^1.3.1",
+  …
+}
+```
+
+You can also [get it on GitHub](https://github.com/itteco/embedjs) and included it to your page as `<script>` (once), either off your server or off Iframely CDN.
+
+In any case, please trigger `iframely.load()` to make sure Iframely unfurling process begins after your add a rich media to your page.
+
+Please feel free to grab demo project on [Stackblitz](https://stackblitz.com/edit/angular-iframely-integration).
+
+---
+title: "Iframely embeds for Shadow DOM and Web Components"
+description: "Necessary tweaks to make third-party rich media to work in Shadow DOM."
+source: https://iframely.com/docs/shadow-dom
+---
+
+# Use Iframely embeds inside Web Components
+
+When you place Iframely card and other rich media embed codes into your Shadow DOM, there may be issues. Global JavaScript selectors do not apply to Shadow DOM and we cannot find what we are looking for.
+
+The known issues cover the resize events for rich media such as Twitter, Facebook, Instagram and TikTok. You may also experience issues that link clicks in Iframely's own [summary cards](/docs/cards) do not work.
+
+It is because Iframely's platform [embed.js](/docs/embedjs) script relies on the event messages from iFrames to parent, and we need to be able to match those messages back to an iFrame. If we cannot find an iFrame, the event handlers do not get called.
+
+Please apply one of the following JavaScript fixes to help Iframely with that search:
+
+- You can mark your web component with CSS classname `"iframely-shadow"`. We'll find iFrames there on our own. If needed, we'll search recursively with the same class name.
+
+- You can also change the name of that classname. Please set the `shadow` property in `iframely.extendOptions({...})` method or the `&shadow=` query-string parameter if you load your embed.js script from [your own CDN](/docs/cdn).
+
+- Lastly, you may even override the entire function `iframely.findIframe(...)` to match your specifics. The original function is [here](https://github.com/itteco/embedjs/blob/25bbadb7a76dcb4208926399050e3f8dedf8a2e7/src/messaging.js#L87-L93). It is called the following way.
+
+```js
+iframely.findIframe({
+	contentWindow: e.source,
+	src: message.context,
+	domains: message.domains
+});
+```
+
+---
+title: "Get started with Iframely API"
+description: "Iframely gives you responsive embeds via oEmbed, Twitter Cards and Open Graph parsers"
+source: https://iframely.com/docs/publishers
+---
+
+# Iframely for publishers
+
+Welcome to Iframely's Publisher Guides. This section is for site owners, webmasters, and content teams who want to make their media look great when shared across the Web.
+
+Iframely helps applications and social platforms understand your content and display it as rich previews — including cards, images, videos, and other interactive embeds.
+
+This introduction explains how Iframely discovers and processes your pages, and provides links to what you can do to ensure your site looks its best everywhere it's shared.
+
+## What's in it for you
+
+When people share links to your web pages in apps or social platforms that use Iframely, those platforms rely on us to generate clean, consistent, and engaging link previews. These previews help attract attention, boost engagement, and ultimately promote your website to a broader audience.
+
+The way your content appears — from its visuals to its click-through performance — depends on how well your pages describe themselves to our system.
+
+[Iframely for Publishers homepage](/publishers)
+
+## How Iframely robot works
+
+Iframely's robot fetches your pages just-in-time, on request of an end-user. We respect your server restrictions and minimize our footpring on your resources. Iframely isn't a crawler, we do not follow links or discover more pages. However, we will validate images and iframes by touching them to make sure our end-user experience is top-notch.
+
+If your site already includes standard metadata, it likely works well with Iframely out of the box. 
+
+[More about Iframely robot](/docs/about)<br>
+[See what our robot sees](/debug)
+
+## How to optimize your site for Iframely
+
+Iframely reads common metadata information, structured data and media information. It understands 
+
+- Facebook's [Open Graph](http://ogp.me/), 
+- [Twitter Cards](https://developer.twitter.com/en/docs/tweets/optimize-with-cards/overview/abouts-cards.html),
+- [oEmbed](https://oembed.com), 
+- Google's structured data (LD+JSON and microformats).
+
+You can see exactly how Iframely reads your page using our [public debugger tool](/debug) or the one in your publisher console.
+
+You may also provide a dedicated meta information for Iframely or even one of the platforms that use us. See this guide - [Target Iframely or specific customers](/docs/webmasters).
+
+## How to get a rich media to Iframely
+
+Iframely supports rich media embeds for over 1900 publishers and counting. This includes video, audio, podcasts, galleries, slideshows, maps, graphs and many other interactives. 
+
+If you would like to join us, here's what you need to know:
+
+- Your rich media needs to be made discoverable to Iframely. 
+- The easiest way for Iframely to discover it is via a [simple Iframely link](/docs/publish).
+- If you need to pass full HTML, use [oEmbed](https://oembed.com).
+
+See the full guide -[Publishing rich media on Iframely](/docs/publish).
+
+## Troubleshoot
+
+- See what we can see - [Iframely URL debugger](/debug)
+- Request rich media review - [Submit your site to us](/qa/request)
+- Enable Iframely robot - [Allow us on your network](/docs/about#allow-iframely-robot-on-your-network)
+- Troubleshoot technologies - [Other robot requirements](/docs/webmasters#troubleshoot-iframely-robots-access)
+
+---
+title: "A guide to optimizing your site for Iframely"
+description: "Publish your meta for Iframely"
+source: https://iframely.com/docs/webmasters
+---
+
+# A guide to optimizing your site for Iframely
+
+This document describes how to optimize your web-hosted content that people share to apps that use Iframely.
+
+## Target Iframely with your meta
+
+When an end-user shares URL to your webpage in one of the Iframely user apps, [our robot](/docs/about) gathers [meta](/docs/meta) information from your website or app to present that URL to other people and engage them.
+
+We use Facebook's [Open Graph](http://ogp.me/), [Twitter Cards](https://developer.twitter.com/en/docs/tweets/optimize-with-cards/overview/abouts-cards.html),
+[oEmbed](https://oembed.com) and Google's [Structured Data](https://developers.google.com/search/docs/advanced/structured-data/intro-structured-data#markup-formats-and-placement).
+If none are present, we’ll use your SEO tags for title and description.
+
+Iframely uses metadata to create a [summary card](/docs/cards) so your content gets better engagement.
+Our customers, however, may opt to get plain data via API and build their URL previews on their instead.
+
+Here's an example of how it may look.
+
+  
+    
+  
+  
+    
+  
+
+If you optimized the website for social sharing, you don’t necessarily need to do anything else.
+
+### Meta markup
+
+You may override any piece of `meta` we get for your URLs with Iframely-prefixed Open Graph tags:
+
+```html
+<meta property="iframely:title" content="…" />
+<meta property="iframely:description" content="…" />
+<meta property="iframely:image" content="…" />
+…
+```
+
+This data will have the highest priority over all other available sources. You may define any of the [meta fields](/docs/meta) that Iframely supports, such as author and date.
+
+### Media card attachment
+
+Iframely can create a [media card](/docs/cards#media-cards) if we find a rich media attachment on your page.
+
+By default, we recognize the most popular video platforms in your Open Graph video, Twitter players and VideoObject structured data.
+The known publishers include YouTube, Vimeo, Dailymotion, SoundCloud, Brightcove, and tens of others.
+
+We treat it as an “attachment” and generate the media card like these:
+
+  
+    
+  
+  
+    
+  
+
+You can also "attach" a video explicitly for Iframely from any of the supported [media publishers](/domains) via `attach` meta field this way:
+
+```html
+<meta
+	name="iframely:attach"
+	content="https://players.brightcove.net/…/index.html?videoId=5847…001"
+/>
+```
+
+## Target specific Iframely user apps
+
+Like optimizing for the entire Iframely network, you may target specific Iframely user apps, provided they share with you their app name.
+
+Ask the app's support team about that information if needed. If you get click-throughs from the app with a correctly set up name in Iframely, you'll get the name added as referring `&utm_source=…` parameter.
+The most common choice for an app name is the company/product/web domain name.
+
+> If you're an Iframely app owner, add your app name [in your settings](/settings/about).
+
+Knowing app name, you can optimize your website for it via `{AppName}:` prefix of Open Graph. For example,
+
+```html
+<meta property="drift:title" content="…" />
+```
+
+> As an Iframely app owner, you can enter other app's name to consume meta the way they do.
+> For example, `og` to consume Open Graph meta as Facebook, or `twitter` to consume it as Twitter.
+
+## Target a user-agent
+
+You may target Iframely via user-agent string. App owner can also submit their extension. [Our robot](/docs/about) will add it at the end of the UA string. By default, the extension is the capitalized app name, if any:
+
+```
+Iframely/1.3.1 (+https://iframely.com/docs/about)
+Iframely/1.3.1 (+https://iframely.com/docs/about) Atlassian
+Iframely/1.3.1 (+https://iframely.com/docs/about) Bloomberg
+…
+```
+
+Please see how to [allow Iframely robot on your network](/docs/about#allow-iframely-robot-on-your-network) based on user-agent and IPs.
+
+## Troubleshoot Iframely robot's access
+
+Basic robot requirements:
+
+- Your server must use gzip, deflate or brotli encodings.
+- Any meta properties needs to be listed in the `<head>` section of your website or app, or they will be cutoff.
+- Ensure that your server replies to our robot within 10 seconds. Iframely will otherwise raise a timeout error and will not be able to display your content.
+- If your website or app supports several language, you can return relevant variant following Iframely's `accept-language` request header.
+- [Add to your allow list](/docs/about#allow-iframely-robot-on-your-network) either the user agent strings or the IP addresses used by Iframely robot.
+- If your website uses React, Angular, Redux or other similar SPA technologies, prerender your pages and meta for Iframely robot.
+
+To check how Iframely sees your webpage, please use content [sharing debugger](/debug).
+
+---
+title: "Publish your rich media for Iframely"
+description: "How to make your rich media embeds available on Iframely"
+source: https://iframely.com/docs/publish
+---
+
+# Publish your rich media for Iframely
+
+To make your rich media iFrames available on Iframely, please make them discoverable to Iframely first by adding a `<link>` element that points to that iFrame. We would need to review and approve your media before it becomes available on Iframely. 
+
+We also recognize [oEmbed](https://oembed.com), Facebook's [Open Graph](http://ogp.me/), [Twitter Cards](https://developer.twitter.com/en/docs/tweets/optimize-with-cards/overview/abouts-cards.html),
+and Google's [Structured Data](https://developers.google.com/search/docs/advanced/structured-data/intro-structured-data#markup-formats-and-placement).
+
+> [Submit your domain](/docs/publish#submit-for-review) for our review; unrecognized `link` will not work.
+
+## Discovery via `<link>` meta tag
+
+If your rich media embeds as an iFrame, let Iframely discover it via custom `<link>` in the `<head>` section of your page:
+
+```html
+<link
+	rel="iframely"
+	href="https://coub.com/embed/2pc24rpb"
+	media="(aspect-ratio: 1280/720)"
+/>
+<!--
+  [rel]:   Target Iframely,
+  [type]:  optional, "text/html" to publish embed as iFrame
+  [href]:  with this href as src
+  [media]: and with this size
+-->
+```
+
+Iframely translates such `link` into the following responsive embed code:
+
+```html
+<div style="width: 100%; height: 0px; position: relative; padding-bottom: 56.25%;">
+	<iframe
+		src="https://coub.com/embed/2pc24rpb"
+		style="width: 100%; height: 100%; position: absolute;"
+		frameborder="0"
+	>
+	</iframe>
+</div>
+```
+
+## Discovery via `link` HTTP header
+
+If it is simpler for you to set [Link Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Link), publish your Iframely link this way:
+
+```html
+Link: <https:// … >; rel="iframely"; type="text/html"; media="…"
+```
+
+## Link attributes
+
+### href
+
+Link's `href` attribute is a source of a media element, primarily an `src` attribute of an iFrame. Because iFrame is our default case, `type` optional there. Or you can publish it as `text/html` for an explicit value.
+
+`href` can also point to images with the corresponding image `type`.
+
+Please make sure [Iframely robot](/docs/about) can access href resource.. We will fetch it to verify that iFrame source is valid, and that there is no `x-frame-options` or `frame-ancestors` headers that prevent it from embedding.
+
+### rel
+
+Rel attribyte is a string representing an array of space-separated values:
+
+- `rel` list should start with `iframely` to recognize that you publish for us.
+- Add primary functional rel from the [list of recognized rels](/docs/links#functional-use-case-rels), for example, `rel="iframely player"` for video players. If omitted, we use `app` as default. You can also publish `thumbnail` images.
+- Optionally add [information rels](/docs/links#information-rels) such as `audio` and `playlist` (`rel="iframely player audio"` );
+- Or required [feature-policy](/docs/links#feature-policy) directives. We'll pass them into `allow` attribute of the embedded iFrame code (`rel="iframely player encrypted-media"`).
+- Please add `playerjs` into `rel` if you publish a player that supports [playback events](/docs/playerjs).
+
+> Please do not include `autoplay` if you need it for feature-policy. It's not supported and will be considered as functional `rel` instead. Your player will be handled as auto-starting and requiring a [click-to-play](/docs/click-to-play) cover.
+
+### media
+
+Media attribute represents your iFrame's sizing. It is an optional attribute, with the default fixed aspect-ratio of 16/9 for iFrames and sizing auto-detect for images.
+
+Any sizing media query from the [supported dictionary](/docs/links#sizes-in-media-query) works. If you need another aspect-ratio, include it as this:
+
+```html
+<link … media="aspect-ratio: 4/3;" />
+```
+
+To add a max-width or small fixed padding on top or at the bottom, use `max-width` and `padding-bottom`, respectively, in pixels:
+
+```html
+<link … media="aspect-ratio: …; max-width: 640; padding-bottom: 16" />
+```
+
+### `type` attribute
+
+`type` attribute is optional, defaulting to `text/html` for an iFrame embed. 
+
+Similarly, you can publish MP4 and streaming video sources, audio and images simply by choosing a `type` from [supported MIME types](/docs/links#mime-types). For images, you may omit the `media` sizing altogether.
+
+## Frequently requested
+
+Our most-common case is a responsive iframe that resizes via a fixed aspect-ratio. The next most popular sizing choice after our, as is shown in our default example. We also also see many publishers that build media that requires a horizontally-resizing iframe, or widgets with dynamic height altogether.
+
+### Horizontal iFrame
+
+"Horizontal" iFrame is a special media case where an iFrame that resizes to 100% of available width with a fixed height.
+
+To achieve that, provide just `height: …` (in pixels) as your `media` attribute:
+
+```html
+<link rel="iframely reader" href="…" media="height: 420" />
+```
+
+If you would like to give your users an option to change the height of your iFrame, please add `resizable` into `rel` of your link. We will then add the height mechanism to [user options](/docs/options).
+
+### Embeds with dynamic sizes
+
+If the height of your iFrame needs to change depending on the user device and available space, you'd likely need to include `<script>` in there and pass the entire `html` to Iframely.
+
+Please make it available for [oEmbed](https://oembed.com) discovery and [submit your site](/qa/request) for review.
+
+## Target specific Iframely user apps
+
+Like publising for the entire Iframely network, you may target specific Iframely user apps, provided they share with you their app name:
+
+```html
+<link rel="atlassian" href="…" media="aspect-ratio: 16/9" />
+```
+
+If your rich media is targeted, skip `iframely` from the `rel` and leave on app name. Only that specific app will receive your media.
+
+## Submit for review
+
+We would need to review and approve your media before it becomes available on Iframely. Please make sure that your site is live and ready for our review in one go.
+
+Here is what we will be looking for:
+
+- You have an active production-ready website and rich media.
+- You have working examples of production URLs created by your users.
+- We will try and discover other URLs on our own.
+- You provide embed codes for manual copy-pasting by end-users. 
+- Preferrably, there is a link to your documentation about the feature.
+- The domain and links you provide are useful for end-users.
+- There are no restrictions via `frame-ancestors` or `x-frame-options`. We may enable your intergation for specific Iframely users if you do need the restrictive content security policy.
+
+> Once ready, [submit your domain](/qa/request) for our review.
+
+---
+title: "About Iframely robot"
+description: "If you see Iframely parsers fetching your URLs, it's because an actual user has shared that URL on one of the apps that use Iframely as their back-end"
+source: https://iframely.com/docs/about
+---
+
+# About Iframely robot
+
+If you see Iframely parsers fetching your URLs, it's because an actual user has shared that URL on one of the apps that use Iframely as their back-end.
+We are not a crawler: we don't follow links and only act on behalf of a human.
+
+Iframely is a software-as-a-service for social app developers and news media publishers.
+Our robots respond to links shared socially by end-users with the information we can find about your URL: title, description, thumbnail image, etc.
+
+This data is then used by our customers to build engaging user experiences.
+For news & media customers, we power up their content management systems with the ability to curate 3rd party media and embed it inside the news posts.
+
+In other words, Iframely is a distribution and promotion vehicle for your web content. We extend your reach to thousands of news sites, blogs and social apps.
+
+Iframely's robots fetch URLs with the following user agent (version and optional [name extension](/docs/webmasters#target-a-user-agent) may and will change):
+
+```
+Iframely/1.3.1 (+https://iframely.com/docs/about)
+```
+
+You are probably here because you found us in your access logs and you have questions or are curious. We are here to help and give more information.
+
+## URL unfurling example
+
+Here's an example of how we present your URLs and info that we look for:
+
+  
+    
+  
+  
+    
+  
+
+## What our parsers see
+
+Our parsers understand Facebook's [Open Graph](http://ogp.me/), [Twitter Cards](https://developer.twitter.com/en/docs/tweets/optimize-with-cards/overview/abouts-cards.html),
+[oEmbed](https://oembed.com), Google's structured data and Iframely's own [rich media discovery protocol](/docs/publish).
+
+If you have your website optimized for social sharing already - you're well presented on Iframely too.
+
+To check how Iframely and other apps see your website, visit our debug tool:
+
+[Iframely URL debugger](/debug)
+
+## Minimizing your traffic
+
+Our parsers try and fetch as little of the page as we can to extract meta tags about the content.
+In most cases, they will leave the page as soon as they get the `<meta>` portion of it, without waiting or looking into full `<body>`.
+
+If a page's tags refer to an image, video, or audio file, we will fetch that file as well to check its validity.
+We use `head` requests or HTTP Range headers to only grab first few bytes of such content, not downloading entire files during validations.
+
+If customer uses our [URL cards](/docs/cards) service to present your URLs' summary to their end-users, we will fetch the thumbnail images and cache it inside our CDN for extended period of time, reducing traffic to your site.
+
+## Refreshing the content
+
+Provided that your URL keeps being active on our network, our parsers may hit any fresh URLs as often as once per hour on the first day, significantly reducing traffic as the content becomes older, to about a once per month.
+
+As per our [GDPR](/gdpr) guidelines and privacy policy, we purge all content's cache off our networks after three months of inactivity.
+
+## Having a problem with Iframely?
+
+Although our parsers are battle-hardened over the years in use, it is entirely possible, as the Internet is constantly evolving, that the robots are doing something they should not.
+We are more than happy to add you to or remove from our ignorelist, work with you to improve parsing of your content, discuss alternatives to how we are accessing your site, or just answer any questions you have.
+Please contact us at support at iframely.com.
+
+## Allow Iframely robot on your network
+
+If you have bot-protection in place, please add Iframely to your allowlist. Your CDN provider might already recognize us and provide controls to enable Iframely.
+If not, or to allow Iframely on your own servers, we suggest two options:
+
+- Allow our public IP addresses as listed. There are two lists available: [IPv4](/ips-v4) and [IPv6](/ips-v6). Please refresh your copy periodically to keep it up-to-date. You can automate to fetch from the linked files.
+- If you do reverse DNS lookups, allow our domain. Iframely traffic will come from IPs that resolve to a subdomain of iframely.com.
+
+Again, our user-agent string is `Iframely/1.3.1 (+https://iframely.com/docs/about)` and may be followed by an [app name extension](/docs/webmasters#target-a-user-agent). The user-agent version number may and will change.
+
+You may debug your website on Iframely using our [URL Debugger](/debug) tool.
+
+---
+title: "Customize rich media embeds by adding query-string options"
+description: "Fine-tune rich media embeds for each URL – customize captions, threads, and other provider-supported options directly in the embed link."
+source: https://iframely.com/docs/cherry-pick
+---
+
+# Fine-tune embeds for each URL
+
+Iframely supports various variants for each rich media embeds publisher. We offer per-URL [options editor](/docs/options) to help the authors choose the exact rich media variant they need for their particular post.
+
+It all works with the query-string parameters added to API calls. For example, `_showcaption=true` for an Instagram post, or `_hide_thread=` for Twitter.
+
+However, the options editor has to be integrated into the app by developers. To make it quicker and work out of the box, we also accept the same options if you manually add them as parameters to the query-string of your URL itself.
+
+## Steps
+
+- Bookmark and go to [iframely.com/try](/try);
+- Enter your URL and request an embed;
+- If rich media's provider supports configuration options, you'll see the form on the left of the preview;
+- Choose the options you like for your URL;
+- Once ready, hit the "Copy new URL" button;
+- The options your cherry-picked will be included in that new URL;
+- Go to your app, and post that new URL instead of the original for the exact rich media embed.
+
+  
+
+> At the admin's discretion, your app may disable that possibility in its provider settings.
+
+---
+title: "Iframely embeds for CKEditor 4 oEmbed plugin"
+description: "How-to guide to CKEditor embeds configuration"
+source: https://iframely.com/docs/ckeditor4
+---
+
+# Configure Iframely for CKEditor 4
+
+This guide is for CKEditor 4. For latest version, refer to [CKEditor 5 guide](/docs/ckeditor).
+
+[CKEditor](http://ckeditor.com/) has two available plugins that rely on Iframely oEmbed API: [Media Embed](http://ckeditor.com/addon/embed) and [Semantic](http://ckeditor.com/addon/embedsemantic) Media Embed.
+
+See [Media Embed's demo](http://sdk.ckeditor.com/samples/mediaembed.html) and its own [documentation](http://docs.ckeditor.com/#!/guide/dev_media_embed).
+
+The plugins use Iframely's demo endpoint out-of-the-box, and you need to change it to the production address with your API key.
+
+## Connect CKEditor to your Iframely account
+
+The option you need to change is `embed_provider`. See details in [CKEditor docs](http://docs.ckeditor.com/#!/api/CKEDITOR.config-cfg-embed_provider).
+
+Here's the production endpoint:
+
+```js
+CKEDITOR.config.embed_provider =
+	'https://iframe.ly/api/oembed?url={url}&callback={callback}&api_key=YOUR_API_KEY_HERE';
+```
+
+Please leave `{…}` values as-is, because CKEditor uses them as template. `YOUR_API_KEY_HERE` needs to be replaced with your actual API key that you see in your profile.
+
+You can also add `&iframe=1` and any other optional [query-string parameters](/docs/parameters) in `embed_provider` endpoint. The embed codes you get will follow your own API settings.
+
+## Known issue
+
+CKEditor has built-in changes and history manager. It needs a better control of the DOM as you edit your article. Hence, CKEditor does not execute the inline scripts that go with the HTML embeds you add.
+
+It will cause text-only previews for some popular embeds like Facebook, Twitter, Instagram, Imgur, GitHub Gists, Iframely [cards](/docs/cards) and [lazy-loaded](/docs/lazy-load) iFrames. All iFrame-based embeds will be previewed alright.
+
+This limitation causes inconveniences only in editor's preview - the actual embed codes will be reinstated and work great after you publish your article.
+
+However, if that is the issue for your users, you can add `&iframe=1&omit_script=1` to your `embed_provider` configuration and [load embed.js](/docs/omit-script#load-when-required) yourself.
+
+Make sure to load embed.js on the article's public page as well. But please do it only if required: when there are embeds in your article. See [this gist](/docs/omit-script#load-when-required).
+
+---
+title: "Embed dialog for your site to copy-paste of embed codes"
+description: "Add embeds to your site with simple JavaScript"
+source: https://iframely.com/docs/embed-dialog
+---
+
+# Embed dialog for your site
+
+Embeds dialog is an easy way to give your site's visitors an option to manually copy-paste embed codes of a [Summary Card](/docs/cards) or [Promo Card](/docs/cards#media-cards) from your own site.
+
+## For example
+
+Click the link above to open example of Embed Dialog. It is shown as simple link, so you can design your own.
+
+## Put it on your site
+
+Put embed dialog on your page with simple HTML code:
+
+```html
+<a
+	href="https://iframely.com"
+	class="iframely-embed-button"
+	data-iframely-api-key="cd400c7c5f78aad28b8f59"
+>
+	Embed this
+</a>
+<script async src="https://iframely.net/embed-dialog-init.js"></script>
+```
+
+The tiny script simply loads other dependencies when use clicks on the embed button.
+
+For production use of the script:
+
+- If you use [Custom CDN](/docs/cdn) you may load the script off your own domain name right away.
+- Otherwise, please copy the [content of the script](https://iframe.ly/embed-dialog-init.js) and include the loader into `<script> … </script>` or even copy the script and simply source from your own domain.
+
+## Additional data attributes
+
+You can optionally specify the exact URL you want an embed dialog for, and also specify the media attachment:
+
+```js
+data-url="http://mashable.com/2015/02/13/friday-the-13th/"
+data-promo="http://imgur.com/gallery/GlPlsDi"
+```
+
+- if no `data-url` given, the script will use current URL as default;
+- if `data-promo` is given, Iframely will use it as media attachment and will generate embed code as [promo card](/docs/cards#media-cards) (available with certain plans);
+
+You may also use MD5 hash of your API key as `data-iframely-key` instead of unencrypted value in `data-iframely-api-key` to make it more secure.
+
+## Customize the look-and-feel
+
+Embed button is designed specifically for ease of your customization of it. You can put any icon, text or have any UI as anchor.
+As long as the class name for `<a>` element matches our selector, the embed dialog will work fine.
+
+---
+title: "How to deploy Iframely API to your own servers"
+description: "Self-host the open-source web embeds parsers for hundreds of domains"
+source: https://iframely.com/docs/host
+---
+
+# Self-host Iframely APIs
+
+The source-code of [Iframely](/) parsers engine is hosted [on GitHub](https://github.com/itteco/iframely). It's a Node.js library and server published under MIT license.
+You can start self-hosting any time, as APIs are nearly identical (except the hosted version requires API key and can output the HTML of [smart iFrames](/docs/iframes)).
+
+Here are the instructions to get your instance of APIs up and running.
+
+## Stay Secure - host on dedicated domain
+
+It is highly recommended that you install the parsers on a dedicated domain.
+
+There are few cases, when rendering of embed content is required by the server, for example the articles.
+Even though Iframely tries to detect and eliminate any insecure code of 3rd parties, for cross-domain security of your application, it will be wiser to keep render endpoints under different domain and allow your main domain in CORS settings (see config options below).
+
+## Initial installation
+
+Node.js version 12. Install it from [pre-built installer](http://nodejs.org/download/) for your platform or from any of the [package managers](https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager).
+
+```shell
+cd <your servers dir>
+git clone https://github.com/itteco/iframely.git
+cd iframely
+npm install
+```
+
+It will also install all the package dependencies.
+
+If you see error `../lib/kerberos.h:5:27: fatal error: gssapi/gssapi.h: No such file or directory` during `npm install` then try to install `libkrb5-dev`:
+
+```shell
+sudo apt-get install libkrb5-dev
+```
+
+## Configure Iframely
+
+Please create your local config file and adjust settings. This local config file will be ignored when you pull new versions from Git later on.
+
+```shell
+cp config.local.js.SAMPLE config.local.js
+vi config.local.js
+```
+
+If you support various environment configs and pass it as `NODE_ENV`, create config files that match your environments. For example, `config.develop.js`.
+
+Edit the sample config file as you need. Follow the comments put in `config.local.js.SAMPLE` for particular settings.
+You may also override any values from main config.js in your local config.
+
+There are also some provider-specific values that are required for some domain plugins to work (e.g. Google API key for maps and YouTube).
+Please, enter your own application keys and secret tokens where applicable.
+
+Readability parser to get the HTML of the articles is optional and is turned off by default as it affects the processing time of the URLs.
+If need be, you can also fine-tune API response time by disabling image size detection.
+
+## Configure cache storage
+
+Iframely has built-in cache with support of Memcached, Redis and Node.js in-memory cache module.
+
+In your local config file, define caching parameters:
+
+```
+CACHE_ENGINE: 'memcached',
+CACHE_TTL: 0, // In milliseconds. 0 for 'never expire' to let cache engine decide itself when to evict the record
+```
+
+Valid cache engine values are `no-cache`, `node-cache` (default), `redis` and `memcached`.
+For Redis and Memcached, the connection options are also required. See sample config file.
+
+## Run server
+
+Starting the server is simple. From Iframely home directory:
+
+```shell
+node server
+```
+
+To run server in cluster mode, use
+
+```shell
+node cluster
+```
+
+We highly recommend using [PM2](https://github.com/Unitech/pm2) or [Forever](https://github.com/nodejitsu/forever) process managers.
+It makes stopping and restarting of the servers so much easier:
+
+Forever:
+
+```shell
+npm install forever -g
+forever start -a -l iframely.log --killSignal=SIGTERM cluster.js
+forever logs 0 -fifo
+```
+
+PM2:
+
+```shell
+npm install pm2 -g
+pm2 start pm2.json
+pm2 logs
+```
+
+If you use 'node cluster' or [Forever](https://github.com/nodejitsu/forever) you can do graceful server restart without aborting active user connections.
+Just send `SIGUSR2` signal to `cluster.js` process:
+
+```shell
+pkill -USR2 iframely-c
+```
+
+Graceful reload with [PM2](https://github.com/Unitech/pm2):
+
+```shell
+pm2 reload iframely
+```
+
+For production deployments, we recommend the cluster mode. It will properly utilize the CPU if you are on multiple cores.
+Plus, as with any Node.js memory buffers, it is beneficial for performance to periodically restart the running processes.
+
+## Add required locations to your reverse proxy
+
+Depending on your setup, you may need to configure these paths in your reverse proxy settings to point to Iframely's Node.js instance:
+
+```shell
+/iframely           -- main API endpoint with get params
+/oembed             -- oEmbed API endpoint
+/r/.+               -- static files (including iframely.js client library)
+/debug              -- optional debugger UI, if you write your own domain plugins
+/reader.js          -- API endpoint with get params - proxies script to render article
+/render             -- API endpoint with get params - prexies custom widgets if required
+/meta-mappings      -- optional API endpoint with available unified meta
+/supported-plugins-re.json - the list of regexps for plugins
+```
+
+## Your self-hosted endpoints
+
+You can now access your self-hosted API on your domain as `/iframely?url=` and `/oembed?url=` with any optional [query-string parameters](/docs/parameters) supported by open-source version.
+
+## Update Iframely
+
+Please, keep Iframely up-to-date as we keep adding features or releasing fixes.
+
+Custom domain plugins may be returning invalid data if your Iframely instance is obsolete. The domain plugins are error-prone due to dependencies to 3rd parties.
+Domain plugins do break from time to time. Keeping Iframely up-to-date is important.
+
+To update Iframely package to its latest version run from Iframely home directory:
+
+```shell
+git pull
+```
+
+and restart your server afterwards. If you use [Forever](https://github.com/nodejitsu/forever), run for example:
+
+```shell
+forever restartall
+```
+
+or in case of [PM2](https://github.com/Unitech/pm2):
+
+```shell
+pm2 reload iframely
+```
+
+If you fork, make sure to merge from the upstream for the newer versions.
+
+## Docker
+
+The Docker container will:
+
+- Run locally on your machine
+- Run forever start `cluster.js` by default
+- Run forever start `<args>` if command line arguments are supplied
+- Gracefully shutdown when receiving `SIGTERM` from docker stop
+
+```shell
+docker build -t iframely:latest .
+docker run -it -p 8061:8061 -v $PWD/config.local.js:/iframely/config.local.js --name iframely iframely:latest
+docker stop iframely
+```
+
+Ignore any build warnings from NPM on OSX (Darwin).
+
+A longer documentation with docker build instructions (tags/forked repo) for upload to docker hub is available here:
+[DOCKER-BUILD-INSTRUCTION.md](https://github.com/itteco/iframely/blob/master/docs/DOCKER-BUILD-INSTRUCTION.md).
+
+## Ansible + Vagrant
+
+If you use Ansible for deployments a role + playbook is available in [ansible-docker-iframely](https://github.com/itteco/iframely/tree/master/ansible-docker-iframely).
+This role utilizes docker hub for image retrieval. Feel free to modify it to your like.
+
+- You can run tests and setups yourself with the vagrant file in the dir and run
+
+```shell
+vagrant up
+```
+
+---
+title: "Iframely API - Embed Codes and Responsive Data"
+description: "Use embed links to get responsive embed codes for over 1900 domains"
+source: https://iframely.com/docs/links
+---
+
+# Iframely API: media links
+
+`links` in [Iframely API](/docs/iframely-api) is the list of objects with fields `rel`, `href`, `type` and `media`. Just like you would expect a `<link>` in `<head>` section of the page's HTML to be.
+
+Links are used as raw data which you can use to select and render a media yourself. `html` field is included as generated responsive embed code based on media.
+
+## Example of a link object
+
+```json
+{
+	// SRC of embed. The main attribute
+	// can be omitted for apps, for example Twitter and Facebook.
+	"href": "https://player.vimeo.com/video/141567420",
+
+	// functional and technical use cases.
+	"rel": ["player", "autoplay", "html5"],
+
+	// MIME type. Tells: "embed as iFrame"
+	"type": "text/html",
+
+	"media": {
+		// Media query. Mostly responsive
+		"aspect-ratio": 1.777778
+	},
+
+	// plus generated or native HTML code:
+	"html": "<div …></div>"
+}
+```
+
+At times, Iframely will return `html` attribute without `href`. For example, for Twitter and Facebook posts, or elsewhere with very specific HTML codes instead of the iFrames or media files.
+
+Also, Iframely does not generate `html` field for `image/*` MIME types.
+
+Below is the list of possible `rel` values as well as information about `media` queries. You can disable specific use-case rels in your [API settings](/settings/media).
+
+## Functional use-case rels
+
+`rel` object contains an array of functional and technical use cases about the rich media. You may disable any of those rels in your settings, should it not fit your app.
+
+Possible primary functional rels:
+
+### `player`
+
+A widget with media playback. Like video, audio or slideshow players.
+
+### `image`
+
+Sizeable photo or picture, indicating that this is the main content of a web page. For example, Imgur, 500px or Droplr.
+
+### `app`
+
+General embed code for an app. For example, Twitter statuses, Facebook posts, Instagrams, etc. Usually comes with inline `html`, but can be an iFrame. Google Maps, for example.
+
+### `thumbnail`
+
+A preview image, usually smaller size, but not guaranteed. We recommend that you do not hot-link third party images on your site.
+There's [Camo](https://github.com/atmos/camo), for example.
+
+### `reader`
+
+Longer-form text or graphical widget intended for reader functionality, e.g. Storify. In chat apps, you may want to show it in a popup dialog.
+
+### `survey`
+
+The widget is a questionnaire, e.g. PollDaddy or Apester
+
+### `summary`
+
+Returned if widget is generated by Iframely as <a href="/docs/cards">summary card</a> or publisher provide its own articles preview card.
+
+### `file`
+
+Downloadable file. We return this rel for direct links to files, including image files. May come together with `reader` e.g. for Office Files, PDFs - where Iframely links to doc viewers.
+
+### `icon`
+
+Attribution favicon or glyph. Can be large enough homepage icon for mobile devices.
+
+### `logo`
+
+Logo image is returned mostly for pages with a news article. Use it if you need better attribution.
+
+## Information rels
+
+Information rels are used mostly to detail what sort of `player` is being used.
+
+### `video`, `audio`, `playlist`
+
+Represents a general video, auidio or playlist players.
+
+### `slideshow`
+
+Slideshow presentation documents, such as Slideshare and similar.
+
+### `gifv`
+
+That comes with `player` rel indicates auto-looping and muted video
+
+### `playerjs`
+
+Flags that player emits JavaScript <a href="/docs/playerjs">playback events</a>
+
+### `autoplay`
+
+Player starts media playback when it is visible. See <a href="/docs/autoplay">Autoplay</a>.
+
+### `attach`
+
+Indicates the attachment media. For use with <a href="/docs/cards#media-cards">media cards</a>
+
+### `3d`
+
+Virtual and 3D realities.
+
+## Feature-policy
+
+The list of `rel` may also include the number of [feature-policy directives](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Feature-Policy#Directives) that need to be passed into `allow` attribute of an `iFrame` for content to properly work.
+
+Iframely recognizes the following feature-policies:
+
+`accelerometer`, `ambient-light-sensor`, `autoplay`, `battery`, `bluetooth`, `camera`, `clipboard-read`, `clipboard-write`, `display-capture`, `document-domain`, `encrypted-media`, `execution-while-not-rendered`, `execution-while-out-of-viewport`, `fullscreen`, `gamepad`, `geolocation`, `gyroscope`, `hid`, `identity-credentials-get`, `idle-detection`, `local-fonts`, `magnetometer`, `microphone`, `midi`, `otp-credentials`, `payment`, `picture-in-picture`, `publickey-credentials-get`, `screen-wake-lock`, `serial`, `speaker-selection`, `storage-access`, `usb`, `web-share`, `window-management`, `xr-spatial-tracking`.
+
+## Technical rels
+
+Iframely also uses supplementary technical `rels` as the way to flag platform aspects of the media:
+
+### `ssl`
+
+Indicates that embed media is safe to load via HTTPs.
+
+### `inline`
+
+For `app` indicates that embed widgets can be dynamically added to the page via JavaScript (e.g. doesn’t use `document.write`). Usually goes along with `html` field instead of `href`.
+
+For example, GitHub Gists are not `inline` as they rely on synchronous `document.write` script. Facebook embeds are not "inline" for a different reason: the first widget will embed alright, but all the next ones will fail afterward if more of them are added via JavaScript.
+
+## MIME types
+
+`type` suggests a method to render media link as widget. It's a MIME type, as in expected `content-type` header of a resource behind `href` of a `link`. There are following types:
+
+### `text/html`
+
+Widget needs to be rendered as `iframe` unless it has `html` field already.
+
+### `video/mp4`
+
+HTML5 video. Will be rendered with as `video`.
+
+### `application/vnd.apple.mpegurl`, `application/x-mpegURL`
+
+Streaming HTMl5 video.
+
+### `audio/mp3`, `audio/mpeg`, `audio/mp4`, `audio/wav`
+
+HTML5 audio. Will be rendered with as `audio`.
+
+### `application/javascript`
+
+JavaScript widget to source as `script` (rarely used).
+
+### `image` and `image/*`
+
+Image to render as `img`.
+
+Direct links to other binary files (except JavaScript and Flash) will have the file's original MIME type (e.g. `application/pdf`). They come with `file` rel.
+
+## Sizes in media query
+
+`media` section is for media query. Iframely generates query’s attributes as well as puts it into usable JSON.
+
+Iframely outputs the following `media` query attributes at the moment:
+
+- `aspect-ratio` - by far our favourite
+- `max-width`
+- `min-height`
+- `min-width`
+- `max-height`
+- `width`
+- `height`
+
+For example, for `image` rel, Iframely will output exact sizes as `width` and `height` in `media` object. If there is just the `height` attribute for `text\html` - stretch iFrame to 100% width.
+
+### About responsive HTML code generation
+
+The responsive HTML code for links will be generated by API on the server and added to link object. The exception is image types: thumbnails, icons and logos (to avoid hot-linking).
+
+If you’d like to generate a responsive embed code yourself based on the raw data, please refer to:
+
+- ["Responsive embeds"](http://amobil.se/2011/11/responsive-embeds/) by [Anders M. Andersen](https://twitter.com/andmag) / 2011
+- [Creating Intrinsic Ratios for Video](http://alistapart.com/article/creating-intrinsic-ratios-for-video) by [Thierry Koblentz](https://twitter.com/thierrykoblentz) / 2009
+
+---
+title: "Iframely embeds for Medium Insert Plugin"
+description: "How-to guide to Medium Insert Plugin embeds"
+source: https://iframely.com/docs/medium
+---
+
+# Configure Iframely for MediumEditor
+
+You can use beautiful [MediumEditor](https://github.com/yabwe/medium-editor) with Iframely embeds via [Medium Insert Plugin](https://github.com/orthes/medium-editor-insert-plugin) by Pavel Linkesch and contributors.
+Iframely team is the contributor on the project and we maintain the integration.
+
+See [editor's demo here](http://orthes.github.io/medium-editor-insert-plugin).
+It uses Iframely's public demo API endpoint that you need to change for production use.
+
+## Configure Iframely API endpoint
+
+To connect Medium Insert Plugin to Iframely, simply change the default endpoint to the one with your API key:
+
+```js
+<script>
+  $(function () {
+    $('.editable').mediumInsert({
+      editor: editor,
+      addons: {
+        embeds: {
+          oembedProxy: 'https://iframe.ly/api/oembed?api_key={your key here}'
+        }
+      }
+    });
+  });
+</script>
+```
+
+You can add `&iframe=1` and other [optional query-string parameters](/docs/parameters) in `oembedProxy` endpoint.
+
+Other plugin usage examples can be found in [project's GitHub](https://github.com/orthes/medium-editor-insert-plugin/blob/master/examples/index.html) repository.
+
+---
+title: "Iframely API - META Semantics"
+description: "Iframely gives you rich semantics meta that you can easily and reliable plug into your header-menu"
+source: https://iframely.com/docs/meta
+---
+
+# Iframely API: Meta
+
+Most web pages have organic `<meta>` data published using different semantics standards and optimized for other platforms. For example, oEmbed, Open Graph, Twitter Cards, core HTML meta for Google, Dublin Core, Parsely, Sailthru, etc.
+
+Iframely merges various semantics into a simple one-level object with consistent properties. Any property may be absent, and event all of them together.
+
+## Example of `meta`
+
+```json
+"meta": {
+  "title": "Input/Output",
+  "description": "A new short from Terri Timely and Park Pictures",
+  "author_url": "https://vimeo.com/user1946955",
+  "author": "Terri Timely",
+  "site": "Vimeo",
+  "canonical": "https://vimeo.com/141567420",
+  "duration": 249,
+  "date": "2015-10-06",
+  "medium": "video"
+}
+```
+
+Iframely API returns `meta` object that may contain the following fields at the moment.
+
+## General meta
+
+- `title`
+- `description`
+- `date` - the publication date
+- `canonical` - canonical URL of the resource
+- `shortlink` - URL shortened through publisher
+- `category`
+- `keywords`
+
+## Medium
+
+- `medium` - rich media embed type
+
+If you need a simple category for media type, and our primary `rel` array isn't simple enough, you can use this `medium` field. It's analog of the `type` field in [oEmbed](/docs/oembed-api).
+
+The inconclusive list of possible values is this: `"video"`, `"audio"`, `"playlist"`, `"slideshow"`, `"gifv"`, `"3d"`, `"image"`, `"file"`, `"article"`, `"reader"`,`"event"`, `"product"`, `"survey"`, `"form"`, `"link"`.
+
+`"Article"` is for web pages that identify as such. `"Link"` is for links that do not fall into any other category and that webmasters optimized for social-sharing. The other general links will have no `medium` field at all.
+
+We may add other values if new use cases arise.
+
+## Attribution
+
+- `author`
+- `author_url`
+- `copyright`
+- `license`
+- `license_url`
+- `site`
+
+## Stats
+
+- `views` - number of views on the original host, e.g. YouTube
+- `likes`
+- `comments`
+- `duration` (in seconds, duration of video or audio content)
+
+## Geo data
+
+Following Open Graph spec:
+
+- `country-name`
+- `postal-code`
+- `street-address`
+- `region`
+- `locality`
+- `latitude`
+- `longitude`
+
+## Product info
+
+Following Pinterest spec:
+
+- `price`
+- `currency_code`
+- `brand`
+- `product_id`
+- `availability`
+- `quantity`
+
+---
+title: "Iframely Domains DB - the oEmbed, Twitter Cards & Open Graph whitelist file format"
+description: "Itteco provides Whitelist DB, as the first independently run embeds QA service. We cover Iframely Protocol, oEmbed v1, Twitter Cards and Open Graph in our test runs."
+source: https://iframely.com/docs/whitelist-format
+---
+
+# Iframely Whitelist File Format
+
+Iframely parsers relies on the whitelist file to allow rich media embeds via [Iframely Protocol](/docs/publish), oEmbed, Twitter Cards and Open Graph.
+
+The central whitelist is already included with default config of the self-hosted [open-source](https://github.com/itteco/iframely) Iframely.
+Your Iframely instance will fetch the file updates periodically from our servers.
+
+Here's the up-to-date version of the file [http://iframely.com/qa/whitelist.json](/qa/whitelist.json).
+
+If you like, you can download it, change and upload into `/whitelist` folder of your Iframely server to replace the default behaviour.
+Or generate your own file altogether based on the structure defined below.
+
+## Basic file structure
+
+For your own file, its name should contain the timestamp when the whitelist was last updated:
+
+```
+iframely-2022-06-21-18-00-UTC.json
+```
+
+This way you may upload the new files to your server's directory and update them without restart of the server.
+
+The file itself contains the list of domains, with the protocols the domains support and extra information to craft best user experience:
+
+```json
+{
+	"youtube.com": {
+		"date": "1485789423106",
+		"og": {
+			"video": ["allow", "ssl", "responsive"]
+		},
+		"oembed": {
+			"video": ["allow", "responsive"]
+		},
+		"twitter": {
+			"player": ["allow", "ssl", "responsive"]
+		}
+	},
+	"mashable.com": {
+		"date": "1485789423106",
+		"twitter": {
+			"photo": "deny",
+			"player": ["allow", "ssl", "responsive", "autoplay"]
+		}
+	},
+	"*.nbcsports.com": {
+		"date": "1485789423106",
+		"oembed": {
+			"link": ["allow", "reader"]
+		}
+	},
+	"iframe.ly": {
+		"date": "1485789423106",
+		"iframely": {
+			"reader": "allow",
+			"player": "allow",
+			"survey": "allow",
+			"image": "allow",
+			"thumbnail": "allow",
+			"logo": "allow"
+		},
+		"twitter": {
+			"player": "allow",
+			"photo": "allow"
+		},
+		"og": {
+			"video": "allow"
+		},
+		"oembed": {
+			"video": "allow",
+			"photo": "allow"
+		}
+	}
+}
+```
+
+The domain name is given as the top-level key.
+
+Its value contains an object with keys equal to protocol names and values listing the tags associated with the domain-protocol pair.
+Type within a protocol is at the bottom of hierarchy, followed by the list of QA results as a list of tags.
+
+If the protocol is not supported by the domain, the value of `domain.protocol` will be `null`.
+If we did not test the domain yet, `domain` will be `null`.
+If domain does not support specific type on the protocol, then `domain.protocol.type` will be null.
+
+The basic and most important values in tags list are:
+
+- `"allow"` - means the domain-protocol is whitelisted
+- `"deny"` - indicates that domain-protocol does not provide reliable or expected user experience
+
+`date` value for the domain gives the date when this domain was last updated with the test results.
+The format is the number of milliseconds since 1970/01/01.
+You may opt to ignore test results that are not recent enough for your needs.
+
+## Choosing proper domain object
+
+The domain names are given as the top-level keys for the convenience of querying the values.
+
+However, whitelist supports wildcard entries, such as `"*.sub.domain.com"` and you would need to choose a proper key.
+
+We suggest the following algorithm. Let's say you have the URL `http://name.sub.domain.com/slug`:
+
+1. Check if `name.sub.domain.com` exists. If it does, use as value.
+2. Check if `*.sub.domain.com` exists. If it does, use as value.
+3. Check if `*.domain.com` exists. If it does, use the value (otherwise - we don't have info about the domain).
+
+The domains use variety of URL structures, and sometimes we need to allow the top domain, but block some of the sub-domains, or whitelist all subdomains except only one.
+The algorithm above covers the logic of how we do it.
+
+Please, note that `www.domain.com` and `domain.com` are the same in most cases.
+If you meet URLs with `www` and we do not list it explicitly as `www.domain.com`, check `domain.com` rather than `*.domain.com`.
+We try to be as careful about `www` as we can, but since it is a manual QA process, human error is always a factor.
+
+## Protocols
+
+Iframely QA team tests the following protocols and types:
+
+- `iframely` is for Iframely protocol ([see spec](/docs/publish) types:
+- player
+- reader
+- image
+- survey
+- `oembed` is for [oEmbed](http://oembed.com) types:
+- video
+- photo
+- rich
+- `og` is for Facebook [Open Graph](http://ogp.me) types. However, we only test video type.
+- `twitter` is for [Twitter Cards](https://dev.twitter.com/docs/cards):
+- player
+- photo
+- `html-meta` protocol with `video` type is for QA results on `video_src` meta tag.
+
+Please, note, that Twitter's photo card allows the fallback onto `og:image` if `twitter:image` is not provided.
+Such cards may be approved by Iframely as well.
+
+## QA result tags: `allow` or `deny`
+
+The basic and most important values in tags list are:
+
+- `"allow"` - means the domain-protocol is whitelisted
+- `"deny"` - indicates that domain-protocol does not provide reliable or expected user experience
+
+The naming of those tags is analogous to X-FRAME-OPTIONS header. Except you, the consumer, are now the one that needs to allow or deny the widget.
+
+We also give the extra tags that you can program the user experience upon:
+
+### Additional `responsive` tag
+
+The `responsive` tag is used for videos and players, if fixed width and size are given (or are omitted all together).
+You can program to resize the videos and players to bigger sizes, maintaining the `aspect-ratio`.
+
+You can see it in following protocol-type combinations: `oembed video`, `og video`, `twitter player`, `html-meta video`.
+
+For `oembed video`, this tag also means that you need to extract the value of attribute `src` of an `<iframe>` within `html` code (and we only assign this tag for oembed html with iframes in it).
+
+### Additional `html5` tag
+
+If the media works on mobile, there should be `html5` flag, which will be proxied in API responses.
+
+### Additional `ssl` tag
+
+If `https` is the transport protocol of frames in embed code, we verify that the SSL certificate is valid and does not generate browser errors on load and does not break the lock of the browser.
+Passive mixed content browser warnings when the video or audio starts to play may still occur.
+
+For `og video` it also verifies the value of `og:video:secure_url` attribute.
+
+### Additional `autoplay` tag
+
+This tag is present if the media starts to play automatically without the user interaction. You may opt to isolate such widgets from a user until she confirms the action.
+For example, putting a thumbnail with a play button above it, and replacing it with the player once user initiates the playback.
+
+Most of `og video` implementations come with `autoplay`.
+
+### Additional `reader` tag
+
+For `oembed link` and `oembed rich` we add tag `reader`, in case the `html` actually contains the complete article.
+oEmbed spec does not include article types, and so many publishers (WordPress in particular) provider `link` and `rich` types instead.
