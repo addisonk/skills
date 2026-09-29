@@ -1,0 +1,224 @@
+{
+  "retrieved": "2026-09-29",
+  "hosted_source": "https://iframely.com/llms-full.txt",
+  "sitemap": "https://iframely.com/sitemap-docs.xml",
+  "coverage": {
+    "docs_pages": 42,
+    "sitemap_pages": 41,
+    "missing": []
+  },
+  "repository": "https://github.com/itteco/iframely",
+  "repository_commit": "4de2646855c9c72a3a769291837f0f384d5af1f8",
+  "pages": [
+    {
+      "url": "https://iframely.com/docs",
+      "file": "references/getting-started.md",
+      "sha256": "d1ca397c1b272752c89527a4174f5a63a8a2da44ebbaf1fb89274d00b6512a10"
+    },
+    {
+      "url": "https://iframely.com/docs/providers",
+      "file": "references/providers.md",
+      "sha256": "d69656d5541c04f548553b00897b0694a7410833a1b840d4194a4fd5b6afba79"
+    },
+    {
+      "url": "https://iframely.com/docs/embeds",
+      "file": "references/embeds.md",
+      "sha256": "656f5311bbd0f674a7c2a000d77a672a3d1fd27cac51d67a7197dfc7655f6ccd"
+    },
+    {
+      "url": "https://iframely.com/docs/iframes",
+      "file": "references/iframes.md",
+      "sha256": "5a8d672f40e539dc6b7bd1b59aacc5cf12b714156a76adad5e9064c3d7b10462"
+    },
+    {
+      "url": "https://iframely.com/docs/allow-origins",
+      "file": "references/allow-origins.md",
+      "sha256": "d965e2be4168ba70edaf6d3bb4c18a81901e6ae3d3e5d3abbd7640076c6c98fd"
+    },
+    {
+      "url": "https://iframely.com/docs/oembed-api",
+      "file": "references/oembed-api.md",
+      "sha256": "e8bb4a8345038992007a11b298723bcc4966433d53f35b24797f3c7b4badea0b"
+    },
+    {
+      "url": "https://iframely.com/docs/iframely-api",
+      "file": "references/iframely-api.md",
+      "sha256": "a55cf2ced65a3e6841e57cea2658481c74faac6a405294281cec59b467a3ade8"
+    },
+    {
+      "url": "https://iframely.com/docs/embedjs",
+      "file": "references/embedjs.md",
+      "sha256": "60e3f045854a2adbcb2638fb00fc5b6b8afd03aca30f402004ea97b244b5fff6"
+    },
+    {
+      "url": "https://iframely.com/docs/parameters",
+      "file": "references/parameters.md",
+      "sha256": "140398279c4fe38666e3ec9111874ba527520d1be5130e676af8661ebf8b6ea7"
+    },
+    {
+      "url": "https://iframely.com/docs/result-codes",
+      "file": "references/result-codes.md",
+      "sha256": "817fe7a28a6429670acdcd51088cfe59988437f315c87bc096210b97f367b643"
+    },
+    {
+      "url": "https://iframely.com/docs/options",
+      "file": "references/options.md",
+      "sha256": "78c0a7bc8c34c3ea4f9d970c3375ef7ca8978cb29baa81266ee2d59710e60d53"
+    },
+    {
+      "url": "https://iframely.com/docs/cards",
+      "file": "references/cards.md",
+      "sha256": "8f16c53b81638d3fbcc760b78f90ebbee0c12919ca6a1a46d4583dc8c021d8bf"
+    },
+    {
+      "url": "https://iframely.com/docs/click-to-play",
+      "file": "references/click-to-play.md",
+      "sha256": "0d8a5207f96b430ea99cdd471e58144be8675652608823e724c81bc521fa64b7"
+    },
+    {
+      "url": "https://iframely.com/docs/playerjs",
+      "file": "references/playerjs.md",
+      "sha256": "f1b239c4015cfe77db06d0b55d7aebb2fb42eec9b130f15f326bf2bb7a8bdce2"
+    },
+    {
+      "url": "https://iframely.com/docs/autoplay",
+      "file": "references/autoplay.md",
+      "sha256": "116094499705a455012fab32def5e6eae17a36b341874b84477ec935817c1282"
+    },
+    {
+      "url": "https://iframely.com/docs/gifs",
+      "file": "references/gifs.md",
+      "sha256": "6a878678a1f94e3891e7881a3b5b34f3e6548a4fce50db3b84a163f2f04f7f40"
+    },
+    {
+      "url": "https://iframely.com/docs/consents",
+      "file": "references/consents.md",
+      "sha256": "89b123d1cf5ef8fd93f5a1b0b11ffd92c1067d770f3b7ec62026fd374e07f23c"
+    },
+    {
+      "url": "https://iframely.com/docs/ids",
+      "file": "references/ids.md",
+      "sha256": "373cf986172a20dc5e87b3aa9237b74346294401dd2fd58bad436c0c655d0e1b"
+    },
+    {
+      "url": "https://iframely.com/docs/cdn",
+      "file": "references/cdn.md",
+      "sha256": "dd0b2b56d4860705220868deafedf21cfe3a01ee9c08aa51145b4d07d7afb023"
+    },
+    {
+      "url": "https://iframely.com/docs/omit-script",
+      "file": "references/omit-script.md",
+      "sha256": "e1b7b4b3dcf4be5a1fe80aa26b401ff98f0d18a6840b4ca26a7f50d75e84bcdd"
+    },
+    {
+      "url": "https://iframely.com/docs/omit-css",
+      "file": "references/omit-css.md",
+      "sha256": "dd1e75dcc8b20597b0f64c0da68ffcd0fe09bb52ca3595d97b96d5863c7f6d93"
+    },
+    {
+      "url": "https://iframely.com/docs/lazy-load",
+      "file": "references/lazy-load.md",
+      "sha256": "8ead88d7889b05e9ca426882918060858059ed578634f7440561ac37795381eb"
+    },
+    {
+      "url": "https://iframely.com/docs/domains-widget",
+      "file": "references/domains-widget.md",
+      "sha256": "169d4b3a589314d2254a7a380216ce148698cca55df369ca065082e92ac76679"
+    },
+    {
+      "url": "https://iframely.com/docs/ckeditor",
+      "file": "references/ckeditor.md",
+      "sha256": "8a25eadbc5d3f6e1dd722e31146cae4bdc756cdb650fce7428b2627b6ad68600"
+    },
+    {
+      "url": "https://iframely.com/docs/amp",
+      "file": "references/amp.md",
+      "sha256": "8249b88b578ff46d1cbbbc2d14c63d0ef0c4b3c794b7ee8dcec39612ed2a7e61"
+    },
+    {
+      "url": "https://iframely.com/docs/instant-articles",
+      "file": "references/instant-articles.md",
+      "sha256": "cc44ced61d6a0736038f2ba513dd46a34934e2c6900818523bd1345349f1d5eb"
+    },
+    {
+      "url": "https://iframely.com/docs/react",
+      "file": "references/react.md",
+      "sha256": "1156f45c129ebf3a9016baac45c7b1378b2c6770bf4834d59be82550ec1cbfa9"
+    },
+    {
+      "url": "https://iframely.com/docs/react-native",
+      "file": "references/react-native.md",
+      "sha256": "5a1e0283540015df6a8346bb905568d3b170ccdc8d3f7ec9bd43ede0cb957796"
+    },
+    {
+      "url": "https://iframely.com/docs/angular",
+      "file": "references/angular.md",
+      "sha256": "e75612d03d851e091ff5aebcc854069133af176921f6e60246d70968a060021a"
+    },
+    {
+      "url": "https://iframely.com/docs/shadow-dom",
+      "file": "references/shadow-dom.md",
+      "sha256": "1a234273b36d48f42d22dbc50239711bf82b47a859fa4b22d1dfee9553eb0302"
+    },
+    {
+      "url": "https://iframely.com/docs/publishers",
+      "file": "references/publishers.md",
+      "sha256": "4f2ccadd590b25712aeb1cf8085cd591a5355dcb37cdd368d7c91c8a677ae5ae"
+    },
+    {
+      "url": "https://iframely.com/docs/webmasters",
+      "file": "references/webmasters.md",
+      "sha256": "cad5618b9a8ab5290af8da6b385df81cbc128f472267e0cafd2d1be3f5eb7dfd"
+    },
+    {
+      "url": "https://iframely.com/docs/publish",
+      "file": "references/publish.md",
+      "sha256": "5205567be010c926716cabdd0be6588a48e9b91fc4bdf3bc8bbc071ba71a3fad"
+    },
+    {
+      "url": "https://iframely.com/docs/about",
+      "file": "references/about.md",
+      "sha256": "01920e45574921205fb6782b1907d5c08a359a1b0167b8022a762012a79395bd"
+    },
+    {
+      "url": "https://iframely.com/docs/cherry-pick",
+      "file": "references/cherry-pick.md",
+      "sha256": "28182e984b9cc9a6a08bde2c147deb74015bc4580962d630160f7752eecdef2b"
+    },
+    {
+      "url": "https://iframely.com/docs/ckeditor4",
+      "file": "references/ckeditor4.md",
+      "sha256": "b11abbb0b24293aac7130fd5ae9473d17adc11b20611529d2522a5c99997f4b9"
+    },
+    {
+      "url": "https://iframely.com/docs/embed-dialog",
+      "file": "references/embed-dialog.md",
+      "sha256": "690e12ba79d0a0bc2f4b91eb1a3b65678e3f3fe641288d35822a4e6b2eaa6590"
+    },
+    {
+      "url": "https://iframely.com/docs/host",
+      "file": "references/host.md",
+      "sha256": "1d9dba47cc4823496c23059bae9349cfb801e193723714a647ba4d079e290c33"
+    },
+    {
+      "url": "https://iframely.com/docs/links",
+      "file": "references/links.md",
+      "sha256": "c675bae329622328cfbe0fc71ae0d565583c81d782f8a58c2982f24cee48d8db"
+    },
+    {
+      "url": "https://iframely.com/docs/medium",
+      "file": "references/medium.md",
+      "sha256": "12430de1656ca6c0e8769b51ef4e371ea4182ad1d4bdefa5e53b8cfb8378d6bb"
+    },
+    {
+      "url": "https://iframely.com/docs/meta",
+      "file": "references/meta.md",
+      "sha256": "6c06aef8fe5c37f0f8b1514165233d37dc7374e8acf67129e69218596927ea23"
+    },
+    {
+      "url": "https://iframely.com/docs/whitelist-format",
+      "file": "references/whitelist-format.md",
+      "sha256": "4b437dbb130925fe90302ef0e3e28f556ed7f94e5d4cbb7078bf32278dcbc091"
+    }
+  ]
+}
