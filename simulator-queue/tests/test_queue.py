@@ -81,6 +81,7 @@ class QueueTests(unittest.TestCase):
         fd = queue.private_fd(state / 'native-session.lock')
         try:
             fcntl.flock(fd, fcntl.LOCK_EX)
+            self.assertTrue(queue.snapshot(self.state)['legacy_owner_unknown'])
             child = self.launch('new app', 'print("must not run")', wait=.1)
             self.assertNotEqual(child.wait(timeout=3), 0)
             self.assertEqual(child.stdout.read(), '')
@@ -128,6 +129,19 @@ class QueueTests(unittest.TestCase):
         with self.assertRaises(OSError), queue.session(state=actual):
             pass
         self.assertFalse((self.root / 'untouched').exists())
+
+    def test_independent_fd_and_copied_owner_id_cannot_impersonate_owner(self):
+        with queue.session('real owner', state=self.state):
+            owner = queue.snapshot(self.state)['owner']
+            code = ('import os,importlib.util; '
+                    f'spec=importlib.util.spec_from_file_location("q",{str(SCRIPT)!r}); '
+                    'q=importlib.util.module_from_spec(spec); spec.loader.exec_module(q); '
+                    f'state=q.Path({str(self.state)!r}); '
+                    'fd=q.private_fd(state/"native-session.lock"); '
+                    f'os.environ.update(APPLE_SESSION_FD=str(fd),APPLE_SESSION_ID={owner["id"]!r}); '
+                    'assert not q.inherited(state)')
+            result = subprocess.run([sys.executable, '-c', code], capture_output=True, text=True, timeout=5)
+            self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_private_metadata_has_no_command_arguments(self):
         with queue.session('app', state=self.state):

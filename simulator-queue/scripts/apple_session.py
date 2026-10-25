@@ -106,7 +106,16 @@ def snapshot(state=STATE):
         waiting = tickets(state)
         owner = read(state / 'owner.json') if (state / 'owner.json').exists() else None
         # A leftover owner receipt is deliberately fail-closed after a crash.
-        return {'owner': owner, 'waiting': [t for t in waiting if not owner or t['id'] != owner['id']],
+        legacy_fd = private_fd(state / 'native-session.lock')
+        try:
+            try:
+                fcntl.flock(legacy_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                legacy_busy = False
+            except BlockingIOError:
+                legacy_busy = owner is None
+        finally:
+            os.close(legacy_fd)
+        return {'legacy_owner_unknown': legacy_busy, 'owner': owner, 'waiting': [t for t in waiting if not owner or t['id'] != owner['id']],
                 'recovery_required': bool(owner and not any(t['id'] == owner['id'] for t in waiting))}
 
 
@@ -129,7 +138,13 @@ def inherited(state):
                 fcntl.flock(probe, fcntl.LOCK_EX | fcntl.LOCK_NB)
                 return False
             except BlockingIOError:
-                return True
+                # Re-locking the same inherited open-file description succeeds;
+                # an independently opened fd for somebody else's lease fails.
+                try:
+                    fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                    return True
+                except BlockingIOError:
+                    return False
         finally:
             os.close(probe)
     except (KeyError, ValueError, OSError, RuntimeError):
