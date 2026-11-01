@@ -17,17 +17,18 @@ Waiters can edit code and run checks that do not build native targets or use a s
 Show the owner and ordered waiters with `apple-session status`; wait for the owner
 instead of killing its Metro/preview, replacing its app, or creating another device.
 
-Reuse the existing iPhone Duo or iPhone 18 Pro Max. Preserve personal app data and
-Old Sport's existing Duo data. Never create a simulator per app, worktree, task, or
-agent. At most one disposable automated-test simulator may exist on this Mac;
-reuse an approved managed test wrapper that records exact ownership and removes
-its own device before releasing the queue. Disable Xcode parallel testing and
-cloned test runners (`-parallel-testing-enabled NO -maximum-concurrent-test-simulator-destinations 1`).
-Other apps' installs can coexist on the shared persistent devices; only one agent
-may control either device at a time. Do not erase or uninstall shared app data.
+Inspect available simulators on the current Mac and reuse a suitable existing
+device. Device names, OS versions, and app-specific preferences belong in the
+current repository's instructions, not global rules. Preserve all shared app data.
+Do not create a simulator per app, worktree, task, or agent. Disable Xcode parallel
+testing and cloned test runners (`-parallel-testing-enabled NO -maximum-concurrent-test-simulator-destinations 1`).
+Only one agent may control shared devices at a time. Do not erase or uninstall
+shared app data.
 
 If the queue is missing, install the versioned `simulator-queue/scripts/install.py`
-from `addisonk/skills`; keep working on code until it is installed. A crash receipt
+from `addisonk/skills`; inspect it before execution and require runtime-only
+installation. Installation must not create or rewrite global agent instructions.
+Keep working on code until it is installed. A crash receipt
 blocks handover until its owned processes finish and its identity is inspected;
 never unlink lock files or clear another agent's receipt to bypass waiting.
 The queue is per physical Mac. Install it separately on any other build host.

@@ -6,8 +6,11 @@ description: Serialize native builds, simulator verification, and interactive pr
 # Shared simulator queue
 
 Install once on each Mac: `python3 scripts/install.py` from this skill directory.
-This installs `~/.local/bin/apple-session` and adds the managed rule to home and
-Codex AGENTS.md, preserving existing instructions. No server or schedule is added.
+This installs only `~/.local/bin/apple-session` and its runtime. It does not read or
+write home or Codex AGENTS.md. No server or schedule is added. Keep project-specific
+instructions in the project; adopting global coordination guidance is a separate,
+explicit user choice. Existing global rules are left untouched on upgrade, including
+blocks written by older installers; review those separately with the user.
 
 Follow [RULE.md](RULE.md) for every native session. Run `apple-session status` for
 JSON owner/worktree/phase and ordered waiters. Metadata contains no command arguments
