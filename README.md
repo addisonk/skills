@@ -20,6 +20,7 @@ Open-source skills for AI coding agents.
 | [research-collector](research-collector) | Build a curated, deduplicated, semantically indexed corpus of prior art |
 | [simulator-queue](simulator-queue) | Share one FIFO native verification queue across apps and worktrees on a Mac |
 | [simple-copy](simple-copy) | Write or edit clear reports, emails, posts, messages, articles, and interface copy |
+| [slack-message](slack-message) | Draft, send, or edit casual, concise Slack messages |
 | [steve-jobs-product-design](steve-jobs-product-design) | Audit product decisions and experiences using Steve Jobs' design principles |
 | [task-orchestrator-loop](task-orchestrator-loop) | Drive implementation through verification, review, fixes, and re-review |
 | [test-desiderata](test-desiderata) | Evaluate and write tests using Kent Beck's 12 test desiderata |
