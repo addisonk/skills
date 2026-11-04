@@ -14,6 +14,7 @@ Open-source skills for AI coding agents.
 | [html-report](html-report) | Create evidence-bounded, scannable HTML reports with optional CDN publishing |
 | [iframely](iframely) | Integrate and troubleshoot Iframely hosted APIs, responsive embeds, URL metadata, and CMS workflows |
 | [im-a-product-designer](im-a-product-designer) | Speak to a product designer or PM for the rest of the session, including while they run backend work |
+| [iphone-duo-ak](iphone-duo-ak) | Change iPhone Duo vertical bar behavior and explain Apple's navigation terminology |
 | [presentational-components](presentational-components) | Build props-only React components and polished primitives with domain-focused hooks |
 | [product-md](product-md) | Generate or re-sync an evidence-bounded PRODUCT.md for teammates and agents |
 | [realtalk](realtalk) | Audit completed agent work against concrete git, PR, artifact, and process evidence |
