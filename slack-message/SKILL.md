@@ -1,6 +1,6 @@
 ---
 name: slack-message
-description: Use when drafting, sending, or editing Slack messages.
+description: Use before every Slack post — slack_send_message, slack_send_message_draft, slack_schedule_message, thread replies and DMs — and whenever drafting, rewriting or editing Slack copy, including messages sent on the user's behalf.
 ---
 
 Write like a coworker: casual, relaxed, and direct. Use contractions and everyday words. Cut filler, repetition, and corporate language.
