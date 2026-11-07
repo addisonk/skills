@@ -38,6 +38,21 @@ Mark each step complete with measured evidence or a specific skip reason.
    benchmark output, and temporary media copies. Expand inspection only when
    measurements justify it; avoid repeated whole-disk scans.
 
+   On every run, inventory both Codex and T3 storage, even when disk space is
+   ample or the registered worktree inventory has not changed. Measure shallow
+   sizes under their configured roots and inspect the largest relevant children.
+   Include managed worktrees, manual checkouts, T3 scratch clones, Codex
+   automation-created worktrees, app caches, and protected state and recovery
+   directories. Check automation worktree subdirectories separately from the
+   automation root. Record each category's size and change from the prior run,
+   or state why it is absent or could not be measured. Record the prior size as
+   unavailable when there is no comparable measurement.
+
+   Classify generated dependencies and build output separately from the checkout
+   that contains them. Apply the dormant-project rules before removing generated
+   files and the checkout retirement rules before removing a checkout. Inventory
+   protected state and recovery data read-only.
+
 3. **Classify candidates.** Enumerate exact paths and the evidence that each is
    disposable. Check current tasks, ownership, running apps/workers/builds/servers,
    previews, and open files. A lack of open files alone does not establish
