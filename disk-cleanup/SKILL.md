@@ -9,6 +9,10 @@ Reclaim verified disposable space without losing work. Run autonomously within t
 user's authorized scope; skip uncertain candidates and continue with safe ones.
 This skill supplies a process, not a recursive deletion script.
 
+On every run, clean all candidates that pass the safety checks, even when the
+volume has plenty of free space. The 25 GiB threshold controls notifications
+only. Available space still matters for safety checks such as backup headroom.
+
 For installation, machine discovery, or recurring cleanup setup, follow
 [SETUP.md](SETUP.md). Otherwise use the existing machine configuration and run the
 checklist below. Read [WORKTREES.md](WORKTREES.md) before retiring any checkout.
