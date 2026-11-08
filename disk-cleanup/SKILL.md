@@ -26,8 +26,13 @@ Mark each step complete with measured evidence or a specific skip reason.
 1. **Establish a baseline.** Identify the physical host, user, target volume, prior
    cleanup record, and machine-specific protections. Measure available space and
    swap before mutations. On macOS use `df -k /System/Volumes/Data` and
-   `sysctl vm.swapusage`. If a cleanup is already running on this host, skip the
-   overlapping run. Record a missing baseline rather than inventing a comparison.
+   `sysctl vm.swapusage`, and record the VM volume's Capacity Consumed from
+   `diskutil apfs list`. Swap shares the APFS container, so its growth lowers
+   available space. Confirm `tmutil listlocalsnapshots /System/Volumes/Data` is
+   empty, or record the snapshots. Compute the unexplained change since the prior
+   run as (change in available space) minus (change in VM volume consumption). If
+   a cleanup is already running on this host, skip the overlapping run. Record a
+   missing baseline rather than inventing a comparison.
 
 2. **Locate growth.** Discover configured storage locations for Codex, T3 Code,
    Claude Code, package managers, build tools, and media workers. Start with
@@ -48,10 +53,45 @@ Mark each step complete with measured evidence or a specific skip reason.
    or state why it is absent or could not be measured. Record the prior size as
    unavailable when there is no comparable measurement.
 
+   Checkout roots to inventory on every run (birth time, owner, size):
+   - T3: `~/.t3/worktrees/*/*` and `~/.t3/scratch/*`
+   - Codex: `~/.codex/worktrees/*/*` and `~/.codex-workspaces/worktrees/*/*`
+   - Claude Code subagents: `<repo>/.claude/worktrees/agent-*` for every primary
+     repository (discover with `find <projects root> -maxdepth 3 -path
+     '*/.claude/worktrees'`)
+   - Recovery: `~/.t3/worktree-recovery/*` and `~/.codex/worktree-recovery/*`
+
+   A configured root that exists but measures as absent is a discovery failure;
+   report it as an actionable failure.
+
+   Inventory scheduled work that creates checkouts. For T3, read
+   `scheduled_tasks` read-only for enabled tasks whose `workspace_strategy_json`
+   is a worktree. Count the checkouts each task created since the prior run.
+   Report any recurring task that created two or more since its last alert, with
+   the task title, cadence, next run and the checkout paths.
+
    Classify generated dependencies and build output separately from the checkout
-   that contains them. Apply the dormant-project rules before removing generated
-   files and the checkout retirement rules before removing a checkout. Inventory
-   protected state and recovery data read-only.
+   that contains them. Look for build caches inside checkouts as well as in
+   central caches (for example `<checkout>/build/DerivedData`). Apply the
+   dormant-project rules before removing generated files and the checkout
+   retirement rules before removing a checkout. Inventory protected state and
+   recovery data read-only, and report regenerable content found inside
+   recovery roots (such as DerivedData) as its own line.
+
+   **Apparent versus physical size.** du counts APFS clones in full, so sibling
+   checkouts can share most of their dependency blocks. When an unexplained drop
+   is at least 2 GiB, or a new checkout appeared, sample one large dependency
+   file per repository across every checkout. Read its physical address with
+   `fcntl(F_LOG2PHYS_EXT)` (read-only) and group checkouts by shared address.
+   Record the number of distinct physical copies. A checkout that is the sole
+   holder frees roughly its dependency size; a member of a larger group frees
+   only its unshared files. Report a new physical copy as recurring growth.
+
+   Track checkout churn from the package store when it keeps a project
+   registry. For pnpm, count the live and dead symlinks in
+   `<store>/v10/projects/`, resolving each link relative to that directory.
+   Report the change in both counts since the prior run. Fast growth in dead
+   entries means checkouts are being created, installed into and thrown away.
 
 3. **Classify candidates.** Enumerate exact paths and the evidence that each is
    disposable. Check current tasks, ownership, running apps/workers/builds/servers,
@@ -69,8 +109,12 @@ Mark each step complete with measured evidence or a specific skip reason.
    command achieved its stated result. Remeasure volume free space and swap after
    all operations finish. Keep a compact record with host, timestamp, exact paths,
    reasons, category sizes, removed/skipped counts, backup receipts, before/after
-   measurements, and deltas from the preceding run. Store metadata privately;
-   exclude credentials, environment values, conversations, and log contents.
+   measurements, and deltas from the preceding run. Record
+   `actual_reclaimed = Δavailable − ΔVM-volume` separately from the apparent
+   sizes of removed items. Record bytes moved within the same volume (for
+   example into a recovery root) as `moved_not_freed`, never as removed. Store
+   metadata privately; exclude credentials, environment values, conversations,
+   and log contents.
 
 6. **Report and prevent recurrence.** Separate verified cleanup results from net
    free-space movement and concurrent swap changes. Directory sizes may include
@@ -112,7 +156,8 @@ automatic removal.
 | Category | Required evidence and action |
 | --- | --- |
 | Standalone caches | Verified regenerable, inactive, and newest contained file older than seven days. A directory mtime alone is insufficient. Use narrow subdirectories. |
-| Package stores | Discover the canonical store and use its supported prune/garbage-collection command only when no installation or store operation is active. For pnpm, use `pnpm store prune` without `--force`. |
+| Package stores | Discover the canonical store and use its supported prune/garbage-collection command only when no installation or store operation is active. For pnpm, use `pnpm store prune` without `--force`, and only when the store imports by hardlink. **Skip pnpm prune when sampled store files have a link count of 1 (`stat -f %l`) and any checkout uses the store.** That is clone import: prune cannot see clone references, frees almost nothing, and forces the next install to write a full new copy. If a prune reports removing at least half of the store's packages, record it as a fault and stop pruning on this host until reviewed. |
+| Project-registered build caches | When a project marks a cache with an ownership file, require the marker to match the cache's real path and inode. Also require that the newest contained file is older than seven days, that no build process (`xcodebuild`, `XCBBuildService`, `swift-frontend`, `clang`, `xctest`) is running, and that the cache contains no symlinks. Then delete only that cache directory. Example: Old Sport's `<checkout>/build/DerivedData/.old-sport-cache-owner.json`. Copies inside recovery roots no longer match their marker; report them, don't delete. Never touch archives, `.ipa` files or TestFlight exports beside the cache. |
 | Dormant-project dependencies/builds | Establish the project is unused by tasks and processes, every removed file is reproducible, no local modifications or unique outputs are included, and exact restoration is possible from preserved source, lockfiles, and available packages. Prefer supported commands. Preserve retained active checkouts' installed dependencies. |
 | Installers/updates | Verify an archive is obsolete and unused. Preserve pending updates and installation payloads unless obsolescence is proven. |
 | Logs | Treat size as an inspection lead. Preserve unique diagnostics; remove only verified disposable duplicates or regenerable logs with established inactivity and retention eligibility. |
@@ -142,7 +187,11 @@ automatic removal.
 
 Use the machine's configured thresholds. Defaults: meaningful verified cleanup
 of at least 5 GiB, free space below 25 GiB, a drop of at least 10 GiB since the
-prior run, an actionable failure, or a substantial new growth source. Include
+prior run, an actionable failure, or a substantial new growth source. Substantial
+new growth includes a recurring scheduled task that created two or more
+checkouts, a new physical dependency copy, and recovery growth of at least 1 GiB.
+Free space below 25 GiB is an alert only. Cleaning eligible items happens on
+every run regardless of free space. Include
 current free space, measured results, and material skipped items. Stay quiet on
 unchanged, already-reported, non-actionable results; follow the scheduler's required
 response format. At critical space, name the blocking category and safe next

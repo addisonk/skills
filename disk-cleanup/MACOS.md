@@ -23,6 +23,11 @@ recent: inspect narrow subtrees independently when material space is at stake.
 
 Inspect ignored/untracked `.next` and `.turbo` within configured checkout roots;
 establish Git classification and checkout inactivity before standalone deletion.
+Also find Xcode build caches inside checkouts: `find <checkout roots>
+-maxdepth 4 -type d -path '*/build/DerivedData'`. Apply the project-registered
+build cache rule in SKILL.md to each one. A project that sets `-derivedDataPath`
+inside its checkout keeps almost nothing in the central DerivedData folder, so
+an empty central folder doesn't mean there's nothing to clean.
 Inspect `~/Library/Developer/Xcode/DerivedData`, configured XcodeBuildMCP
 workspaces, and `node-compile-cache` under the actual user temporary directory
 (discover with `getconf DARWIN_USER_TEMP_DIR`).
@@ -46,6 +51,16 @@ Within the session, inspect Apple's installed tooling help and inventory **all**
 devices, runtimes, and runtime images with supported `xcrun simctl` commands.
 Dry-run runtime cleanup first; supported versions provide
 `simctl runtime delete --notUsedSinceDays 60 --dry-run`.
+
+Also compare the runtime assets on disk with CoreSimulator's registry, using
+metadata only. List
+`/System/Library/AssetsV2/com_apple_MobileAsset_*SimulatorRuntime/*.asset`
+(version from each asset's `Info.plist`) and check each against the `path`
+entries in `/Library/Developer/CoreSimulator/Images/images.plist`. An asset
+missing from the registry is invisible to `simctl`, so the dry-run can never
+match it. Report it as orphaned with its version and size, and flag it for
+the user (removal needs admin rights or Apple tooling). Never delete it
+directly.
 
 Remove only exact runtimes proven unused for over 60 days with no associated
 device. Preserve every runtime used by any existing device, the newest installed
