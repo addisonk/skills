@@ -30,6 +30,8 @@ Default recurring name: **Safe disk cleanup every 30 minutes**. Default cadence:
 every 30 minutes, only when recurring cleanup is authorized. Keep an existing
 cadence or notification policy unless the user requested a change.
 
+Done when the host, scope, cadence, and record location are known.
+
 ## 3. Save machine configuration
 
 Use a private, owner-only location outside project source, for example
@@ -85,6 +87,9 @@ Replace the placeholder and include the verified absolute SKILL.md path so the
 scheduler does not rely on discovery alone. Keep safety rules in the skill;
 machine configuration holds exceptions and the prompt holds invocation.
 
+Done when the installed skill resolves its references and the intended schedule
+has been saved with the verified local paths.
+
 ## 5. Verify and maintain
 
 Read back persisted schedule name, prompt, cadence, host, target, and status.
@@ -98,3 +103,6 @@ installed content/revision before claiming rollout. Scheduled prompts keep their
 stable skill pointer; they do not download or execute new remote code on every
 run. Machine-specific protections remain in the private configuration. Re-run
 setup when storage roots, execution host, or scheduler settings change.
+
+Done when the execution host confirms the installed revision, local paths, and
+persisted schedule, or the report names the blocking check.

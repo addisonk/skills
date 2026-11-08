@@ -1,118 +1,74 @@
 # Disk cleanup reference
 
-Use these checks when applying the portable checklist. Resolve paths and tools
-for the current machine. macOS commands and paths are examples.
+## Inventory
 
-## Detailed run checks
+On every run, inventory both Codex and T3 storage, even when disk space is
+ample or the registered worktree inventory has not changed. Measure shallow
+sizes under their configured roots and inspect the largest relevant children.
+Include managed worktrees, manual checkouts, T3 scratch clones, Codex
+automation-created worktrees, app caches, and protected state and recovery
+directories. Check automation worktree subdirectories separately from the
+automation root. Record each category's size and change from the prior run,
+or state why it is absent or could not be measured. Record the prior size as
+unavailable when there is no comparable measurement.
 
-Mark each step complete with measured evidence or a specific skip reason.
+For each known project repository, enumerate registered checkouts with
+`git worktree list --porcelain`. Separately inspect configured agent and scratch
+roots for standalone clones or leftovers missing from Git's inventory. Flag
+unfamiliar roots and ownerless checkouts with size, branch recovery, local
+changes and last activity. Unknown ownership blocks automatic retirement.
 
-1. **Establish a baseline.** Identify the physical host, user, target volume, prior
-   cleanup record, and machine-specific protections. Measure available space and
-   swap before mutations. On macOS use `df -k /System/Volumes/Data` and
-   `sysctl vm.swapusage`, and record the VM volume's Capacity Consumed from
-   `diskutil apfs list`. Swap shares the APFS container, so its growth lowers
-   available space. Confirm `tmutil listlocalsnapshots /System/Volumes/Data` is
-   empty, or record the snapshots. Compute the unexplained change since the prior
-   run using both measurements. With other activity held constant, add growth in VM
-   volume consumption to the available-space delta to estimate the change outside
-   the VM volume. If
-   a cleanup is already running on this host, skip the overlapping run. Record a
-   missing baseline rather than inventing a comparison.
+Common checkout roots to investigate when those tools are installed:
+- T3: `~/.t3/worktrees/*/*` and `~/.t3/scratch/*`
+- Codex: `~/.codex/worktrees/*/*` and `~/.codex-workspaces/worktrees/*/*`
+- Claude Code subagents: `<repo>/.claude/worktrees/agent-*` for every primary
+  repository (discover with `find <projects root> -maxdepth 3 -path
+  '*/.claude/worktrees'`)
+- Conductor: discover its configured workspace root (often `~/conductor/workspaces`).
+- Recovery: `~/.t3/worktree-recovery/*` and `~/.codex/worktree-recovery/*`
 
-2. **Locate growth.** Discover configured storage locations for Codex, T3 Code,
-   Claude Code, package managers, build tools, and media workers. Start with
-   shallow directory sizes and prior candidates, then inspect the largest relevant
-   subdirectories. Rank changes since the prior run. Inspect stale worktrees,
-   abandoned checkouts, duplicated dependencies, builds, temporary files, caches,
-   oversized logs, outdated installers, dormant projects, completed exports,
-   benchmark output, and temporary media copies. Expand inspection only when
-   measurements justify it; avoid repeated whole-disk scans.
+A configured root that exists but measures as absent is a discovery failure;
+report it as an actionable failure.
 
-   On every run, inventory both Codex and T3 storage, even when disk space is
-   ample or the registered worktree inventory has not changed. Measure shallow
-   sizes under their configured roots and inspect the largest relevant children.
-   Include managed worktrees, manual checkouts, T3 scratch clones, Codex
-   automation-created worktrees, app caches, and protected state and recovery
-   directories. Check automation worktree subdirectories separately from the
-   automation root. Record each category's size and change from the prior run,
-   or state why it is absent or could not be measured. Record the prior size as
-   unavailable when there is no comparable measurement.
+Inventory scheduled work that creates checkouts. For T3, read
+`scheduled_tasks` read-only for enabled tasks whose `workspace_strategy_json`
+is a worktree. Count the checkouts each task created since the prior run.
+Report any recurring task that created two or more since its last alert, with
+the task title, cadence, next run and the checkout paths.
 
-   For each known project repository, enumerate registered checkouts with
-   `git worktree list --porcelain`. Separately inspect configured agent and scratch
-   roots for standalone clones or leftovers missing from Git's inventory. Flag
-   unfamiliar roots and ownerless checkouts with size, branch recovery, local
-   changes and last activity. Unknown ownership blocks automatic retirement.
+Classify generated dependencies and build output separately from the checkout
+that contains them. Look for build caches inside checkouts as well as in
+central caches (for example `<checkout>/build/DerivedData`). Apply the
+dormant-project rules before removing generated files and the checkout
+retirement rules before removing a checkout. Inventory protected state and
+recovery data read-only, and report regenerable content found inside
+recovery roots (such as DerivedData) as its own line.
 
-   Common checkout roots to investigate when those tools are installed:
-   - T3: `~/.t3/worktrees/*/*` and `~/.t3/scratch/*`
-   - Codex: `~/.codex/worktrees/*/*` and `~/.codex-workspaces/worktrees/*/*`
-   - Claude Code subagents: `<repo>/.claude/worktrees/agent-*` for every primary
-     repository (discover with `find <projects root> -maxdepth 3 -path
-     '*/.claude/worktrees'`)
-   - Conductor: discover its configured workspace root (often `~/conductor/workspaces`).
-   - Recovery: `~/.t3/worktree-recovery/*` and `~/.codex/worktree-recovery/*`
+**Shared storage.** Directory totals can count shared blocks more than once.
+Where supported, compare sampled dependency files across checkouts to
+investigate hardlink or clone sharing. Treat those samples as evidence about
+the files sampled. Measure volume free space after cleanup to see the net
+change.
 
-   A configured root that exists but measures as absent is a discovery failure;
-   report it as an actionable failure.
+Track checkout churn from the package store when it keeps a project
+registry. For pnpm, count the live and dead symlinks in
+`<store>/v10/projects/`, resolving each link relative to that directory.
+Report the change in both counts since the prior run. Fast growth in dead
+entries means checkouts are being created, installed into and thrown away.
 
-   Inventory scheduled work that creates checkouts. For T3, read
-   `scheduled_tasks` read-only for enabled tasks whose `workspace_strategy_json`
-   is a worktree. Count the checkouts each task created since the prior run.
-   Report any recurring task that created two or more since its last alert, with
-   the task title, cadence, next run and the checkout paths.
+## Record
 
-   Classify generated dependencies and build output separately from the checkout
-   that contains them. Look for build caches inside checkouts as well as in
-   central caches (for example `<checkout>/build/DerivedData`). Apply the
-   dormant-project rules before removing generated files and the checkout
-   retirement rules before removing a checkout. Inventory protected state and
-   recovery data read-only, and report regenerable content found inside
-   recovery roots (such as DerivedData) as its own line.
+Keep a private record with host, timestamp, exact paths, reasons, category sizes,
+removed and skipped counts, recovery receipts, and before-and-after volume and
+swap measurements. Compare against the preceding run when measurements match.
+Record bytes moved on the same volume separately from removals. Store metadata
+only. Exclude credentials, environment values, conversations, and log contents.
 
-   **Shared storage.** Directory totals can count shared blocks more than once.
-   Where supported, compare sampled dependency files across checkouts to
-   investigate hardlink or clone sharing. Treat those samples as evidence about
-   the files sampled. Measure volume free space after cleanup to see the net
-   change.
-
-   Track checkout churn from the package store when it keeps a project
-   registry. For pnpm, count the live and dead symlinks in
-   `<store>/v10/projects/`, resolving each link relative to that directory.
-   Report the change in both counts since the prior run. Fast growth in dead
-   entries means checkouts are being created, installed into and thrown away.
-
-3. **Classify candidates.** Enumerate exact paths and the evidence that each is
-   disposable. Check current tasks, ownership, running apps/workers/builds/servers,
-   previews, and open files. A lack of open files alone does not establish
-   inactivity. Finish checkout classification with WORKTREES.md; a sidebar badge,
-   clean Git status, or an enabled retention setting is insufficient.
-
-4. **Clean eligible categories.** Apply the rules below and use supported cleanup
-   commands where available. Immediately before every mutation, repeat the path,
-   ownership, age, inactivity, local-file, and recovery checks that apply. Leave a
-   candidate untouched if its identity changed or a check failed. Record each
-   removal or blocker; continue with independent safe candidates.
-
-5. **Verify and record.** Confirm targeted paths are absent or the supported
-   command achieved its stated result. Remeasure volume free space and swap after
-   all operations finish. Keep a compact record with host, timestamp, exact paths,
-   reasons, category sizes, removed/skipped counts, backup receipts, before/after
-   measurements, and deltas from the preceding run. Record
-   net free-space change and VM-volume change separately from the apparent
-   sizes of removed items. A swap-adjusted delta is an estimate, not proof of reclamation. Record bytes moved within the same volume (for
-   example into a recovery root) as `moved_not_freed`, never as removed. Store
-   metadata privately; exclude credentials, environment values, conversations,
-   and log contents.
-
-6. **Report and prevent recurrence.** Separate verified cleanup results from net
-   free-space movement and concurrent swap changes. Directory sizes may include
-   shared/cloned blocks; they are not guaranteed reclaimable bytes. State
-   reclaimed bytes as unknown when they cannot be isolated. Track repeated
-   checkout creation, downloads, and cache regeneration. Verify supported native
-   cleanup remains enabled. Report a concrete cause or blocker, not a speculative
-   fix; changes to project code, settings, workers, or schedules need task scope.
+Report net free-space change separately from item sizes and concurrent activity.
+Record reclaimed bytes as unknown when they cannot be isolated. Track recurring
+checkout creation, downloads, cache regeneration, and recovery growth. Verify
+supported native cleanup remains enabled. Keep changes to project code, settings,
+workers, and schedules within their separately authorized scope.
 
 ## Flag chats that use substantial disk space
 
@@ -180,9 +136,7 @@ of at least 5 GiB, free space below 25 GiB, a drop of at least 10 GiB since the
 prior run, an actionable failure, or a substantial new growth source. Substantial
 new growth includes a recurring scheduled task that created two or more
 checkouts, a new physical dependency copy, and recovery growth of at least 1 GiB.
-Free space below 25 GiB is an alert only. Cleaning eligible items happens on
-every run regardless of free space. Include
-current free space, measured results, and material skipped items. Stay quiet on
+Include current free space, measured results, and material skipped items. Stay quiet on
 unchanged, already-reported, non-actionable results; follow the scheduler's required
 response format. At critical space, name the blocking category and safe next
 action, such as freeing backup headroom or resolving unmerged work.

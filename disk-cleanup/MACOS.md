@@ -5,6 +5,15 @@ allowlists. Inspect metadata only. Standalone caches require verified regenerabi
 inactivity, safe paths/ownership, and newest contained file older than seven days.
 Repeat these checks immediately before a narrow deletion.
 
+## Baseline
+
+Record free space on the target volume with `df -k` (usually
+`/System/Volumes/Data`), swap with `sysctl vm.swapusage`, VM volume capacity
+consumed with `diskutil apfs list`, and local snapshots with
+`tmutil listlocalsnapshots` for the target volume. Record unavailable measurements.
+Compare free space and VM usage separately. A change in either can coincide
+with unrelated disk activity.
+
 ## App caches
 
 Measure shallow sizes under `~/Library/Caches`, then inspect the largest relevant
@@ -25,7 +34,7 @@ Inspect ignored/untracked `.next` and `.turbo` within configured checkout roots;
 establish Git classification and checkout inactivity before standalone deletion.
 Also find Xcode build caches inside checkouts: `find <checkout roots>
 -maxdepth 4 -type d -path '*/build/DerivedData'`. Apply the project-registered
-build cache rule in RUN-DETAILS.md to each one. A project that sets `-derivedDataPath`
+[build cache rule](RUN-DETAILS.md#eligible-cleanup) to each one. A project that sets `-derivedDataPath`
 inside its checkout keeps almost nothing in the central DerivedData folder, so
 an empty central folder doesn't mean there's nothing to clean.
 Inspect `~/Library/Developer/Xcode/DerivedData`, configured XcodeBuildMCP

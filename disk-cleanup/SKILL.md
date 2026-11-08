@@ -1,43 +1,55 @@
 ---
 name: disk-cleanup
-description: Find what is using disk space, safely remove disposable files, and catch recurring storage growth on any computer.
+description: Audit disk usage, reclaim disposable files, or set up recurring disk cleanup.
 ---
 
 # Disk cleanup
 
-Run this checklist on the computer you are cleaning. Use its configured paths and
-tools. Clean verified disposable files on every run, regardless of free space.
-The default 25 GiB threshold is for alerts.
+For installation or schedule changes, follow [Setup](SETUP.md). For an audit or
+cleanup, follow the checklist below. Resolve references from this skill's folder.
 
-Read [RUN-DETAILS.md](RUN-DETAILS.md) for cleanup rules, protections, and reporting.
-Use [SETUP.md](SETUP.md) for installation or scheduling, [WORKTREES.md](WORKTREES.md)
-before retiring a checkout, and [MACOS.md](MACOS.md) for Mac-specific checks.
-Resolve links from this skill's directory.
+Use read-only mode for an audit. For authorized cleanup, remove eligible items
+at any free-space level. Use the alert threshold only when deciding whether
+to notify.
 
-1. **Measure free space.** Identify the host, user, and target volume. Read local
-   protections and the last cleanup record. Record free space and swap if
-   available. Skip overlapping runs.
-2. **Check the usual spots.** Find actual paths from app and tool settings,
-   project roots, and prior records. Measure the top folders first, then open
-   the largest or fastest-growing ones. Record missing or inaccessible locations.
+1. **Measure.** Identify the host, account, target volume, local rules, and prior
+   record. Skip overlapping cleanup runs. On macOS, follow the [Mac baseline](MACOS.md#baseline).
+   **Done when** the baseline contains current free space, swap if available,
+   and a comparable prior measurement or its absence.
+
+2. **Inventory.** Discover paths from app settings, Git, and prior records. Start
+   with top-level sizes, then inspect the largest or fastest-growing children.
+   For agent workspaces and scheduled jobs, follow [Inventory](RUN-DETAILS.md#inventory).
+   On macOS, use the [app, build, and simulator checks](MACOS.md).
 
    | Look here | Look for |
    | --- | --- |
-   | Project folders and agent storage | Linked worktrees, scratch clones, old agent checkouts inside repositories, repeated dependency installs, and builds inside checkouts. List Git worktrees and check for standalone clones separately. |
-   | Schedules and jobs | New workspaces, repeated downloads, and temporary outputs left behind after a run. Record the task that keeps creating them. |
-   | Developer tools and app storage | Build caches, simulator assets, package stores, app caches, old update downloads, and oversized logs. |
-   | Media and project outputs | Completed exports, benchmark output, temporary copies, and idle projects with rebuildable dependencies. |
-   | Recovery folders, user libraries, and installed apps | Large backups, app data, old app versions, and sound or media libraries. Report these separately from routine cleanup candidates. |
+   | Projects and agent storage | Worktrees inside repos, scratch clones, duplicate dependencies, and builds inside checkouts |
+   | Schedules and jobs | Repeated checkout creation, downloads, and temporary output |
+   | Developer tools and app storage | Build caches, simulator assets, package stores, app caches, old updates, and large logs |
+   | Media and project output | Completed exports, benchmark output, temporary copies, and idle projects with rebuildable dependencies |
+   | Recovery folders, user libraries, and installed apps | Large backups, app data, older app versions, and sound or media libraries to report |
 
-3. **Decide what can go.** For each candidate, verify its exact path, ownership,
-   inactivity, age where applicable, and how it can be rebuilt or recovered.
-   Check running tasks, apps, builds, and open files. Protect unique work,
-   history, credentials, originals, and backups. Flag a large checkout whose
-   owner or recovery status is unknown. A cleaner app's label is a lead.
-4. **Clean and verify.** Recheck each target immediately before removal. Prefer
-   the tool's supported cleanup command. Skip uncertain items and continue with
-   eligible ones. Confirm each removal, then measure free space and swap again.
-5. **Log the result.** Record what was removed, moved, or skipped, with exact
-   paths, reasons, and before-and-after free space. Folder sizes can include
-   shared blocks. Report meaningful changes and the source of repeated growth,
-   with a concrete next step for large items that need attention.
+   **Done when** each category has a size and prior delta where available, or a
+   specific reason it could not be measured. Identify the largest sources and
+   any recurring job behind them.
+
+3. **Classify.** Apply the [cleanup rules](RUN-DETAILS.md#eligible-cleanup) and
+   [hard protections](RUN-DETAILS.md#hard-protections).
+   For checkout retirement, follow [Worktrees](WORKTREES.md). For large retained
+   chat checkouts, use the [ownership and alert checks](RUN-DETAILS.md#flag-chats-that-use-substantial-disk-space).
+   **Done when** each candidate has an exact path and evidence of ownership,
+   inactivity, age where required, and recoverability, or a recorded blocker.
+
+4. **Clean and verify.** In cleanup mode, repeat the safety checks immediately
+   before each mutation. Prefer supported commands. Skip uncertain candidates
+   and continue with eligible ones.
+   **Done when** each attempted removal has a verified outcome and the volume
+   has a fresh free-space and swap reading. In audit mode, record proposed
+   actions and finish with a fresh measurement.
+
+5. **Log and report.** Use the [record format](RUN-DETAILS.md#record). Save it privately
+   for cleanup runs. Return it in the response for a read-only audit.
+   For scheduled runs, apply the [notification rules](RUN-DETAILS.md#recurring-notifications).
+   **Done when** the record distinguishes removals, moves, skips, and measured
+   free-space change, and names the owner or next action for material findings.
