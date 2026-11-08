@@ -24,9 +24,22 @@ unknown. Preserve conversations instead of changing their status to qualify work
   the configured T3 worktree root. Require every referencing thread to be settled,
   archived, or deleted, none pinned/unsettled, and no active run. Retain uncertain
   status transitions. Keep **Any local files** protection enabled.
-- **Claude Code / manual checkouts:** discover configured locations and supported
-  ownership records; establish every owner has finished. Missing ownership is a
-  blocker, not abandonment proof. Apply the same recovery checks below.
+- **T3 scheduled-run threads:** a thread created by a recurring scheduled task
+  may finish its run without ever being settled, so it never passes the
+  settled-or-archived gate. Don't treat it as settled. Report the task title,
+  its cadence and the checkouts its threads hold, and suggest the user run that
+  task in the main checkout or have it settle its own thread. T3's
+  `schedule_task` tool can change a task's prompt but not its workspace; new
+  tasks it creates also get a worktree. Moving a task to the main checkout
+  needs T3's own settings.
+- **Claude Code subagent worktrees** (`<repo>/.claude/worktrees/agent-*`): Claude
+  Code removes these automatically only when they have no changes, so any
+  subagent that commits leaves one behind. Record branch, HEAD, status, last
+  commit date and whether HEAD is reachable from a remote branch. The owning
+  session is usually unknown, so flag them; a missing owner is a blocker.
+- **Manual checkouts:** discover configured locations and supported ownership
+  records; establish every owner has finished. Missing ownership is a blocker,
+  not abandonment proof. Apply the same recovery checks below.
 
 Completion: each existing checkout has a recorded owner classification and every
 retirement candidate has only verified finished owners.
@@ -53,6 +66,10 @@ Enumerate ignored files separately. Classify contents rather than trusting names
 Verified generated dependencies/caches such as `node_modules`, `.next`, `.turbo`,
 and `__pycache__` may be discarded with an otherwise eligible finished checkout;
 the standalone seven-day cache rule does not apply to this retirement branch.
+
+Regenerable build caches (for example DerivedData, including project-registered
+caches) count as generated: discard them with the checkout. Never move them into
+recovery. A move within the same volume frees nothing.
 
 Preserve every other ignored file, including private environment/configuration,
 assets, and unique outputs, in a dated owner-only recovery directory. Use the
