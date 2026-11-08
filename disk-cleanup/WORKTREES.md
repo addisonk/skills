@@ -34,12 +34,17 @@ unknown. Preserve conversations instead of changing their status to qualify work
   needs T3's own settings.
 - **Claude Code subagent worktrees** (`<repo>/.claude/worktrees/agent-*`): Claude
   Code removes these automatically only when they have no changes, so any
-  subagent that commits leaves one behind. Record branch, HEAD, status, last
-  commit date and whether HEAD is reachable from a remote branch. The owning
-  session is usually unknown, so flag them; a missing owner is a blocker.
+  subagent that commits leaves one behind. Its periodic sweep also skips
+  worktrees with commits, edits or untracked files. Record branch, HEAD, status,
+  last commit date, newest edit date and whether HEAD is reachable from a remote
+  branch. The owning session is usually unknown, so don't remove them
+  automatically. Report them as a known culprit with a removal recommendation
+  (SKILL.md, Known culprits).
 - **Manual checkouts:** discover configured locations and supported ownership
-  records; establish every owner has finished. Missing ownership is a blocker,
-  not abandonment proof. Apply the same recovery checks below.
+  records; establish every owner has finished. A missing owner blocks automatic
+  removal but is not a reason to stay quiet. Report an ownerless checkout as a
+  known culprit with its merge state and idle time. Apply the same recovery
+  checks below.
 
 Completion: each existing checkout has a recorded owner classification and every
 retirement candidate has only verified finished owners.

@@ -19,6 +19,32 @@ checklist below. Read [WORKTREES.md](WORKTREES.md) before retiring any checkout.
 On macOS, read [MACOS.md](MACOS.md) before app-cache, Xcode, or simulator cleanup.
 Resolve these references from this skill's directory, not the current project.
 
+## Known culprits
+
+These caused most of the growth on a developer Mac. Check every one on every
+run and name it in the report when it holds space, even when the cleanup can't
+act on it.
+
+1. **Leftover Claude Code subagent worktrees** (`<repo>/.claude/worktrees/agent-*`).
+   Claude Code deletes a subagent's worktree only when it finished with no
+   changes. Its periodic sweep skips any worktree with commits, edits or
+   untracked files, so every subagent that committed leaves a full checkout
+   behind, about 3 GB each with dependencies. One Mac held 27 of them (56 GB),
+   none touched for weeks. Report the count, total size and newest activity
+   date per repository.
+2. **Checkouts with no owner.** A checkout that no Codex, T3 or Claude Code
+   thread references, often holding old Xcode archives, `.ipa` files and build
+   caches. Two Old Sport checkouts held 17.6 GB, mostly archives for builds
+   already uploaded to TestFlight. Report each with its branch, whether it's
+   merged or pushed, its newest file date, and its archive and cache sizes.
+3. **Scheduled tasks that make a worktree on every run** (step 2).
+4. **pnpm store prune under clone import** (Eligible cleanup, Package stores).
+
+For culprits 1 and 2, when the work is merged or pushed and nothing has changed
+for 14 days or more, recommend removal in the report. Removal needs the user's
+approval. Before removing, save leftover edits as a patch, keep every branch,
+and copy any configuration file that differs from the primary checkout.
+
 ## Run checklist
 
 Mark each step complete with measured evidence or a specific skip reason.
@@ -53,12 +79,17 @@ Mark each step complete with measured evidence or a specific skip reason.
    or state why it is absent or could not be measured. Record the prior size as
    unavailable when there is no comparable measurement.
 
-   Checkout roots to inventory on every run (birth time, owner, size):
+   Discover checkouts from git, not from guessed folders. Each tool puts
+   worktrees somewhere different, and git knows them all. For every primary
+   repository under the configured projects roots, run
+   `git worktree list --porcelain` and record each linked worktree's path, birth
+   time, owner, size and the tool its path belongs to. A registered path outside
+   every known root is a new root: report it. Also check these roots for
+   checkouts git no longer lists, including separate clones:
    - T3: `~/.t3/worktrees/*/*` and `~/.t3/scratch/*`
    - Codex: `~/.codex/worktrees/*/*` and `~/.codex-workspaces/worktrees/*/*`
-   - Claude Code subagents: `<repo>/.claude/worktrees/agent-*` for every primary
-     repository (discover with `find <projects root> -maxdepth 3 -path
-     '*/.claude/worktrees'`)
+   - Claude Code subagents: `<repo>/.claude/worktrees/agent-*`
+   - Conductor: `~/conductor/workspaces/*`
    - Recovery: `~/.t3/worktree-recovery/*` and `~/.codex/worktree-recovery/*`
 
    A configured root that exists but measures as absent is a discovery failure;
