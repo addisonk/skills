@@ -15,8 +15,14 @@ unavailable when there is no comparable measurement.
 For each known project repository, enumerate registered checkouts with
 `git worktree list --porcelain`. Separately inspect configured agent and scratch
 roots for standalone clones or leftovers missing from Git's inventory. Flag
-unfamiliar roots and ownerless checkouts with size, branch recovery, local
-changes and last activity. Unknown ownership blocks automatic retirement.
+unfamiliar roots for follow-up.
+
+Record separate entries for leftover Claude Code subagent worktrees and
+checkouts whose owner cannot be verified. For each checkout, record its exact
+path, measured size, last activity, local changes, commit recovery evidence,
+and the blocker or next safe step. If a checkout fits both categories, count
+its size once and mark both categories on the entry. Unknown ownership blocks
+automatic retirement. Use the notification rules below for user-facing alerts.
 
 Common checkout roots to investigate when those tools are installed:
 - T3: `~/.t3/worktrees/*/*` and `~/.t3/scratch/*`
