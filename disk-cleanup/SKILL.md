@@ -80,6 +80,33 @@ Mark each step complete with measured evidence or a specific skip reason.
    cleanup remains enabled. Report a concrete cause or blocker, not a speculative
    fix; changes to project code, settings, workers, or schedules need task scope.
 
+## Flag chats that use substantial disk space
+
+On every run, rank the largest retained T3 and Codex checkouts, including active,
+pinned, shared, and archived checkouts. Use measured directory sizes and the
+ownership checks in WORKTREES.md. Group by physical checkout so a shared
+directory counts once. Record the owning chat titles and links when verified,
+the project and host, total measured size, major contributors such as
+dependencies or build output, change since the previous run, and why the
+checkout stays. Report uncertain ownership as unknown.
+
+By default, flag a checkout when first measured at 3 GiB or more, when it grows
+by at least 1 GiB since the last alert while above that threshold, or when its
+cleanup blocker materially changes. Allow the machine configuration to override
+these thresholds. Alert regardless of overall free space. Limit notifications to
+the three largest newly actionable findings per host, and record what was
+reported so unchanged findings stay quiet.
+
+If a chat looks finished or has a practical stopping point, suggest reviewing
+it for archival or starting a fresh chat after saving needed work and context.
+For active or shared work, explain the size and why it is still needed, and
+suggest a handoff only when there is a safe stopping point. If the checkout is
+already archived, state the specific blocker and the next safe step. Explain
+that archival may leave the checkout on disk and that measured directory size
+is not a prediction of reclaimed bytes. Leave chat archival, restart, and
+handoff decisions to the user. An alert never makes a checkout eligible for
+automatic removal.
+
 ## Eligible cleanup
 
 | Category | Required evidence and action |
