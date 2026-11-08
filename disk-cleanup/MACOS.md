@@ -25,7 +25,7 @@ Inspect ignored/untracked `.next` and `.turbo` within configured checkout roots;
 establish Git classification and checkout inactivity before standalone deletion.
 Also find Xcode build caches inside checkouts: `find <checkout roots>
 -maxdepth 4 -type d -path '*/build/DerivedData'`. Apply the project-registered
-build cache rule in SKILL.md to each one. A project that sets `-derivedDataPath`
+build cache rule in RUN-DETAILS.md to each one. A project that sets `-derivedDataPath`
 inside its checkout keeps almost nothing in the central DerivedData folder, so
 an empty central folder doesn't mean there's nothing to clean.
 Inspect `~/Library/Developer/Xcode/DerivedData`, configured XcodeBuildMCP
