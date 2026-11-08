@@ -1,198 +1,55 @@
 ---
 name: disk-cleanup
-description: Reclaim disposable developer and media disk space, investigate recurring storage growth, or set up conservative recurring cleanup on a machine.
+description: Audit disk usage, reclaim disposable files, or set up recurring disk cleanup.
 ---
 
 # Disk cleanup
 
-Reclaim verified disposable space without losing work. Run autonomously within the
-user's authorized scope; skip uncertain candidates and continue with safe ones.
-This skill supplies a process, not a recursive deletion script.
+For installation or schedule changes, follow [Setup](SETUP.md). For an audit or
+cleanup, follow the checklist below. Resolve references from this skill's folder.
 
-On every run, clean all candidates that pass the safety checks, even when the
-volume has plenty of free space. The 25 GiB threshold controls notifications
-only. Available space still matters for safety checks such as backup headroom.
+Use read-only mode for an audit. For authorized cleanup, remove eligible items
+at any free-space level. Use the alert threshold only when deciding whether
+to notify.
 
-For installation, machine discovery, or recurring cleanup setup, follow
-[SETUP.md](SETUP.md). Otherwise use the existing machine configuration and run the
-checklist below. Read [WORKTREES.md](WORKTREES.md) before retiring any checkout.
-On macOS, read [MACOS.md](MACOS.md) before app-cache, Xcode, or simulator cleanup.
-Resolve these references from this skill's directory, not the current project.
+1. **Measure.** Identify the host, account, target volume, local rules, and prior
+   record. Skip overlapping cleanup runs. On macOS, follow the [Mac baseline](MACOS.md#baseline).
+   **Done when** the baseline contains current free space, swap if available,
+   and a comparable prior measurement or its absence.
 
-## Run checklist
+2. **Inventory.** Discover paths from app settings, Git, and prior records. Start
+   with top-level sizes, then inspect the largest or fastest-growing children.
+   For agent workspaces and scheduled jobs, follow [Inventory](RUN-DETAILS.md#inventory).
+   On macOS, use the [app, build, and simulator checks](MACOS.md).
 
-Mark each step complete with measured evidence or a specific skip reason.
+   | Look here | Look for |
+   | --- | --- |
+   | Projects and agent storage | Worktrees inside repos, scratch clones, duplicate dependencies, and builds inside checkouts |
+   | Schedules and jobs | Repeated checkout creation, downloads, and temporary output |
+   | Developer tools and app storage | Build caches, simulator assets, package stores, app caches, old updates, and large logs |
+   | Media and project output | Completed exports, benchmark output, temporary copies, and idle projects with rebuildable dependencies |
+   | Recovery folders, user libraries, and installed apps | Large backups, app data, older app versions, and sound or media libraries to report |
 
-1. **Establish a baseline.** Identify the physical host, user, target volume, prior
-   cleanup record, and machine-specific protections. Measure available space and
-   swap before mutations. On macOS use `df -k /System/Volumes/Data` and
-   `sysctl vm.swapusage`, and record the VM volume's Capacity Consumed from
-   `diskutil apfs list`. Swap shares the APFS container, so its growth lowers
-   available space. Confirm `tmutil listlocalsnapshots /System/Volumes/Data` is
-   empty, or record the snapshots. Compute the unexplained change since the prior
-   run as (change in available space) minus (change in VM volume consumption). If
-   a cleanup is already running on this host, skip the overlapping run. Record a
-   missing baseline rather than inventing a comparison.
+   **Done when** each category has a size and prior delta where available, or a
+   specific reason it could not be measured. Identify the largest sources and
+   any recurring job behind them.
 
-2. **Locate growth.** Discover configured storage locations for Codex, T3 Code,
-   Claude Code, package managers, build tools, and media workers. Start with
-   shallow directory sizes and prior candidates, then inspect the largest relevant
-   subdirectories. Rank changes since the prior run. Inspect stale worktrees,
-   abandoned checkouts, duplicated dependencies, builds, temporary files, caches,
-   oversized logs, outdated installers, dormant projects, completed exports,
-   benchmark output, and temporary media copies. Expand inspection only when
-   measurements justify it; avoid repeated whole-disk scans.
+3. **Classify.** Apply the [cleanup rules](RUN-DETAILS.md#eligible-cleanup) and
+   [hard protections](RUN-DETAILS.md#hard-protections).
+   For checkout retirement, follow [Worktrees](WORKTREES.md). For large retained
+   chat checkouts, use the [ownership and alert checks](RUN-DETAILS.md#flag-chats-that-use-substantial-disk-space).
+   **Done when** each candidate has an exact path and evidence of ownership,
+   inactivity, age where required, and recoverability, or a recorded blocker.
 
-   On every run, inventory both Codex and T3 storage, even when disk space is
-   ample or the registered worktree inventory has not changed. Measure shallow
-   sizes under their configured roots and inspect the largest relevant children.
-   Include managed worktrees, manual checkouts, T3 scratch clones, Codex
-   automation-created worktrees, app caches, and protected state and recovery
-   directories. Check automation worktree subdirectories separately from the
-   automation root. Record each category's size and change from the prior run,
-   or state why it is absent or could not be measured. Record the prior size as
-   unavailable when there is no comparable measurement.
+4. **Clean and verify.** In cleanup mode, repeat the safety checks immediately
+   before each mutation. Prefer supported commands. Skip uncertain candidates
+   and continue with eligible ones.
+   **Done when** each attempted removal has a verified outcome and the volume
+   has a fresh free-space and swap reading. In audit mode, record proposed
+   actions and finish with a fresh measurement.
 
-   Checkout roots to inventory on every run (birth time, owner, size):
-   - T3: `~/.t3/worktrees/*/*` and `~/.t3/scratch/*`
-   - Codex: `~/.codex/worktrees/*/*` and `~/.codex-workspaces/worktrees/*/*`
-   - Claude Code subagents: `<repo>/.claude/worktrees/agent-*` for every primary
-     repository (discover with `find <projects root> -maxdepth 3 -path
-     '*/.claude/worktrees'`)
-   - Recovery: `~/.t3/worktree-recovery/*` and `~/.codex/worktree-recovery/*`
-
-   A configured root that exists but measures as absent is a discovery failure;
-   report it as an actionable failure.
-
-   Inventory scheduled work that creates checkouts. For T3, read
-   `scheduled_tasks` read-only for enabled tasks whose `workspace_strategy_json`
-   is a worktree. Count the checkouts each task created since the prior run.
-   Report any recurring task that created two or more since its last alert, with
-   the task title, cadence, next run and the checkout paths.
-
-   Classify generated dependencies and build output separately from the checkout
-   that contains them. Look for build caches inside checkouts as well as in
-   central caches (for example `<checkout>/build/DerivedData`). Apply the
-   dormant-project rules before removing generated files and the checkout
-   retirement rules before removing a checkout. Inventory protected state and
-   recovery data read-only, and report regenerable content found inside
-   recovery roots (such as DerivedData) as its own line.
-
-   **Apparent versus physical size.** du counts APFS clones in full, so sibling
-   checkouts can share most of their dependency blocks. When an unexplained drop
-   is at least 2 GiB, or a new checkout appeared, sample one large dependency
-   file per repository across every checkout. Read its physical address with
-   `fcntl(F_LOG2PHYS_EXT)` (read-only) and group checkouts by shared address.
-   Record the number of distinct physical copies. A checkout that is the sole
-   holder frees roughly its dependency size; a member of a larger group frees
-   only its unshared files. Report a new physical copy as recurring growth.
-
-   Track checkout churn from the package store when it keeps a project
-   registry. For pnpm, count the live and dead symlinks in
-   `<store>/v10/projects/`, resolving each link relative to that directory.
-   Report the change in both counts since the prior run. Fast growth in dead
-   entries means checkouts are being created, installed into and thrown away.
-
-3. **Classify candidates.** Enumerate exact paths and the evidence that each is
-   disposable. Check current tasks, ownership, running apps/workers/builds/servers,
-   previews, and open files. A lack of open files alone does not establish
-   inactivity. Finish checkout classification with WORKTREES.md; a sidebar badge,
-   clean Git status, or an enabled retention setting is insufficient.
-
-4. **Clean eligible categories.** Apply the rules below and use supported cleanup
-   commands where available. Immediately before every mutation, repeat the path,
-   ownership, age, inactivity, local-file, and recovery checks that apply. Leave a
-   candidate untouched if its identity changed or a check failed. Record each
-   removal or blocker; continue with independent safe candidates.
-
-5. **Verify and record.** Confirm targeted paths are absent or the supported
-   command achieved its stated result. Remeasure volume free space and swap after
-   all operations finish. Keep a compact record with host, timestamp, exact paths,
-   reasons, category sizes, removed/skipped counts, backup receipts, before/after
-   measurements, and deltas from the preceding run. Record
-   `actual_reclaimed = Δavailable − ΔVM-volume` separately from the apparent
-   sizes of removed items. Record bytes moved within the same volume (for
-   example into a recovery root) as `moved_not_freed`, never as removed. Store
-   metadata privately; exclude credentials, environment values, conversations,
-   and log contents.
-
-6. **Report and prevent recurrence.** Separate verified cleanup results from net
-   free-space movement and concurrent swap changes. Directory sizes may include
-   shared/cloned blocks; they are not guaranteed reclaimable bytes. State
-   reclaimed bytes as unknown when they cannot be isolated. Track repeated
-   checkout creation, downloads, and cache regeneration. Verify supported native
-   cleanup remains enabled. Report a concrete cause or blocker, not a speculative
-   fix; changes to project code, settings, workers, or schedules need task scope.
-
-## Flag chats that use substantial disk space
-
-On every run, rank the largest retained T3 and Codex checkouts, including active,
-pinned, shared, and archived checkouts. Use measured directory sizes and the
-ownership checks in WORKTREES.md. Group by physical checkout so a shared
-directory counts once. Record the owning chat titles and links when verified,
-the project and host, total measured size, major contributors such as
-dependencies or build output, change since the previous run, and why the
-checkout stays. Report uncertain ownership as unknown.
-
-By default, flag a checkout when first measured at 3 GiB or more, when it grows
-by at least 1 GiB since the last alert while above that threshold, or when its
-cleanup blocker materially changes. Allow the machine configuration to override
-these thresholds. Alert regardless of overall free space. Limit notifications to
-the three largest newly actionable findings per host, and record what was
-reported so unchanged findings stay quiet.
-
-If a chat looks finished or has a practical stopping point, suggest reviewing
-it for archival or starting a fresh chat after saving needed work and context.
-For active or shared work, explain the size and why it is still needed, and
-suggest a handoff only when there is a safe stopping point. If the checkout is
-already archived, state the specific blocker and the next safe step. Explain
-that archival may leave the checkout on disk and that measured directory size
-is not a prediction of reclaimed bytes. Leave chat archival, restart, and
-handoff decisions to the user. An alert never makes a checkout eligible for
-automatic removal.
-
-## Eligible cleanup
-
-| Category | Required evidence and action |
-| --- | --- |
-| Standalone caches | Verified regenerable, inactive, and newest contained file older than seven days. A directory mtime alone is insufficient. Use narrow subdirectories. |
-| Package stores | Discover the canonical store and use its supported prune/garbage-collection command only when no installation or store operation is active. For pnpm, use `pnpm store prune` without `--force`, and only when the store imports by hardlink. **Skip pnpm prune when sampled store files have a link count of 1 (`stat -f %l`) and any checkout uses the store.** That is clone import: prune cannot see clone references, frees almost nothing, and forces the next install to write a full new copy. If a prune reports removing at least half of the store's packages, record it as a fault and stop pruning on this host until reviewed. |
-| Project-registered build caches | When a project marks a cache with an ownership file, require the marker to match the cache's real path and inode. Also require that the newest contained file is older than seven days, that no build process (`xcodebuild`, `XCBBuildService`, `swift-frontend`, `clang`, `xctest`) is running, and that the cache contains no symlinks. Then delete only that cache directory. Example: Old Sport's `<checkout>/build/DerivedData/.old-sport-cache-owner.json`. Copies inside recovery roots no longer match their marker; report them, don't delete. Never touch archives, `.ipa` files or TestFlight exports beside the cache. |
-| Dormant-project dependencies/builds | Establish the project is unused by tasks and processes, every removed file is reproducible, no local modifications or unique outputs are included, and exact restoration is possible from preserved source, lockfiles, and available packages. Prefer supported commands. Preserve retained active checkouts' installed dependencies. |
-| Installers/updates | Verify an archive is obsolete and unused. Preserve pending updates and installation payloads unless obsolescence is proven. |
-| Logs | Treat size as an inspection lead. Preserve unique diagnostics; remove only verified disposable duplicates or regenerable logs with established inactivity and retention eligibility. |
-| Media/benchmarks | Verify delivery and processing receipts, a retained delivered copy or exact reproducibility, and retirement of the associated worker. Preserve incomplete jobs, reusable assets, source media, and unique outputs. |
-| Finished checkouts | Apply WORKTREES.md, including ownership reconciliation, commit recovery, ignored-file inspection, verified backups, and supported removal. |
-
-## Hard protections
-
-- Preserve source, unpushed commits, branch refs, active/shared work, conversation
-  history, application databases (including SQLite WAL/SHM), credentials, cookies,
-  sessions, local storage, IndexedDB, offline media, attachments, personal files,
-  downloads, Trash, reusable assets, unique diagnostics, and recovery snapshots.
-- Preserve app archives, dSYMs, test results, screenshots, recordings, and any
-  machine-specific deliverables. Report their growth read-only. A cleaner app's
-  “junk” label is a lead, never proof of disposability.
-- Preserve installed browsers, tools, bundled runtimes, and packages. Dependency
-  stores are eligible only through supported pruning, not blanket cache deletion.
-- Validate exact real paths, owner, allowed root, and file types. Reject symlink
-  traversal, ambiguous/special files, filesystem boundaries, and unexpected
-  contents; independently validate a narrower subtree if possible. Revalidate
-  immediately before mutation. Prefer bounded operations over broad wildcards.
-- Keep apps and processes running; leave system settings, system-owned assets,
-  swap files, and recovery/history/state intact. Skip operations requiring elevated
-  privileges. Low space never weakens these protections.
-
-## Recurring notifications
-
-Use the machine's configured thresholds. Defaults: meaningful verified cleanup
-of at least 5 GiB, free space below 25 GiB, a drop of at least 10 GiB since the
-prior run, an actionable failure, or a substantial new growth source. Substantial
-new growth includes a recurring scheduled task that created two or more
-checkouts, a new physical dependency copy, and recovery growth of at least 1 GiB.
-Free space below 25 GiB is an alert only. Cleaning eligible items happens on
-every run regardless of free space. Include
-current free space, measured results, and material skipped items. Stay quiet on
-unchanged, already-reported, non-actionable results; follow the scheduler's required
-response format. At critical space, name the blocking category and safe next
-action, such as freeing backup headroom or resolving unmerged work.
+5. **Log and report.** Use the [record format](RUN-DETAILS.md#record). Save it privately
+   for cleanup runs. Return it in the response for a read-only audit.
+   For scheduled runs, apply the [notification rules](RUN-DETAILS.md#recurring-notifications).
+   **Done when** the record distinguishes removals, moves, skips, and measured
+   free-space change, and names the owner or next action for material findings.
