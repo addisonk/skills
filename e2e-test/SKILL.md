@@ -37,8 +37,11 @@ Web: agent-browser walks the flow live; you author a Playwright test as the kept
 - **Multi-app simulator etiquette:** target a specific simulator UDID/device name and a dedicated serve-sim/Metro port. Never run global simulator-erase or kill-all. Before stopping any simulator/Metro/serve-sim process, identify the owning app + port. See [expo-arm.md](references/expo-arm.md).
 - **Web driver: agent-browser, or the Codex `@browser` skill when running in Codex - never the user's real Chrome.** Drive a headless/sandboxed automation browser. If `agent-browser` isn't on PATH (common in Codex), use Codex's `@browser` plugin instead of falling back to the user's interactive Chrome. Never open a real desktop Chrome to drive the app or to view a serve-sim preview - iOS screenshots come from `xcrun simctl io ... screenshot`, not a browser.
 - **Pin a fixed desktop resolution - never let the host display decide it.** Before any web-desktop capture, explicitly set the viewport to a fixed size (default **1440×900**, or `defaults.viewport` from `e2e-config.json`): `agent-browser set viewport 1440 900` for the walkthrough **and** `test.use({ viewport: { width: 1440, height: 900 } })` in the Playwright spec. Odd or HiDPI host resolutions otherwise clip desktop screenshots and make frames inconsistent across machines; a pinned viewport keeps every frame the same size and uncropped. `reload` after setting it (and re-apply after auth redirects), and start recording only once it's stable.
+- **Pin the iOS simulator by UDID, and confirm app identity before driving - never trust a device *name*.** Device-name matching (`simulator: "iPhone 17 Pro Max"`) can boot a *different* device that shares the family name and silently run the whole test on the wrong sim. Set `expo.simulatorUdid` in `e2e-config.json` and target that exact UDID in every `simctl`/`maestro` call. **Before each Maestro leg, run an identity preflight:** confirm the app's bundle id is installed and frontmost on *that* UDID (`xcrun simctl listapps <UDID> | grep <bundleId>`, launch, verify it's foreground) so you never drive the wrong app or device. See [expo-arm.md](references/expo-arm.md).
+- **Verify what the run produced by its own identity, after resetting list state - never by ordinal position.** When a story's proof is something the run just created (a published episode, a new row/record), capture that artifact's identity *during* the run (its title/id) and assert *that exact entity*, not a positional locator like `episode-row-first` or row 0 - ordinal targets drift to a neighbor the moment the list reorders or is scrolled. Reset the list/scroll to a known position first (e.g. scroll the feed to top), then locate the captured identity, then act + assert. This is what makes the last mile of a create→verify flow actually prove the thing instead of false-failing on a stale neighbor.
 - **Mobile web:** close the desktop session, open fresh, `set device`, `reload` before auth; re-apply device + reload after auth redirects; start recording only after viewport is stable.
 - **Always ask the user about capture format, devices, and color scheme before testing** (unless `e2e-config.json` answers them).
+- **Do not leave the repo dirty with evidence artifacts.** Before writing any QA files, record `git status --short`. Keep lightweight rerunnable source (`user-stories.md`, Playwright specs, Maestro flows) in `docs/testing/<feature>/` only when that is intentional for the repo. Put bulky evidence (`*.png`, `*.mp4`, `*.webm`, `*.mov`, logs, Playwright/Maestro output) in an ignored location or `/tmp/codex-e2e/<repo>/<feature>` unless the repo already ignores those patterns. After upload, remove local bulky files and finish with either a clean tree or an explicit "Uncommitted work:" list. A QA run must not block future `git pull --ff-only`, Codex freshen hooks, or worktree cleanup just because screenshots/videos were left untracked.
 
 ## Setup (preflight)
 
@@ -134,7 +137,22 @@ Read `e2e-config.json`; run platform detection above. Then ask only what config 
 ```bash
 mkdir -p docs/testing/<feature-name>
 ```
-Short descriptive slug (e.g. `community-switcher`, `onboarding-smoke`). All artifacts live here. Use `/tmp` only for transient `.webm` before ffmpeg conversion.
+Short descriptive slug (e.g. `community-switcher`, `onboarding-smoke`). This folder is the home for lightweight rerunnable source and manifests.
+
+Before saving bulky evidence there, check whether the repo ignores it:
+
+```bash
+git check-ignore -q docs/testing/<feature-name>/screenshot-1a-example.png \
+  && git check-ignore -q docs/testing/<feature-name>/recording-1a-example.mp4
+```
+
+If those paths are not ignored, save bulky evidence under:
+
+```bash
+${TMPDIR:-/tmp}/codex-e2e/<repo-name>/<feature-name>/
+```
+
+and upload from there. Do not create new untracked screenshot/video/log folders in a project checkout unless you will also add the ignore rules or commit the artifacts intentionally.
 
 ### Step 2 - User stories
 
@@ -142,7 +160,7 @@ Write `docs/testing/<feature-name>/user-stories.md` from [templates/user-stories
 
 ### Step 3-4 - Web (desktop, then mobile)
 
-Per story: walk the flow live with agent-browser (configure viewport/device → color scheme → authenticate → record → then **at every screen in the flow**: `snapshot -i` → interact → **screenshot that screen** (one per screen, so `userflows` shows the whole journey, not just start/end) → stop+convert recording → check `errors`), **then author a Playwright test** (`docs/testing/<feature>/specs/<label>-<slug>.spec.ts`) as the rerunnable regression asset and run it, capturing artifacts for the `playwright` report block. **Invoke the `playwright-test` skill to author the spec** (and `playwright-best-practices` for robust locators / auto-wait / non-flaky assertions) - load that expertise rather than guessing the API. Test all desktop stories, then close + reopen with `set device` for mobile. Full workflow: [web-arm.md](references/web-arm.md). Command references: [techniques.md](references/techniques.md), [device-presets.md](references/device-presets.md).
+Per story: walk the flow live with agent-browser (configure viewport/device → color scheme → authenticate → record → then **at every screen in the flow**: `snapshot -i` → interact → **screenshot that screen** (one per screen, so `userflows` shows the whole journey, not just start/end) → stop+convert recording → check `errors`), **then author a Playwright test** (`docs/testing/<feature>/specs/<label>-<slug>.spec.ts`) as the rerunnable regression asset and run it, capturing artifacts for the `playwright` report block. Store screenshots/videos/logs in the evidence directory chosen in Step 1, not blindly under the repo. **Invoke the `playwright-test` skill to author the spec** (and `playwright-best-practices` for robust locators / auto-wait / non-flaky assertions) - load that expertise rather than guessing the API. Test all desktop stories, then close + reopen with `set device` for mobile. Full workflow: [web-arm.md](references/web-arm.md). Command references: [techniques.md](references/techniques.md), [device-presets.md](references/device-presets.md).
 
 ### Step 5 - Expo iOS (if app exists)
 
@@ -158,7 +176,7 @@ Per story: walk the flow live with agent-browser (configure viewport/device → 
    ```
    Fix everything it flags before you upload a single file.
 
-Then upload every artifact and capture the returned absolute CDN URLs for the report:
+Then upload every artifact from the repo test folder and/or the external evidence directory, and capture the returned absolute CDN URLs for the report:
 ```bash
 bash ${SKILL_DIR}/scripts/upload-artifact.sh docs/testing/<feature-name>/<file>
 ```
@@ -176,7 +194,7 @@ bash ${SKILL_DIR}/scripts/upload-artifact.sh --verify <url> [<url> ...]
 ```
 Then **actually open the hosted `report.html` and confirm it renders** - load it in agent-browser (or the Codex `@browser` plugin) and screenshot it, eyeballing that blocks, images, and video embeds resolve. A `200` proves the file uploaded, not that the page renders or that its media URLs resolve; never call the report "green" on `200` alone.
 
-Once verify passes, the **bulky local evidence is redundant** - screenshots, `*.mp4`/`*.webm`, and logs all live on R2 now. Prune those local binaries so the folder doesn't balloon (the last run left ~69 MB untracked); **keep** the lightweight rerunnable source (`specs/`, `flows/`, `user-stories.md`, `report.html`, the upload manifest). If `docs/testing/` isn't already in the repo's `.gitignore`, recommend adding it so evidence runs never show as "dirty" or get accidentally committed.
+Once verify passes, the **bulky local evidence is redundant** - screenshots, `*.mp4`/`*.webm`, and logs all live on R2 now. Prune those local binaries so the folder doesn't balloon (the last run left ~69 MB untracked); **keep** the lightweight rerunnable source only when it is intentional (`specs/`, `flows/`, `user-stories.md`, `report.html`, the upload manifest). If `docs/testing/` bulky artifacts are not already ignored, either add scoped ignore rules in the same PR or keep the bulky evidence outside the repo. End by running `git status --short`; do not leave untracked QA evidence silently.
 
 ### Step 9 - Audit
 
