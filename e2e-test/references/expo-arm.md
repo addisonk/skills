@@ -41,6 +41,15 @@ xcrun simctl boot <UDID>                                  # boot only that one
 ```
 Record the UDID for the run; pass it explicitly to every subsequent command.
 
+**Pin the UDID in `e2e-config.json` (`expo.simulatorUdid`); don't let the tooling pick by name.** Expo / `simctl` device-*name* matching can boot a different device that shares the family name (e.g. a stray "Diem iPhone 17" instead of the intended "iPhone 17 Pro Max"), silently running the whole test on the wrong sim. Target the exact UDID everywhere.
+
+**Identity preflight before each Maestro leg.** Confirm the app you intend to drive is actually installed and frontmost on *that* UDID before handing off to Maestro, so a flow never runs against the wrong app/device:
+```bash
+xcrun simctl listapps <UDID> | grep <bundleId>        # installed on this exact device?
+xcrun simctl launch <UDID> <bundleId>                 # foreground it
+# then verify it's frontmost (serve-sim frame / a Maestro assertVisible on a known app anchor)
+```
+
 **What "a clean simulator" means:** a booted device is *not* a fresh-install state, and a reboot only clears runtime/recorder state, not onboarding-completion. If the test needs true first-run state, either `xcrun simctl erase <UDID>` **this device only** (never `erase all`) before installing, or force the flow through the app's own reviewer/replay entry (e.g. a sign-in token + `?replay=1`). State which you did in the report - don't imply a full wipe you didn't do.
 
 **Use the configured reset entry; don't rediscover it.** If `expo.reset` is set in `e2e-config.json` (a deep link or test endpoint to fresh onboarding), open it directly - `xcrun simctl openurl <UDID> "<expo.reset>"` - instead of trial-and-erroring deep-link shapes or fighting the in-app Settings reset (a known time sink). If you had to discover the reset path this run, tell the user to add it to `e2e-config.json` so the next run is instant.
@@ -52,9 +61,11 @@ Launch the Expo dev server on a non-default port so it can't collide with anothe
 ### 3. Start serve-sim on a dedicated port
 
 ```bash
-npx serve-sim "<device name>" -p <ourPort> --detach     # detached (daemon) stream for the chosen device
+npx serve-sim "<device name>" -p <ourPort> --detach -q   # JSON: {"url":..., "streamUrl":..., ...}
 ```
-serve-sim's defaults are preview `:3200` and stream `:3100`; `-p` sets the starting port so concurrent runs don't clash. Open the preview in agent-browser only to **watch/screenshot** the stream - not to drive.
+`-p` sets the starting port so concurrent runs don't clash (defaults preview `:3200`, stream `:3100`). **Open the `url` from the `-q` JSON - the preview UI - and never the raw `streamUrl`/`:3100/stream.mjpeg`.** That endpoint is the binary MJPEG the preview *consumes*, not a viewable page, so a browser pointed at it shows nothing usable (a common dead end). Don't hard-code `:3100` or `:3200` either - read the actual `url`/`streamUrl` from the JSON, since `-p` shifts them. Open the preview only to **watch/screenshot**, not to drive.
+
+**Optional single-origin preview:** serve-sim also ships a Metro/dev-server middleware - `import { simMiddleware } from "serve-sim/middleware"` then `app.use(simMiddleware({ basePath: "/.sim" }))` in `metro.config.js` - so the preview is served at `<metroOrigin>/.sim` (e.g. `http://localhost:8082/.sim`). Convenient if you want one origin, but **not required**: the standalone `url` works with no config change.
 
 ### 4. Author + run the Maestro flow
 
@@ -64,6 +75,8 @@ Use serve-sim to observe while you write the flow; author element-based steps (`
 # docs/testing/<feature>/flows/<label>-<slug>.yaml
 maestro --udid <UDID> test docs/testing/<feature>/flows/<label>-<slug>.yaml
 ```
+
+**Verifying something the run just created (e.g. a published episode):** assert it by its *own identity*, not by ordinal position. Capture the artifact's identity during the run (write the published title/id to a file like `published-episode.json`), then in the flow **reset scroll to top**, `assertVisible` that exact title/id, and tap a *stable* control (a labelled "Play latest episode" button, not `row-first`). Positional testIDs like `episode-row-first` drift to a neighboring row when the feed reorders or is scrolled, which false-fails the last mile of an otherwise-passing live run.
 
 ### 5. Record the run (`xcrun simctl io`, ONE recording for the whole iOS flow)
 
