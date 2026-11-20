@@ -13,10 +13,17 @@ owner is active, unarchived where archival is required, pinned, unsettled, or
 unknown. Preserve conversations instead of changing their status to qualify work.
 
 - **Codex:** keep managed automatic cleanup enabled. Use supported ownership-aware
-  lifecycle operations for archived/completed owners. Preserve unarchived/active
-  owners. Do not attach another chat's checkout to the cleanup chat or fabricate
-  ownership. If safe lifecycle removal is unavailable, record that exact blocker;
-  preserve application state, history, and recovery data.
+  lifecycle operations for archived/completed owners when available. Read Codex
+  ownership read-only (for example `threads.cwd` and `updated_at` in
+  `~/.codex/state_5.sqlite`); never edit its state. Do not attach another chat's
+  checkout to the cleanup chat or fabricate ownership. A checkout is **stale** when
+  every owning chat has had no update for the stale period, or when it has no
+  owning chat and its Git metadata (`HEAD`, `index`, `logs/HEAD`) is unchanged for
+  that period. The stale period defaults to three days; the machine configuration
+  may override it. A stale checkout is a retirement candidate even while its chat
+  is unarchived: apply steps 2 to 4 unchanged, back up ignored files under
+  `~/.codex/worktree-recovery`, and remove it with `git worktree remove`. Preserve
+  every non-stale checkout and every checkout that fails a Git check.
 - **T3 Code:** when available, inspect current
   `orchestration_v2_projection_threads` and `orchestration_v2_projection_runs` in
   the configured `statev2.sqlite` read-only; legacy `projection_threads` is stale.
