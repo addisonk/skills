@@ -1,6 +1,6 @@
 ---
 name: vercel-agent-evals
-description: Build and run end-to-end agent evals with Harbor on Vercel Sandbox and AI Gateway, measuring whether agents (Claude Code, Codex) complete real user tasks with your CLI, API, MCP server or SDK. Use when asked to eval, benchmark or A/B test agent success on a product; to compare models, prompts or skills; to write Harbor tasks, verifiers or job.yaml; or to analyze agent trajectories and pass rates.
+description: Build and run end-to-end agent evals on Vercel. Use when asked to eval or benchmark how well agents use a product, or to compare models, prompts or skills.
 ---
 
 # Vercel agent evals
