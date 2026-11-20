@@ -1,0 +1,47 @@
+<div id="pele-inline-example">
+  <div class="viz-row" role="group" aria-label="Workflow view">
+    <button class="btn" type="button" data-view="overview" aria-pressed="true">Overview</button>
+    <button class="btn" type="button" data-view="detail" aria-pressed="false">Details</button>
+  </div>
+  <div class="diagram" role="img" aria-label="Selected workflow"></div>
+  <span class="sr-only" aria-live="polite"></span>
+</div>
+<style>
+  #pele-inline-example { display: grid; gap: var(--font-size-base); }
+  #pele-inline-example .diagram {
+    min-width: 0;
+    --pele-bg: var(--background);
+    --pele-fg: var(--foreground);
+    --pele-muted: var(--muted-foreground);
+    --pele-line: var(--muted-foreground);
+    --pele-surface: var(--secondary);
+    --pele-surface-alt: var(--muted);
+    --pele-border: var(--border);
+    --pele-accent: var(--viz-series-1);
+    --pele-font: inherit;
+  }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/pele@1.13.0/dist/pele.global.js"></script>
+<script>
+(() => {
+  const root = document.getElementById('pele-inline-example');
+  const container = root.querySelector('.diagram');
+  const announcement = root.querySelector('[aria-live]');
+  const views = {
+    overview: 'flowchart TB\n A[Capture notes] --> B[Process] --> C[Report]',
+    detail: 'flowchart TB\n A[Capture notes] --> B{Complete?}\n B -->|Yes| C[Process]\n B -->|Wait| A\n C --> D[Report]'
+  };
+  const diagram = pele.mount(container, views.overview, {
+    fontSize: parseFloat(getComputedStyle(root).fontSize), padding: 4, zoom: false
+  });
+  root.querySelectorAll('[data-view]').forEach(button => {
+    button.addEventListener('click', () => {
+      root.querySelectorAll('[data-view]').forEach(item => {
+        item.setAttribute('aria-pressed', String(item === button));
+      });
+      diagram.update(views[button.dataset.view]);
+      announcement.textContent = button.textContent + ' selected';
+    });
+  });
+})();
+</script>
