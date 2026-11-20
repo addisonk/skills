@@ -1,6 +1,6 @@
 ---
 name: product-md
-description: Use when a repository needs a new, updated, audited, or resynchronized PRODUCT.md; when a teammate or LLM needs a current user-facing product explanation; or when product docs mix shipped behavior with plans, implementation detail, or marketing claims.
+description: Generate, update, or audit a repo's PRODUCT.md. Use when a project needs a current, user-facing explanation of the product.
 ---
 
 # ProductMd

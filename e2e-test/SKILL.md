@@ -1,6 +1,6 @@
 ---
 name: e2e-test
-description: End-to-end testing across web desktop, web mobile, and Expo iOS, producing a shareable hosted HTML QA report. Web is driven with agent-browser; Expo iOS is driven with Maestro (semantic) plus serve-sim (gestures), with screen recordings via simctl. Use when you need to write user stories, run e2e/browser/simulator tests, verify a feature end-to-end, or produce a QA evidence report. Triggers on "e2e test", "browser test", "mobile test", "ios test", "test the app", "write user stories", "verify feature", "QA report".
+description: Test web and Expo iOS user flows end to end and publish a shareable QA report. Use when asked to e2e test, test the app, write user stories, or verify a feature works.
 ---
 
 # E2E Test

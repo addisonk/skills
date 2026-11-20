@@ -1,6 +1,6 @@
 ---
 name: steve-jobs-product-design
-description: Product design auditor based on Steve Jobs' principles. Use when reviewing product decisions, UI designs, feature scope, or user experience. Emphasizes simplicity, taste, and ruthless focus.
+description: Audit product decisions against Steve Jobs' design principles. Use when reviewing feature scope, UI designs, or user experience.
 ---
 
 # Steve Jobs Product Design Skill

@@ -1,6 +1,6 @@
 ---
 name: task-orchestrator-loop
-description: Reusable task orchestration loop for coding, bugfix, UI, and design tasks. Use when a task should be driven through implementation, verification, independent review, fixes, and re-review until done or a real human gate is hit. Supports full-auto, semi-auto, and single-thread operation, with state tracking, proof collection, UI screenshot review, bug reproduction, PR handling, and bounded implementation/review workers.
+description: Drive a coding, bugfix, or design task through implementation, verification, independent review, and fixes until done. Use when a task should run in a review loop instead of a single pass.
 ---
 
 # Task Orchestrator Loop

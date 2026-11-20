@@ -1,6 +1,6 @@
 ---
 name: iframely
-description: Integrates and troubleshoots Iframely hosted APIs, responsive rich media embeds, URL metadata, and CMS workflows. Use when working with Iframely, iframe.ly, iframely.net, oEmbed responses, embed.js, React embeds, content IDs, cards, player events, or failed URL previews.
+description: Integrate and troubleshoot Iframely APIs and embeds. Use when working with Iframely, iframe.ly, oEmbed, embed.js, or broken URL previews.
 ---
 
 # Iframely
