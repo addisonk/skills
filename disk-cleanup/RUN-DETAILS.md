@@ -22,7 +22,9 @@ checkouts whose owner cannot be verified. For each checkout, record its exact
 path, measured size, last activity, local changes, commit recovery evidence,
 and the blocker or next safe step. If a checkout fits both categories, count
 its size once and mark both categories on the entry. Unknown ownership blocks
-automatic retirement. Use the notification rules below for user-facing alerts.
+automatic retirement, except for stale Codex checkouts as defined in
+[WORKTREES.md](WORKTREES.md#1-reconcile-all-owners). Use the notification rules
+below for user-facing alerts.
 
 Common checkout roots to investigate when those tools are installed:
 - T3: `~/.t3/worktrees/*/*` and `~/.t3/scratch/*`
@@ -109,7 +111,7 @@ automatic removal.
 | --- | --- |
 | Standalone caches | Verified regenerable, inactive, and newest contained file older than seven days. A directory mtime alone is insufficient. Use narrow subdirectories. |
 | Package stores | Discover the canonical store and use its supported prune/garbage-collection command only when no installation or store operation is active. For pnpm, use `pnpm store prune` without `--force`, and only when the store imports by hardlink. **Skip pnpm prune when clone import is in use or hardlink import cannot be verified.** A link count of one cannot distinguish a clone from a standalone file. On one Mac, repeated pruning coincided with new full dependency copies and minimal immediate gains. If a prune reports removing at least half of the store's packages, record it as a fault and stop pruning on this host until reviewed. |
-| Project-registered build caches | When a project marks a cache with an ownership file, require the marker to match the cache's real path and inode. Also require that the newest contained file is older than seven days, that no build process (`xcodebuild`, `XCBBuildService`, `swift-frontend`, `clang`, `xctest`) is running, and that the cache contains no symlinks. Then delete only that cache directory. Example: Old Sport's `<checkout>/build/DerivedData/.old-sport-cache-owner.json`. Copies inside recovery roots no longer match their marker; report them, don't delete. Never touch archives, `.ipa` files or TestFlight exports beside the cache. |
+| Project-registered build caches | When a project marks a cache with an ownership file, require the marker to match the cache's real path and inode. Also require that the newest contained file is older than seven days, that no build process (`xcodebuild`, `XCBBuildService`, `swift-frontend`, `clang`, `xctest`) is running, and that every symlink in the cache is relative and resolves inside the cache. Framework bundles inside `Build/Products` contain such internal links (`Headers`, `Resources`, `Versions/Current`); they do not block deletion. An absolute link, or one that resolves outside the cache, blocks deletion, as does any `.xcresult`, `.ipa` or `.xcarchive` inside the cache. Then delete only that cache directory. Example: Old Sport's `<checkout>/build/DerivedData/.old-sport-cache-owner.json`. Copies inside recovery roots no longer match their marker; report them, don't delete. Never touch archives, `.ipa` files or TestFlight exports beside the cache. |
 | Dormant-project dependencies/builds | Establish the project is unused by tasks and processes, every removed file is reproducible, no local modifications or unique outputs are included, and exact restoration is possible from preserved source, lockfiles, and available packages. Prefer supported commands. Preserve retained active checkouts' installed dependencies. |
 | Installers/updates | Verify an archive is obsolete and unused. Preserve pending updates and installation payloads unless obsolescence is proven. |
 | Logs | Treat size as an inspection lead. Preserve unique diagnostics; remove only verified disposable duplicates or regenerable logs with established inactivity and retention eligibility. |
@@ -133,7 +135,9 @@ automatic removal.
   immediately before mutation. Prefer bounded operations over broad wildcards.
 - Keep apps and processes running; leave system settings, system-owned assets,
   swap files, and recovery/history/state intact. Skip operations requiring elevated
-  privileges. Low space never weakens these protections.
+  privileges, except the privileged helper a machine installed through
+  [SETUP.md](SETUP.md#privileged-helper-for-orphaned-simulator-runtimes), run with
+  `sudo -n`. Low space never weakens these protections.
 
 ## Recurring notifications
 

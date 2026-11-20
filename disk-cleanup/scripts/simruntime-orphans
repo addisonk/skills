@@ -1,0 +1,98 @@
+#!/usr/bin/python3 -I
+"""disk-cleanup privileged helper: remove ORPHANED simulator runtime assets only.
+
+Install once as root (see SETUP.md "Privileged helper"); run through
+`sudo -n /usr/local/sbin/disk-cleanup-simruntime-orphans [--dry-run|--apply]`.
+
+It accepts no paths. It removes a directory only when all hold:
+- it is a direct child `*.asset` of /System/Library/AssetsV2/com_apple_MobileAsset_*SimulatorRuntime,
+  a real directory (not a symlink) whose real path stays under that root;
+- `xcrun simctl runtime list -j`, run as the invoking user, succeeded, listed at least one
+  runtime, and does not reference this asset (an unreferenced asset is invisible to simctl,
+  so no device can use it);
+- its SimulatorVersion is lower than the newest registered runtime of the same platform.
+Prints a JSON report. Default mode is --dry-run.
+"""
+import glob, json, os, plistlib, pwd, shutil, subprocess, sys
+
+ROOT = "/System/Library/AssetsV2"
+FAMILY_GLOB = ROOT + "/com_apple_MobileAsset_*SimulatorRuntime"
+
+def fail(msg, code=2):
+    print(json.dumps({"error": msg})); sys.exit(code)
+
+def vtuple(v):
+    try: return tuple(int(x) for x in str(v).split("."))
+    except ValueError: return None
+
+def asset_version(asset):
+    try:
+        with open(os.path.join(asset, "Info.plist"), "rb") as f:
+            return plistlib.load(f).get("MobileAssetProperties", {}).get("SimulatorVersion")
+    except Exception:
+        return None
+
+def size_bytes(p):
+    total = 0
+    for dp, dns, fns in os.walk(p, followlinks=False):
+        for n in fns:
+            try: total += os.lstat(os.path.join(dp, n)).st_blocks * 512
+            except OSError: pass
+    return total
+
+def main():
+    mode = sys.argv[1] if len(sys.argv) > 1 else "--dry-run"
+    if len(sys.argv) > 2 or mode not in ("--dry-run", "--apply"):
+        fail("usage: disk-cleanup-simruntime-orphans [--dry-run|--apply]")
+    if os.geteuid() != 0:
+        fail("must run as root via sudo")
+    user = os.environ.get("SUDO_USER", "")
+    if not user or user == "root":
+        fail("run via sudo from the cleanup account")
+    pwd.getpwnam(user)  # raises if unknown
+
+    r = subprocess.run(["/usr/bin/sudo", "-n", "-u", user, "/usr/bin/xcrun", "simctl", "runtime", "list", "-j"],
+                       capture_output=True, text=True, timeout=120, env={"PATH": "/usr/bin:/bin:/usr/sbin:/sbin"})
+    if r.returncode != 0:
+        fail("simctl runtime list failed; refusing", 3)
+    try:
+        runtimes = json.loads(r.stdout)
+    except ValueError:
+        fail("simctl output unreadable; refusing", 3)
+    if not runtimes:
+        fail("simctl listed no runtimes; refusing", 3)
+
+    registered, newest = set(), {}
+    for rt in runtimes.values():
+        p = rt.get("path") or ""
+        if ".asset" in p:
+            registered.add(os.path.realpath(p[: p.index(".asset") + len(".asset")]))
+        fam = os.path.basename(os.path.dirname(p[: p.index(".asset")])) if ".asset" in p else None
+        v = vtuple(rt.get("version"))
+        if fam and v and (fam not in newest or v > newest[fam]):
+            newest[fam] = v
+
+    report = {"mode": mode, "removed": [], "kept": [], "orphans": []}
+    for fam_dir in sorted(glob.glob(FAMILY_GLOB)):
+        fam = os.path.basename(fam_dir)
+        for asset in sorted(glob.glob(os.path.join(fam_dir, "*.asset"))):
+            real = os.path.realpath(asset)
+            ver = asset_version(asset)
+            entry = {"asset": asset, "version": ver}
+            if os.path.islink(asset) or not os.path.isdir(asset) or os.path.dirname(real) != os.path.realpath(fam_dir):
+                report["kept"].append({**entry, "why": "unexpected path or type"}); continue
+            if real in registered:
+                report["kept"].append({**entry, "why": "registered"}); continue
+            vt = vtuple(ver)
+            if vt is None or fam not in newest or vt >= newest[fam]:
+                report["kept"].append({**entry, "why": "version unknown or not older than newest registered"}); continue
+            entry["bytes"] = size_bytes(asset)
+            report["orphans"].append(entry)
+            if mode == "--apply":
+                shutil.rmtree(asset)
+                entry["absent"] = not os.path.exists(asset)
+                report["removed"].append(entry)
+    print(json.dumps(report))
+
+if __name__ == "__main__":
+    main()
