@@ -53,29 +53,6 @@ the checkout. Keep all prior recovery folders and receipts.
 Completion: the saved configuration contains metadata only, is owner-readable/
 writable, and can be read by the scheduler on this physical host.
 
-### Privileged helper for orphaned simulator runtimes
-
-On macOS, unregistered simulator runtime assets in `/System/Library/AssetsV2` are
-owned by root, and a scheduled run cannot type a password. Offer this one-time
-setup when such orphans exist. The user runs it once in a terminal:
-
-```sh
-sudo install -d -o root -g wheel -m 0755 /usr/local/sbin
-sudo install -o root -g wheel -m 0755 \
-  ~/.agents/skills/disk-cleanup/scripts/simruntime-orphans \
-  /usr/local/sbin/disk-cleanup-simruntime-orphans
-echo "$USER ALL=(root) NOPASSWD: /usr/local/sbin/disk-cleanup-simruntime-orphans" \
-  | sudo tee /etc/sudoers.d/disk-cleanup >/dev/null
-sudo chmod 0440 /etc/sudoers.d/disk-cleanup
-sudo visudo -cf /etc/sudoers.d/disk-cleanup
-sudo -n /usr/local/sbin/disk-cleanup-simruntime-orphans --dry-run
-```
-
-Use the installed skill path on that machine. The installed copy is root-owned,
-so later edits to the skill don't change it. Reinstall it after a helper update.
-Record in the machine configuration that the helper is installed. Verify with
-`sudo -n ... --dry-run`, which must succeed without a password prompt.
-
 ## 4. Install and connect the schedule
 
 Install from the public repository using the skills CLI:

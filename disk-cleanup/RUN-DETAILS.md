@@ -135,9 +135,7 @@ automatic removal.
   immediately before mutation. Prefer bounded operations over broad wildcards.
 - Keep apps and processes running; leave system settings, system-owned assets,
   swap files, and recovery/history/state intact. Skip operations requiring elevated
-  privileges, except the privileged helper a machine installed through
-  [SETUP.md](SETUP.md#privileged-helper-for-orphaned-simulator-runtimes), run with
-  `sudo -n`. Low space never weakens these protections.
+  privileges. Low space never weakens these protections.
 
 ## Recurring notifications
 

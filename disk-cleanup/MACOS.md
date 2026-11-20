@@ -67,20 +67,17 @@ metadata only. List
 (version from each asset's `Info.plist`) and check each against the `path`
 entries in `/Library/Developer/CoreSimulator/Images/images.plist`. An asset
 missing from the registry is invisible to `simctl`, so the dry-run can never
-match it. When the machine has the privileged helper from
-[SETUP.md](SETUP.md#privileged-helper-for-orphaned-simulator-runtimes), run
-`sudo -n /usr/local/sbin/disk-cleanup-simruntime-orphans --apply` inside the
-same queue session and record its JSON report. The helper takes no paths. It
-removes only assets that `simctl` does not reference and that are older than
-the newest registered runtime of the same platform. Without the helper, report
-each orphan with its version and size and point the user to that setup step.
-Never delete an asset any other way.
+match it. Report it as orphaned with its version and size, and flag it for the
+user once. Don't try to delete it: its files carry the SIP `restricted` flag, so
+even root gets "Operation not permitted", and `mobileassetd` logs these assets
+as "policy of never collect", so the OS will not purge them either. Re-adding the
+image with `simctl runtime add` stages a new copy and frees nothing. Never
+delete an asset directly.
 
 Remove only exact runtimes proven unused for over 60 days with no associated
 device. Preserve every runtime used by any existing device, the newest installed
 runtime, and active-build requirements. Recheck these immediately before removal
 and verify the result. A broad age-based deletion command is insufficient if it
-cannot enforce these exclusions. Skip unsupported tooling and elevated
-operations other than the installed helper.
+cannot enforce these exclusions. Skip unsupported tooling or elevated operations.
 Preserve every simulator device and its data; leave system-owned runtime assets
 and swap files to the OS.
