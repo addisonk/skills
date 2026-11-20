@@ -1,6 +1,6 @@
 ---
 name: test-desiderata
-description: Evaluate and write tests against Kent Beck's 12 test desiderata — Isolated, Composable, Deterministic, Fast, Writable, Readable, Behavioral, Structure-insensitive, Automated, Specific, Predictive, Inspiring. Use when writing new tests, reviewing existing tests, debating test strategy (unit vs integration vs E2E vs acceptance), diagnosing flaky/slow/uninformative tests, or trading off coverage against confidence.
+description: Evaluate and write tests against Kent Beck's test desiderata. Use when writing or reviewing tests, choosing a test strategy, or diagnosing flaky, slow, or unhelpful tests.
 ---
 
 # Test Desiderata

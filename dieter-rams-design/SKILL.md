@@ -1,6 +1,6 @@
 ---
 name: dieter-rams-design
-description: Industrial design auditor based on Dieter Rams' 10 principles of good design. Use when reviewing product design, UI/UX, or any artifact for quality and longevity. Emphasizes "less, but better" and honest, functional design.
+description: Audit design against Dieter Rams' 10 principles. Use when reviewing product design, UI, or any artifact for quality and longevity.
 ---
 
 # Dieter Rams Design Skill

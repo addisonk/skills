@@ -1,6 +1,6 @@
 ---
 name: presentational-components
-description: Enforces presentational UI component patterns where components receive all data via props and callbacks, with data logic in domain-focused hooks. Use when creating new components, reviewing component architecture, or separating data from presentation in React apps using Convex, Clerk, or similar providers.
+description: Keep React components presentational, with data in through props and logic in domain hooks. Use when creating components or reviewing component architecture.
 ---
 
 # Presentational Components

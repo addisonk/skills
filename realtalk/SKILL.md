@@ -1,6 +1,6 @@
 ---
 name: realtalk
-description: Post-task reality audit. Runs concrete checks (git status, whether the session's PRs actually merged, files/artifacts left outside the repo, stray branches/worktrees, leftover dev servers/sims/browser sessions) AND forces disclosure of the friction agents normally bury — work that looks done but isn't, workarounds used instead of real fixes, guessed or inferred evidence, deviations from the request, unverified claims — then emits a severity-ranked report with prioritized follow-ups. Use when an agent (or you) just finished a task and you want the real story instead of the victory-lap summary, when you want to verify an "it's merged / tests pass / it's done" claim before trusting it, or to audit a pasted task transcript. Triggers on "/realtalk", "real talk", "what really happened", "audit this run", "what did you actually leave".
+description: "Audit finished agent work against real evidence: git state, whether PRs merged, leftovers, and buried workarounds. Use when the user says \"realtalk\" or \"real talk\", or wants a \"done\" claim checked before trusting it."
 ---
 
 # realtalk

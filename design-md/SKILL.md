@@ -1,6 +1,6 @@
 ---
 name: design-md
-description: Generate or re-sync a project's DESIGN.md file following the Google Labs design.md spec (YAML frontmatter + prescribed section order), with hex+oklch color tables in the prose body. Use when the user asks to create, update, regenerate, or sync DESIGN.md, extract a design system into a doc, or add a DESIGN.md to a project.
+description: Generate or re-sync a project's DESIGN.md. Use when asked to create, update, or sync DESIGN.md, or to document a design system.
 ---
 
 # design-md

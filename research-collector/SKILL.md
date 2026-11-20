@@ -1,6 +1,6 @@
 ---
 name: research-collector
-description: Use when starting a new project, feature, or research-heavy task that benefits from prior art (arxiv papers, OSS repos, product docs). Turns a fresh idea into a curated, deduplicated, semantically indexed local corpus that downstream agents can draw from. Triggers include "gather prior art", "research the space", "what already exists for X", "fan-out research", "Software Factory", "Attractor", "Fabro", "Kilroy".
+description: Build a curated local corpus of prior art (papers, repos, docs) for a new project. Use when asked to gather prior art, research the space, or find what already exists for an idea.
 ---
 
 # Research Collector
