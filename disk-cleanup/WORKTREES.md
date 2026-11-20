@@ -56,9 +56,12 @@ retirement candidate has only verified finished owners.
 Validate user ownership, real paths without symlink traversal, and Git
 registration. Retain checkouts with submodules, embedded repositories, ambiguous
 registration, tracked changes, or untracked files. Require HEAD to be reachable
-from a verified main branch and all checkout commits safely recoverable from a
-retained repository/remote. Preserve unpushed commits; uncertainty about merge or
-remote recovery blocks removal. Preserve branches even when merged.
+from a verified main branch or from a remote-tracking branch, so every checkout
+commit is already on the remote. Squash-merged pull requests leave HEAD off main
+for good, but their commits stay on the pushed branch, so they qualify. Use the
+existing remote-tracking refs (`git branch -r --contains HEAD`); a fetch is not
+required. Preserve unpushed commits; uncertainty about merge or remote recovery
+blocks removal. Preserve branches even when merged.
 
 Check associated runs, processes, cwd, open files, previews, development servers,
 builds, media workers, and simulator sessions. Both application/task state and OS
