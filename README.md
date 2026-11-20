@@ -8,6 +8,7 @@ Open-source skills for AI coding agents.
 
 | Skill | Description |
 |-------|-------------|
+| [codex-inline-visuals](codex-inline-visuals) | Show interactive Pele diagrams, charts, and explainers directly in Codex conversations |
 | [design-md](design-md) | Generate or re-sync a project's DESIGN.md following the Google Labs design.md specification |
 | [dieter-rams-design](dieter-rams-design) | Audit product design using Dieter Rams' 10 principles |
 | [disk-cleanup](disk-cleanup) | Reclaim verified disposable developer and media disk space, with per-machine recurring setup |
