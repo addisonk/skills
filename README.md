@@ -26,6 +26,7 @@ Open-source skills for AI coding agents.
 | [steve-jobs-product-design](steve-jobs-product-design) | Audit product decisions and experiences using Steve Jobs' design principles |
 | [task-orchestrator-loop](task-orchestrator-loop) | Drive implementation through verification, review, fixes, and re-review |
 | [test-desiderata](test-desiderata) | Evaluate and write tests using Kent Beck's 12 test desiderata |
+| [vercel-agent-evals](vercel-agent-evals) | Build and run end-to-end Harbor agent evals on Vercel Sandbox and AI Gateway |
 
 ## Install
 
