@@ -43,6 +43,10 @@ instead of introducing a competing one. Keep a small Markdown configuration with
 - Protected project outputs, media delivery/worker receipts, recovery locations.
 - Cache age (default seven days), simulator retention (default over 60 days),
   backup byte limit and required free-space reserve, and alert thresholds.
+- Whether temporary XCTest attachment expiry is authorized; if so, record its
+  retention period (default 30 days) and the private helper-policy path described
+  in [macOS cleanup](MACOS.md#temporary-xctest-attachments). Do not infer this from
+  permission to remove ordinary caches or unused simulator runtimes.
 - Existing schedule ID, host, owning chat, cadence, and notification policy.
 - Private record location, last baseline, and known unresolved blockers.
 

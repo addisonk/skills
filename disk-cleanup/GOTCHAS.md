@@ -19,7 +19,10 @@ eligibility checks and machine-specific protections to each exact candidate.
   active, and a paused task does not make its output disposable.
 - **Simulator devices can dwarf installed runtimes.** Report device data,
   runtime images, and build caches separately. Runtime cleanup does not reclaim
-  a simulator's app containers. Within the Apple session, identify a large
+  a simulator's app containers. `testmanagerd/tmp/Attachments` alone can contain
+  over 100 GiB of old test recordings. Use the narrow, explicitly authorized
+  [temporary-attachment cleanup](MACOS.md#temporary-xctest-attachments), never a
+  device erase. Within the Apple session, identify a large
   device and its main contributors without erasing it or reading user content.
   Device data stays protected unless separately authorized.
 - **An empty central build cache proves little.** Look inside checkouts and

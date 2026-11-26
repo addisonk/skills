@@ -116,6 +116,7 @@ automatic removal.
 | Installers/updates | Verify an archive is obsolete and unused. Preserve pending updates and installation payloads unless obsolescence is proven. |
 | Logs | Treat size as an inspection lead. Preserve unique diagnostics; remove only verified disposable duplicates or regenerable logs with established inactivity and retention eligibility. |
 | Media/benchmarks | Verify delivery and processing receipts, a retained delivered copy or exact reproducibility, and retirement of the associated worker. Preserve incomplete jobs, reusable assets, source media, and unique outputs. |
+| Temporary XCTest attachments | Only with explicit machine authorization: follow [the 30-day retention path](MACOS.md#temporary-xctest-attachments) under the Apple session. Preserve devices, app data, recent attachments and intentionally saved test outputs. |
 | Finished checkouts | Apply WORKTREES.md, including ownership reconciliation, commit recovery, ignored-file inspection, verified backups, and supported removal. |
 
 ## Hard protections
@@ -125,7 +126,9 @@ automatic removal.
   sessions, local storage, IndexedDB, offline media, attachments, personal files,
   downloads, Trash, reusable assets, unique diagnostics, and recovery snapshots.
 - Preserve app archives, app-build dSYMs, test results, screenshots, recordings,
-  and any machine-specific deliverables. A third-party symbol bundle inside
+  and any machine-specific deliverables. The only temporary-test exception is
+  explicitly authorized [XCTest attachment expiry](MACOS.md#temporary-xctest-attachments);
+  it does not extend to saved/exported results. A third-party symbol bundle inside
   otherwise eligible generated dependencies requires the exact restoration and
   provenance checks in [Gotchas](GOTCHAS.md#make-the-right-retention-decision);
   its suffix alone neither grants deletion nor establishes a unique deliverable.
