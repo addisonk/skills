@@ -51,7 +51,9 @@ record them before retirement. If required backups exceed either limit, preserve
 the checkout. Keep all prior recovery folders and receipts.
 
 Completion: the saved configuration contains metadata only, is owner-readable/
-writable, and can be read by the scheduler on this physical host.
+writable, and can be read by the scheduler on this physical host. Check dated
+exceptions against current authorized policy; an obsolete blanket exclusion can
+prevent a newly installed skill from ever evaluating its intended candidates.
 
 ## 4. Install and connect the schedule
 

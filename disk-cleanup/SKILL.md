@@ -12,6 +12,9 @@ Use read-only mode for an audit. For authorized cleanup, remove eligible items
 at any free-space level. Use the alert threshold only when deciding whether
 to notify.
 
+Before inventory and classification, read [Gotchas](GOTCHAS.md) for known
+discovery, ownership, generated-file, and unattended-run failures.
+
 1. **Measure.** Identify the host, account, target volume, local rules, and prior
    record. Skip overlapping cleanup runs. On macOS, follow the [Mac baseline](MACOS.md#baseline).
    **Done when** the baseline contains current free space, swap if available,

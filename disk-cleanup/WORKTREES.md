@@ -11,6 +11,8 @@ interfaces. Group references by the exact real checkout path. Include attachment
 as well as thread cwd; cwd alone is incomplete. Retain a shared checkout if any
 owner is active, unarchived where archival is required, pinned, unsettled, or
 unknown. Preserve conversations instead of changing their status to qualify work.
+For live SQLite ownership reads, use `mode=ro` with the WAL visible; do not use
+`immutable=1`. See [Gotchas](GOTCHAS.md#make-the-right-retention-decision).
 
 - **Codex:** keep managed automatic cleanup enabled. Use supported ownership-aware
   lifecycle operations for archived/completed owners when available. Read Codex

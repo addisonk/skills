@@ -124,9 +124,13 @@ automatic removal.
   history, application databases (including SQLite WAL/SHM), credentials, cookies,
   sessions, local storage, IndexedDB, offline media, attachments, personal files,
   downloads, Trash, reusable assets, unique diagnostics, and recovery snapshots.
-- Preserve app archives, dSYMs, test results, screenshots, recordings, and any
-  machine-specific deliverables. Report their growth read-only. A cleaner app's
-  “junk” label is a lead, never proof of disposability.
+- Preserve app archives, app-build dSYMs, test results, screenshots, recordings,
+  and any machine-specific deliverables. A third-party symbol bundle inside
+  otherwise eligible generated dependencies requires the exact restoration and
+  provenance checks in [Gotchas](GOTCHAS.md#make-the-right-retention-decision);
+  its suffix alone neither grants deletion nor establishes a unique deliverable.
+  Report protected output growth read-only. A cleaner app's “junk” label is a
+  lead, never proof of disposability.
 - Preserve installed browsers, tools, bundled runtimes, and packages. Dependency
   stores are eligible only through supported pruning, not blanket cache deletion.
 - Validate exact real paths, owner, allowed root, and file types. Reject symlink
