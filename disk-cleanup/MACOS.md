@@ -81,3 +81,40 @@ and verify the result. A broad age-based deletion command is insufficient if it
 cannot enforce these exclusions. Skip unsupported tooling or elevated operations.
 Preserve every simulator device and its data; leave system-owned runtime assets
 and swap files to the OS.
+
+## Temporary XCTest attachments
+
+`com.apple.testmanagerd` can retain many gigabytes of temporary test screenshots
+and recordings inside a device's `data/Containers/Data/InternalDaemon/<id>/tmp/Attachments`.
+Measure this separately from app data and runtime images. Container names are
+generated: verify `MCMMetadataIdentifier` in the container metadata, never guess
+the identifier or delete a whole daemon container or simulator.
+
+When the machine configuration explicitly authorizes this category, expire only
+regular temporary attachments older than its retention period (default 30 days).
+This narrow exception does not authorize deleting project/exported screenshots,
+recordings, result bundles, app data, device metadata, or newer test attachments.
+Without that authorization, inventory and report the category read-only.
+
+Use [the helper](scripts/test_attachments.py). Its policy is a private JSON file
+containing the execution host's exact hostname, `enabled`, and `retentionDays`.
+The default invocation inventories only:
+
+```sh
+python3 /absolute/installed/disk-cleanup/scripts/test_attachments.py \
+  --policy /absolute/private/test-attachment-policy.json \
+  --receipt /absolute/private/unique-inspection-receipt.json
+```
+
+For authorized deletion, first check the Apple queue. Skip this category when
+another owner or waiter needs it; continue unrelated eligible cleanup. Hold one
+session around the whole operation and add `--apply` to the helper invocation.
+It requires the current inherited Apple session, shut-down target devices, no
+build/test process, and no open attachment files. It checks exact file identity
+and age again before unlinking; symlinks and unfamiliar entries block that root.
+Never erase a device or stop another app or build to make cleanup eligible.
+
+Save a unique receipt each run and fold its removed paths/count, measured free-space
+change and skipped reasons into the existing ledger. `completed_with_skips` is
+not proof that blocked roots were cleaned. The helper preserves earlier receipts
+and all attachment directories. Reconcile a failed/partial receipt before retrying.
